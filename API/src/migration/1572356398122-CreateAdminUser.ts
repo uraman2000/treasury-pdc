@@ -3,10 +3,6 @@ import { User } from "../entity/User";
 
 export class CreateAdminUser1547919837483 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<any> {
-    const ass = {
-      username: "admin",
-      password: "admin"
-    };
     let user = new User();
     user.username = "admin";
     user.password = "admin";
