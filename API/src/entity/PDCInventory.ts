@@ -7,7 +7,7 @@ export class PDCInventory {
   id: number;
 
   @Column()
-  firs_name: string;
+  first_name: string;
 
   @Column()
   last_name: string;
