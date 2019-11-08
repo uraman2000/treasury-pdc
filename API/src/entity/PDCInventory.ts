@@ -5,16 +5,7 @@ import { Client } from "./Client";
 export class PDCInventory {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column()
-  first_name: string;
-
-  @Column()
-  last_name: string;
-
-  @Column()
-  age: number;
-
+  
   @Column()
   region: string;
 
