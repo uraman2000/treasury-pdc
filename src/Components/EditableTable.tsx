@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import clsx from "clsx";
 import { createStyles, lighten, makeStyles, Theme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -165,6 +165,19 @@ const useStyles = makeStyles((theme: Theme) =>
       position: "absolute",
       top: 20,
       width: 1
+    },
+    hoverCell: {
+      "& td": {
+        padding: "0px",
+        "& input": {
+          padding: "16px",
+          cursor: "pointer",
+          border: "none",
+          "&:hover": {
+            background: "rgba(0, 0, 0, 0.07)"
+          }
+        }
+      }
     }
   })
 );
@@ -205,6 +218,10 @@ export default function EditableTable() {
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
+  const [state, setState] = useState({
+    firstName: ""
+  });
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -226,16 +243,23 @@ export default function EditableTable() {
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.name);
                   const labelId = `enhanced-table-checkbox-${index}`;
-
                   return (
-                    <TableRow hover tabIndex={-1} key={row.name} selected={isItemSelected}>
-                      <TableCell align="center" component="th" id={labelId} scope="row" padding="none">
-                        {row.name}
+                    <TableRow className={classes.hoverCell} tabIndex={-1} key={row.name} selected={isItemSelected}>
+                      <TableCell id={labelId} scope="row">
+                        <input type="text" value={row.name} />
                       </TableCell>
-                      <TableCell align="center">{row.calories}</TableCell>
-                      <TableCell align="center">{row.fat}</TableCell>
-                      <TableCell align="center">{row.carbs}</TableCell>
-                      <TableCell align="center">{row.protein}</TableCell>
+                      <TableCell align="right">
+                        <input type="text" value={row.calories} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input type="text" value={row.fat} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input type="text" value={row.carbs} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input type="text" value={row.protein} />
+                      </TableCell>
                     </TableRow>
                   );
                 })}
