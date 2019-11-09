@@ -1,20 +1,34 @@
-import { getRepository, Repository } from "typeorm";
-import { NextFunction, Request, Response } from "express";
-import { User } from "../entity/User";
+import { getConnection } from "typeorm";
+import { Request, Response } from "express";
 import { PDCInventory } from "../entity/PDCInventory";
-import { validate } from "class-validator";
 import { AccountStatus } from "../entity/statuses/AccountStatus";
 
 class SummaryController {
-  private userRepository = getRepository(PDCInventory);
-
   static clientAccount = async (req: Request, res: Response) => {
-    const accountRepository = getRepository(AccountStatus);
-    const statuses = await accountRepository.find();
-    
+    let tableName = req.params.statusTableName;
 
-    res.status(201).send(statuses);
+    // available Table status name are :
+    // check_deposite_status
+    // account_status
+    // client_check_status
+    // reason_for_bounce_status
+    // reson_for_hold_status
+
+    res.status(200).send(await statusQuery(tableName));
   };
 }
 
+async function statusQuery(statusTable: string) {
+  const ass = await getConnection()
+    .createQueryBuilder()
+    .select(`${statusTable}.id`, "ID")
+    .addSelect(`${statusTable}.status`, "Status")
+    .addSelect("Count(*)", "Count")
+    .addSelect("SUM(check_amount)", "Sum")
+    .from(statusTable, statusTable)
+    .leftJoin(PDCInventory, "PDCInventory", `PDCInventory.client_account_status_ID = ${statusTable}.id`)
+    .groupBy(`${statusTable}.id`)
+    .getRawMany();
+  return ass;
+}
 export default SummaryController;
