@@ -39,10 +39,10 @@ export class CreateAllStatus1572831545143 implements MigrationInterface {
     ];
 
     await this.save(queryRunner, accountStatus, "account_status");
-    await this.save(queryRunner, checkDespositeStatus, "check_deposite_status");
+    await this.save(queryRunner, checkDespositeStatus, "check_deposit_status");
     await this.save(queryRunner, clientCkeckStatus, "client_check_status");
     await this.save(queryRunner, reasonForBounce, "reason_for_bounce_status");
-    await this.save(queryRunner, ResonForHold, "reson_for_hold_status");
+    await this.save(queryRunner, ResonForHold, "reason_for_hold_status");
   }
   // DELETE FROM account_status;
   // DELETE FROM migrations;

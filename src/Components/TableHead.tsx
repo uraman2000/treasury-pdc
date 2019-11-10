@@ -18,6 +18,10 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
+import ApiRespository from "../Library/ApiRespository";
+import { async } from "q";
+
+const apiRepo = new ApiRespository();
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,6 +52,14 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   })
 );
+//await apiRepo.getColumnNames();
+
+
+// const headCells: HeadCell[] = async () => {
+//   headCells.push(await apiRepo.getColumnNames());
+// };
+
+
 
 const headCells: HeadCell[] = [
   { id: "name", numeric: false, disablePadding: true, label: "Dessert (100g serving)" },
@@ -69,8 +81,8 @@ export default function EnhancedTableHead(props: EnhancedTableProps) {
         {headCells.map(headCell => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? "right" : "left"}
-            padding={headCell.disablePadding ? "none" : "default"}
+            // align={headCell.numeric ? "right" : "left"}
+            // padding={headCell.disablePadding ? "none" : "default"}
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
@@ -101,10 +113,10 @@ interface Data {
 }
 
 interface HeadCell {
-  disablePadding: boolean;
-  id: keyof Data;
-  label: string;
-  numeric: boolean;
+    disablePadding: boolean;
+    id: keyof Data;
+    label: string;
+    numeric: boolean;
 }
 
 type Order = "asc" | "desc";

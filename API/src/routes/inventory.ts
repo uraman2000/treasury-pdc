@@ -6,6 +6,9 @@ const router = Router();
 //Login route
 router.post("/", InventoryController.save);
 
+router.get("/column-names", InventoryController.getColumnNames);
+
+router.get("/", InventoryController.all);
 //Change my password
 // router.post("/change-password", [checkJwt], AuthController.changePassword);
 

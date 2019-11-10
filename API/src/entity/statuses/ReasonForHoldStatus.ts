@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity()
-export class ResonForHoldStatus {
+export class ReasonForHoldStatus {
   @PrimaryGeneratedColumn()
   id: number;
 
