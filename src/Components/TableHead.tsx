@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { createStyles, lighten, makeStyles, Theme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -20,8 +20,9 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import ApiRespository from "../Library/ApiRespository";
 import { async } from "q";
-
-const apiRepo = new ApiRespository();
+import { createHook } from "async_hooks";
+import IData from "./Interfaces/IData";
+import IHeadCells from "./Interfaces/IHeadCells";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,44 +55,41 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 //await apiRepo.getColumnNames();
 
-
 // const headCells: HeadCell[] = async () => {
-//   headCells.push(await apiRepo.getColumnNames());
+//   headCells.push();
 // };
 
-
-
-const headCells: HeadCell[] = [
-  { id: "name", numeric: false, disablePadding: true, label: "Dessert (100g serving)" },
-  { id: "calories", numeric: true, disablePadding: false, label: "Calories" },
-  { id: "fat", numeric: true, disablePadding: false, label: "Fat (g)" },
-  { id: "carbs", numeric: true, disablePadding: false, label: "Carbs (g)" },
-  { id: "protein", numeric: true, disablePadding: false, label: "Protein (g)" }
-];
+// const headCells: HeadCell[] = [
+//   { id: "name", numeric: false, disablePadding: true, label: "Dessert (100g serving)" },
+//   { id: "calories", numeric: true, disablePadding: false, label: "Calories" },
+//   { id: "fat", numeric: true, disablePadding: false, label: "Fat (g)" },
+//   { id: "carbs", numeric: true, disablePadding: false, label: "Carbs (g)" },
+//   { id: "protein", numeric: true, disablePadding: false, label: "Protein (g)" }
+// ];
 
 export default function EnhancedTableHead(props: EnhancedTableProps) {
-  const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-  const createSortHandler = (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
+  const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, headCell } = props;
+  const createSortHandler = (property: keyof IData) => (event: React.MouseEvent<unknown>) => {
     onRequestSort(event, property);
   };
 
   return (
     <TableHead>
       <TableRow>
-        {headCells.map(headCell => (
+        {headCell.map((headCell: IHeadCells) => (
           <TableCell
-            key={headCell.id}
+            key={headCell.ID}
             // align={headCell.numeric ? "right" : "left"}
             // padding={headCell.disablePadding ? "none" : "default"}
-            sortDirection={orderBy === headCell.id ? order : false}
+            sortDirection={orderBy === headCell.ID ? order : false}
           >
             <TableSortLabel
-              active={orderBy === headCell.id}
+              active={orderBy === headCell.ID}
               direction={order}
-              onClick={createSortHandler(headCell.id)}
+              onClick={createSortHandler(headCell.ID)}
             >
-              {headCell.label}
-              {orderBy === headCell.id ? (
+              {headCell.ColumnName}
+              {orderBy === headCell.ID ? (
                 <span className={classes.visuallyHidden}>
                   {order === "desc" ? "sorted descending" : "sorted ascending"}
                 </span>
@@ -104,29 +102,15 @@ export default function EnhancedTableHead(props: EnhancedTableProps) {
   );
 }
 
-interface Data {
-  calories: number;
-  carbs: number;
-  fat: number;
-  name: string;
-  protein: number;
-}
-
-interface HeadCell {
-    disablePadding: boolean;
-    id: keyof Data;
-    label: string;
-    numeric: boolean;
-}
-
 type Order = "asc" | "desc";
 
 interface EnhancedTableProps {
   classes: ReturnType<typeof useStyles>;
   numSelected: number;
-  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
+  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof IData) => void;
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => void;
   order: Order;
   orderBy: string;
   rowCount: number;
+  headCell: IHeadCells[];
 }

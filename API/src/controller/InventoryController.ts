@@ -62,7 +62,7 @@ class InventoryController {
   static all = async (req: Request, res: Response) => {
     const ass = await getConnection()
       .createQueryBuilder()
-      .select("PDCInventory.id")
+      .select("PDCInventory.id", "id")
       .addSelect("region")
       .addSelect("branch_name")
       .addSelect("client_bank_name")
@@ -70,20 +70,20 @@ class InventoryController {
       .addSelect("check_number")
       .addSelect("check_amount")
       .addSelect("client_ID")
-      .addSelect("account_status.status")
-      .addSelect("client_check_status.status")
+      .addSelect("account_status.status", "account_status")
+      .addSelect("client_check_status.status", "client_check_status")
       .addSelect("check_payee_name")
-      .addSelect("check_deposit_status.status")
-      .addSelect("reason_for_bounce_status.status")
+      .addSelect("check_deposit_status.status", "check_deposit_status")
+      .addSelect("reason_for_bounce_status.status", "reason_for_bounce_status")
       .addSelect("deposit_today")
       .addSelect("aging_undeposited")
       .addSelect("check_type_as_of_current_day")
       .addSelect("date_bounced")
       .addSelect("date_re_deposited")
       .addSelect("aging_redep")
-      .addSelect("check_re_deposit_status.status")
+      .addSelect("check_re_deposit_status.status", "check_re_deposit_status")
       .addSelect("date_hold")
-      .addSelect("reason_for_hold_status.status")
+      .addSelect("reason_for_hold_status.status", "reason_for_hold_status")
       .addSelect("hold_check_aging")
       .addSelect("OR_number")
       .addSelect("OR_date")
@@ -132,19 +132,15 @@ class InventoryController {
   static getColumnNames = async (req: Request, res: Response) => {
     let data = new Array();
     let i = 1;
+
     const ass = await getConnection()
       .getMetadata(PDCInventory)
-      .ownColumns.map(column => {
-        data.push({
-          ID: (i++).toString(),
-          ColumnName: column.propertyName
-          // ColumnType: column.type
-        });
-        // console.log(column.type);
-        // column.propertyName;
-      });
+      .ownColumns.map(column => ({
+        ID: column.propertyName.replace("_ID", ""),
+        ColumnName: toTitleCase(column.propertyName.replace("_ID", "").replace(/_/g, " "))
+      }));
 
-    res.status(201).send(data);
+    res.status(201).send(ass);
   };
 
   async remove(request: Request, response: Response, next: NextFunction) {
@@ -154,6 +150,14 @@ class InventoryController {
 }
 
 export default InventoryController;
+
+function toTitleCase(phrase: any) {
+  return phrase
+    .toLowerCase()
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
 
 async function validateErrors(res: any, object: any) {
   const errors = await validate(object);

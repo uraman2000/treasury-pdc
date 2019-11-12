@@ -10,6 +10,15 @@ class ApiRespository {
       return error.response.data;
     }
   }
+
+  async getInventory() {
+    try {
+      const response = await axios.get(`${baseUrl}/inventory/`);
+      return response.data;
+    } catch (error) {
+      return error.response.data;
+    }
+  }
 }
 
 export default ApiRespository;

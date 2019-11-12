@@ -19,34 +19,8 @@ import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import EnhancedTableHead from "./TableHead";
-
-interface Data {
-  calories: number;
-  carbs: number;
-  fat: number;
-  name: string;
-  protein: number;
-}
-
-function createData(name: string, calories: number, fat: number, carbs: number, protein: number): Data {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Donut", 452, 25.0, 51, 4.9),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-  createData("Honeycomb", 408, 3.2, 87, 6.5),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Jelly Bean", 375, 0.0, 94, 0.0),
-  createData("KitKat", 518, 26.0, 65, 7.0),
-  createData("Lollipop", 392, 0.2, 98, 0.0),
-  createData("Marshmallow", 318, 0, 81, 2.0),
-  createData("Nougat", 360, 19.0, 9, 37.0),
-  createData("Oreo", 437, 18.0, 63, 4.0)
-];
+import IHeadCells from "./Interfaces/IHeadCells";
+import IData from "./Interfaces/IData";
 
 function desc<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -178,19 +152,27 @@ const useStyles = makeStyles((theme: Theme) =>
           }
         }
       }
+    },
+    fixCell: {
+      position: "sticky"
     }
   })
 );
 
-export default function EditableTable() {
+interface IEditableTableProps {
+  headCell: IHeadCells[];
+  dataCell: IData[];
+}
+
+export default function EditableTable(props: IEditableTableProps) {
   const classes = useStyles();
   const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<keyof Data>("calories");
+  const [orderBy, setOrderBy] = React.useState<keyof IData>("check_deposit_status");
   const [selected, setSelected] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-  const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Data) => {
+  const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof IData) => {
     const isDesc = orderBy === property && order === "desc";
     setOrder(isDesc ? "asc" : "desc");
     setOrderBy(property);
@@ -198,7 +180,7 @@ export default function EditableTable() {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map(n => n.name);
+      const newSelecteds = props.dataCell.map(n => n.region); //
       setSelected(newSelecteds);
       return;
     }
@@ -216,7 +198,7 @@ export default function EditableTable() {
 
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.dataCell.length - page * rowsPerPage);
 
   const [state, setState] = useState({
     firstName: ""
@@ -229,36 +211,100 @@ export default function EditableTable() {
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle" size="medium" aria-label="enhanced table">
             <EnhancedTableHead
+              headCell={props.headCell}
               classes={classes}
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={props.dataCell.length}
             />
             <TableBody>
-              {stableSort(rows, getSorting(order, orderBy))
+              {stableSort(props.dataCell, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+                  // const isItemSelected = isSelected(row.name);
+
                   return (
-                    <TableRow className={classes.hoverCell} tabIndex={-1} key={row.name} selected={isItemSelected}>
-                      <TableCell id={labelId} scope="row">
-                        <input type="text" value={row.name} />
+                    <TableRow className={classes.hoverCell} tabIndex={-1} key={row.id}>
+                      <TableCell align="right" id={row.id.toString()} scope="row">
+                        <input type="text" value={row.id} />
                       </TableCell>
                       <TableCell align="right">
-                        <input type="text" value={row.calories} />
+                        <input type="text" value={row.region} />
                       </TableCell>
                       <TableCell align="right">
-                        <input type="text" value={row.fat} />
+                        <input type="text" value={row.branch_name} />
                       </TableCell>
                       <TableCell align="right">
-                        <input type="text" value={row.carbs} />
+                        <input type="text" value={row.client_bank_name} />
                       </TableCell>
                       <TableCell align="right">
-                        <input type="text" value={row.protein} />
+                        <input type="text" value={row.check_date} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input type="text" value={row.check_number} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input type="text" value={row.check_amount} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input type="text" value={row.client_ID} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input type="text" value={row.client_account_status} />
+                      </TableCell>
+                      <TableCell align="right" className={classes.fixCell}>
+                        <input type="text" value={row.client_check_status} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input type="text" value={row.check_payee_name} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input type="text" value={row.check_deposit_status} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input type="text" value={row.reason_for_bounce_status} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input type="text" value={row.deposit_today} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input type="text" value={row.aging_undeposited} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input type="text" value={row.check_type_as_of_current_day} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input type="text" value={row.date_bounced} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input type="text" value={row.date_re_deposited} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input type="text" value={row.aging_redep} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input type="text" value={row.check_re_deposit_status} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input type="text" value={row.date_hold} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input type="text" value={row.reason_for_hold_status} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input type="text" value={row.hold_check_aging} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input type="text" value={row.OR_number} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input type="text" value={row.OR_date} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input type="text" value={row.remarks} />
                       </TableCell>
                     </TableRow>
                   );
@@ -274,7 +320,7 @@ export default function EditableTable() {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={props.dataCell.length}
           rowsPerPage={rowsPerPage}
           page={page}
           backIconButtonProps={{
