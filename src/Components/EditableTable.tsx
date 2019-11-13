@@ -21,6 +21,7 @@ import FilterListIcon from "@material-ui/icons/FilterList";
 import EnhancedTableHead from "./TableHead";
 import IHeadCells from "./Interfaces/IHeadCells";
 import IData from "./Interfaces/IData";
+import { useFormik } from "formik";
 
 function desc<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -204,118 +205,161 @@ export default function EditableTable(props: IEditableTableProps) {
     firstName: ""
   });
 
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: props.dataCell,
+    onSubmit: values => {
+      alert(JSON.stringify(values, null, 2));
+    }
+  });
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <EnhancedTableToolbar numSelected={selected.length} />
         <div className={classes.tableWrapper}>
-          <Table className={classes.table} aria-labelledby="tableTitle" size="medium" aria-label="enhanced table">
-            <EnhancedTableHead
-              headCell={props.headCell}
-              classes={classes}
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={props.dataCell.length}
-            />
-            <TableBody>
-              {stableSort(props.dataCell, getSorting(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  // const isItemSelected = isSelected(row.name);
+          <form onSubmit={formik.handleSubmit}>
+            <Table
+              className={classes.table}
+              aria-labelledby="tableTitle"
+              size="medium"
+              aria-label="enhanced table"
+            >
+              <EnhancedTableHead
+                headCell={props.headCell}
+                classes={classes}
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={handleSelectAllClick}
+                onRequestSort={handleRequestSort}
+                rowCount={props.dataCell.length}
+              />
+              <TableBody>
+                {stableSort(formik.values, getSorting(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => {
+                    // const isItemSelected = isSelected(row.name);
 
-                  return (
-                    <TableRow className={classes.hoverCell} tabIndex={-1} key={row.id}>
-                      <TableCell align="right" id={row.id.toString()} scope="row">
-                        <input type="text" value={row.id} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <input type="text" value={row.region} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <input type="text" value={row.branch_name} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <input type="text" value={row.client_bank_name} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <input type="text" value={row.check_date} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <input type="text" value={row.check_number} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <input type="text" value={row.check_amount} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <input type="text" value={row.client_ID} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <input type="text" value={row.client_account_status} />
-                      </TableCell>
-                      <TableCell align="right" className={classes.fixCell}>
-                        <input type="text" value={row.client_check_status} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <input type="text" value={row.check_payee_name} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <input type="text" value={row.check_deposit_status} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <input type="text" value={row.reason_for_bounce_status} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <input type="text" value={row.deposit_today} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <input type="text" value={row.aging_undeposited} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <input type="text" value={row.check_type_as_of_current_day} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <input type="text" value={row.date_bounced} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <input type="text" value={row.date_re_deposited} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <input type="text" value={row.aging_redep} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <input type="text" value={row.check_re_deposit_status} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <input type="text" value={row.date_hold} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <input type="text" value={row.reason_for_hold_status} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <input type="text" value={row.hold_check_aging} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <input type="text" value={row.OR_number} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <input type="text" value={row.OR_date} />
-                      </TableCell>
-                      <TableCell align="right">
-                        <input type="text" value={row.remarks} />
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                    return (
+                      <TableRow className={classes.hoverCell} tabIndex={-1} key={row.id}>
+                        <TableCell align="right" id={row.id.toString()} scope="row">
+                          <input name={`[${index}]id`} type="text" value={row.id} onChange={formik.handleChange} />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input name={`[${index}]region`} type="text" value={row.region} />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input name={`[${index}]branch_name`} type="text" value={row.branch_name} />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input name={`[${index}]client_bank_name`} type="text" value={row.client_bank_name} />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input name={`[${index}]check_date`} type="text" value={row.check_date} />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input name={`[${index}]check_number`} type="text" value={row.check_number} />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input name={`[${index}]check_amount`} type="text" value={row.check_amount} />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input name={`[${index}]client_ID`} type="text" value={row.client_ID} />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input
+                            name={`[${index}]client_account_status`}
+                            type="text"
+                            value={row.client_account_status}
+                          />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input
+                            name={`[${index}]client_check_status`}
+                            type="text"
+                            value={row.client_check_status}
+                          />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input name={`[${index}]check_payee_name`} type="text" value={row.check_payee_name} />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input
+                            name={`[${index}]check_deposit_status`}
+                            type="text"
+                            value={row.check_deposit_status}
+                          />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input
+                            name={`[${index}]reason_for_bounce_status`}
+                            type="text"
+                            value={row.reason_for_bounce_status}
+                          />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input name={`[${index}]deposit_today`} type="text" value={row.deposit_today} />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input name={`[${index}]aging_undeposited`} type="text" value={row.aging_undeposited} />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input
+                            name={`[${index}]check_type_as_of_current_day`}
+                            type="text"
+                            value={row.check_type_as_of_current_day}
+                          />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input name={`[${index}]date_bounced`} type="text" value={row.date_bounced} />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input name={`[${index}]date_re_deposited`} type="text" value={row.date_re_deposited} />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input name={`[${index}]aging_redep`} type="text" value={row.aging_redep} />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input
+                            name={`[${index}]check_re_deposit_status`}
+                            type="text"
+                            value={row.check_re_deposit_status}
+                          />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input name={`[${index}]date_hold`} type="text" value={row.date_hold} />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input
+                            name={`[${index}]reason_for_hold_status`}
+                            type="text"
+                            value={row.reason_for_hold_status}
+                          />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input name={`[${index}]hold_check_aging`} type="text" value={row.hold_check_aging} />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input name={`[${index}]OR_number`} type="text" value={row.OR_number} />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input name={`[${index}]OR_date`} type="text" value={row.OR_date} />
+                        </TableCell>
+                        <TableCell align="right">
+                          <input name={`[${index}]remarks`} type="text" value={row.remarks} />
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: 53 * emptyRows }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </form>
         </div>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import EditableTable from "./Components/EditableTable";
 import ApiRespository from "./Library/ApiRespository";
 import { Container } from "@material-ui/core";
+import Test from "./Components/Test";
 
 function App() {
   const [headCell, setheadCell] = useState([]);
@@ -9,8 +10,8 @@ function App() {
   const apiRepo = new ApiRespository();
   useEffect(() => {
     const fetchData = async () => {
-      setheadCell(await apiRepo.getColumnNames());
-      setdataCell(await apiRepo.getInventory());
+      await setheadCell(await apiRepo.getColumnNames());
+      await setdataCell(await apiRepo.getInventory());
     };
     fetchData();
   }, []);
@@ -19,6 +20,8 @@ function App() {
     <div>
       <Container>
         <EditableTable headCell={headCell} dataCell={dataCell} />
+       
+        <Test tableData={dataCell} />
       </Container>
     </div>
   );
