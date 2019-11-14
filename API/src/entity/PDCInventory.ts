@@ -1,83 +1,83 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, Double, Long } from "typeorm";
 import { Client } from "./Client";
 
 @Entity()
 export class PDCInventory {
   @PrimaryGeneratedColumn()
   id: number;
-  
-  @Column()
+
+  @Column({ type: "varchar" })
   region: string;
 
-  @Column()
+  @Column({ type: "varchar" })
   branch_name: string;
 
-  @Column()
+  @Column({ type: "varchar" })
   client_bank_name: string;
 
-  @Column()
-  check_date: string;
+  @Column({ type: "date" })
+  check_date: Date;
 
-  @Column()
-  check_number: string;
+  @Column({ type: "int" })
+  check_number: number;
 
-  @Column()
-  check_amount: string;
+  @Column({ type: "decimal", precision: 13, scale: 2 })
+  check_amount: number;
 
-  @Column()
+  @Column({ type: "int" })
   client_ID: number;
 
-  @Column()
+  @Column({ type: "int" })
   client_account_status_ID: number;
 
-  @Column()
+  @Column({ type: "int" })
   client_check_status_ID: number;
 
-  @Column()
+  @Column({ type: "varchar" })
   check_payee_name: string;
 
-  @Column()
+  @Column({ type: "int" })
   check_deposit_status_ID: number;
 
-  @Column()
-  reason_for_bounce_ID: number;
+  @Column({ type: "int" })
+  reason_for_bounce_status_ID: number;
 
-  @Column()
-  deposite_today: string;
+  @Column({ type: "varchar" })
+  deposit_today: string;
 
-  @Column()
+  @Column({ type: "varchar" })
   aging_undeposited: string;
 
-  @Column()
+  @Column({ type: "varchar" })
   check_type_as_of_current_day: string;
 
-  @Column()
-  date_bounced: string;
+  @Column({ type: "date" })
+  date_bounced: Date;
 
-  @Column()
-  date_re_deposited: string;
+  @Column({ type: "date" })
+  date_re_deposited: Date;
 
-  @Column()
+  @Column({ type: "varchar" })
   aging_redep: string;
 
-  @Column()
-  check_re_deposit_status_ID: number;
+  @Column({ type: "date" })
+  check_re_deposit_status_ID: Date;
 
-  @Column()
-  date_hold: string;
+  @Column({ type: "date" })
+  date_hold: Date;
 
-  @Column()
-  reson_for_hold_ID: string;
+  @Column({ type: "int" })
+  reason_for_hold_status_ID: number;
 
-  @Column()
+  @Column({ type: "int" })
   hold_check_aging: number;
 
-  @Column()
+  @Column({ type: "int" })
   OR_number: number;
 
-  @Column()
-  OR_date: string;
+  @Column({ type: "date" })
+  OR_date: Date;
 
-  @Column()
+  @Column({ type: "varchar" })
   remarks: string;
 }
