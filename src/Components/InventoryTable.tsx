@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MaterialTable, { Column } from "material-table";
 import IData from "./Interfaces/IData";
-import ApiRespository from "../Library/ApiRespository";
+import ApiRespository from "../Library/InventoryApiRespository";
 
 interface IEditableTableProps {
   headCell: Array<Column<IData>>;

@@ -1,13 +1,20 @@
 import axios from "axios";
 import IData from "../Components/Interfaces/IData";
-const baseUrl = "http://localhost:3011";
-class ApiRespository {
-  async getColumnNames() {
+import { baseUrl } from "../Constatnt";
+
+interface LoginData {
+  username: string;
+  password: string;
+}
+
+class LoginApiRepository {
+  async login(loginData: LoginData, callback: any) {
     try {
-      const response = await axios.get(`${baseUrl}/inventory/column-names`);
-      return response.data;
+      await axios.post(`${baseUrl}/auth/login`, loginData).then(function(response) {
+        callback(response);
+      });
     } catch (error) {
-      return error.response.data;
+      callback(error.response);
     }
   }
 
@@ -39,4 +46,4 @@ class ApiRespository {
   }
 }
 
-export default ApiRespository;
+export default LoginApiRepository;
