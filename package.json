@@ -13,6 +13,7 @@
     "cors": "^2.8.5",
     "formik": "^2.0.4",
     "init": "^0.1.2",
+    "material-table": "^1.54.1",
     "nodemon": "^1.19.4",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",

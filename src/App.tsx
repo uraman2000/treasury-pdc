@@ -3,6 +3,8 @@ import EditableTable from "./Components/EditableTable";
 import ApiRespository from "./Library/ApiRespository";
 import { Container } from "@material-ui/core";
 import Test from "./Components/Test";
+import { FieldArray } from "formik";
+import FieldArrayTest from "./Components/FieldArrayTest";
 
 function App() {
   const [headCell, setheadCell] = useState([]);
@@ -19,8 +21,11 @@ function App() {
   return (
     <div>
       <Container>
-        <EditableTable headCell={headCell} dataCell={dataCell} />
-       
+        {/* <EditableTable headCell={headCell} dataCell={dataCell} />
+         */}
+
+        <FieldArrayTest headCell={headCell} dataCell={dataCell} />
+
         <Test tableData={dataCell} />
       </Container>
     </div>

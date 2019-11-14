@@ -8,6 +8,7 @@ import { CheckDepositStatus } from "../entity/statuses/CheckDepositStatus";
 import { ClientCheckStatus } from "../entity/statuses/ClientCheckStatus";
 import { ReasonForBounceStatus } from "../entity/statuses/ReasonForBounceStatus";
 import { ReasonForHoldStatus } from "../entity/statuses/ReasonForHoldStatus";
+import IResponse from "../../app/IResponse";
 
 class InventoryController {
   private userRepository = getRepository(PDCInventory);
@@ -125,28 +126,33 @@ class InventoryController {
 
   static save = async (req: Request, res: Response) => {
     await getRepository(PDCInventory).save(req.body);
-
     res.status(201).send("User created");
   };
 
   static getColumnNames = async (req: Request, res: Response) => {
-    let data = new Array();
-    let i = 1;
-
-    const ass = await getConnection()
+    const columns = await getConnection()
       .getMetadata(PDCInventory)
       .ownColumns.map(column => ({
-        ID: column.propertyName.replace("_ID", ""),
-        ColumnName: toTitleCase(column.propertyName.replace("_ID", "").replace(/_/g, " "))
+        title: toTitleCase(column.propertyName.replace("_ID", "").replace(/_/g, " ")),
+        field: column.propertyName.replace("_ID", "")
       }));
 
-    res.status(201).send(ass);
+    res.status(201).send(columns);
   };
 
-  async remove(request: Request, response: Response, next: NextFunction) {
-    let userToRemove = await this.userRepository.findOne(request.params.id);
-    await this.userRepository.remove(userToRemove);
-  }
+  static remove = async (req: Request, res: Response) => {
+    const customRes: IResponse = {};
+    let userToRemove = await getRepository(PDCInventory).findOne(req.params.id);
+    try {
+      await getRepository(PDCInventory).remove(userToRemove);
+      customRes.message = `${userToRemove.client_ID} has been deleted`;
+      customRes.status = "SUCCESS";
+    } catch (error) {
+      customRes.message = "data has been deleted already";
+      customRes.status = "FAILED";
+    }
+    res.status(200).send(customRes);
+  };
 }
 
 export default InventoryController;

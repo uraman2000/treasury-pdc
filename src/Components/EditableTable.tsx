@@ -168,7 +168,7 @@ interface IEditableTableProps {
 export default function EditableTable(props: IEditableTableProps) {
   const classes = useStyles();
   const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<keyof IData>("check_deposit_status");
+  const [orderBy, setOrderBy] = React.useState<keyof IData>("id");
   const [selected, setSelected] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -236,24 +236,53 @@ export default function EditableTable(props: IEditableTableProps) {
                 rowCount={props.dataCell.length}
               />
               <TableBody>
+                
+                {console.log(
+                  stableSort(formik.values, getSorting(order, orderBy)).slice(
+                    page * rowsPerPage,
+                    page * rowsPerPage + rowsPerPage
+                  )
+                )}
                 {stableSort(formik.values, getSorting(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
-                    // const isItemSelected = isSelected(row.name);
-
                     return (
                       <TableRow className={classes.hoverCell} tabIndex={-1} key={row.id}>
-                        <TableCell align="right" id={row.id.toString()} scope="row">
-                          <input name={`[${index}]id`} type="text" value={row.id} onChange={formik.handleChange} />
+                        <TableCell align="right">
+                          <input
+                            id="id"
+                            name={`[${index}]id`}
+                            type="text"
+                            onChange={formik.handleChange}
+                            value={row.id}
+                          />
                         </TableCell>
                         <TableCell align="right">
-                          <input name={`[${index}]region`} type="text" value={row.region} />
+                          <input
+                            id="region"
+                            name={`[${index}]region`}
+                            type="text"
+                            onChange={formik.handleChange}
+                            value={row.region}
+                          />
                         </TableCell>
                         <TableCell align="right">
-                          <input name={`[${index}]branch_name`} type="text" value={row.branch_name} />
+                          <input
+                            id={`[${index}]branch_name`}
+                            name={`[${index}]branch_name`}
+                            type="text"
+                            onChange={formik.handleChange}
+                            value={row.branch_name}
+                          />
                         </TableCell>
                         <TableCell align="right">
-                          <input name={`[${index}]client_bank_name`} type="text" value={row.client_bank_name} />
+                          <input
+                            id={`[${index}]client_bank_name`}
+                            name={`[${index}]client_bank_name`}
+                            type="text"
+                            onChange={formik.handleChange}
+                            value={row.client_bank_name}
+                          />
                         </TableCell>
                         <TableCell align="right">
                           <input name={`[${index}]check_date`} type="text" value={row.check_date} />
