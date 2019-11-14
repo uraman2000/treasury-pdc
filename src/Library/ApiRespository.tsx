@@ -1,4 +1,3 @@
-import React from "react";
 import axios from "axios";
 import IData from "../Components/Interfaces/IData";
 const baseUrl = "http://localhost:3011";

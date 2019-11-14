@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import MaterialTable, { Column } from "material-table";
 import IData from "./Interfaces/IData";
-import IHeadCells from "./Interfaces/IHeadCells";
 import ApiRespository from "../Library/ApiRespository";
 
 interface IEditableTableProps {
@@ -14,7 +13,7 @@ interface TableState {
   data: IData[];
 }
 
-export default function MaterialTableDemo(props: IEditableTableProps) {
+export default function InventoryTable(props: IEditableTableProps) {
   let { headCell, dataCell } = props;
   const apiRepo = new ApiRespository();
   const initState = {
