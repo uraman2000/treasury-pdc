@@ -60,8 +60,8 @@ export class PDCInventory {
   @Column({ type: "varchar" })
   aging_redep: string;
 
-  @Column({ type: "date" })
-  check_re_deposit_status_ID: Date;
+  @Column({ type: "int" })
+  check_re_deposit_status_ID: number;
 
   @Column({ type: "date" })
   date_hold: Date;
