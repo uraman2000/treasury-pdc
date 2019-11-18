@@ -91,7 +91,7 @@ class AuthController {
     userRepository.save(user);
     customRes.message = "Password Change Succesfully";
     customRes.status = "SUCCESS";
-    res.send(customRes);
+    res.status(200).send(customRes);
   };
 
   static refreshToken = (req: Request, res: Response) => {
@@ -112,11 +112,29 @@ class AuthController {
 
     const new_refresh_token = jwtSign(userId, username, token_expiration, "refresh_token");
 
-    res.send({
+    res.status(200).send({
       access_token: access_token,
       expires_in: token_expiration,
       refresh_token: new_refresh_token
     });
+  };
+
+  static isTokenExpired = (req: Request, res: Response) => {
+    let { access_token } = req.body;
+    let jwtPayload;
+    const customRes: IResponse = {};
+
+    try {
+      jwtPayload = <any>jwt.verify(access_token, config.jwtSecret);
+      customRes.message = "Token still available";
+      customRes.status = "SUCCESS";
+      customRes.data = true;
+      res.status(200).send(customRes);
+    } catch (error) {
+      //If token is not valid, respond with 401 (unauthorized)
+      res.status(401).send(error);
+      return;
+    }
   };
 }
 function jwtSign(userId, username, token_expiration, type) {
