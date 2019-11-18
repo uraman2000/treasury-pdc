@@ -3,7 +3,7 @@ import IData from "../Components/Interfaces/IData";
 import { baseUrl } from "../Constatnt";
 
 class InventoryApiRespository {
-  async getColumnNames() {
+  public static async getColumnNames() {
     try {
       const response = await axios.get(`${baseUrl}/inventory/column-names`);
       return response.data;
@@ -12,7 +12,7 @@ class InventoryApiRespository {
     }
   }
 
-  async getInventory() {
+  public static async getInventory() {
     try {
       const response = await axios.get(`${baseUrl}/inventory/`);
       return response.data;
@@ -21,7 +21,7 @@ class InventoryApiRespository {
     }
   }
 
-  async saveInventory(data: IData) {
+  public static async saveInventory(data: IData) {
     try {
       const response = await axios.post(`${baseUrl}/inventory/`, data);
       return response.data;
@@ -30,7 +30,7 @@ class InventoryApiRespository {
     }
   }
 
-  async deleteInventory(id: number) {
+  public static async deleteInventory(id: number) {
     try {
       const response = await axios.delete(`${baseUrl}/inventory/${id}`);
       return response.data;

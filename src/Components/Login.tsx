@@ -16,8 +16,9 @@ import { useFormik } from "formik";
 import LoginApiRepository from "../Library/LoginApiRepository";
 import { ResponseCodes } from "../Constatnt";
 import { red } from "@material-ui/core/colors";
-import { Redirect } from "react-router";
+import { Redirect, useHistory } from "react-router";
 import { render } from "react-dom";
+import { login } from "../utils";
 
 function Copyright() {
   return (
@@ -65,6 +66,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Login() {
   const classes = useStyles();
+  let history = useHistory();
   const loginApi = new LoginApiRepository();
   const [state, setstate] = useState({
     isErrorShow: false
@@ -76,17 +78,18 @@ export default function Login() {
     },
     onSubmit: values => {
       //   alert(JSON.stringify(values, null, 2));
-      const callback = (data: any) => {
-        console.log(data);
+
+      new LoginApiRepository().login(values, (data: any) => {
         if (data.status === ResponseCodes.Unauthorized) {
           setstate({
             isErrorShow: true
           });
           return;
         }
-      };
 
-      new LoginApiRepository().login(values, callback);
+        login();
+        history.push("/inventory");
+      });
     }
   });
 

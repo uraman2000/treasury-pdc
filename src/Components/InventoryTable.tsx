@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import MaterialTable, { Column } from "material-table";
 import IData from "./Interfaces/IData";
 import ApiRespository from "../Library/InventoryApiRespository";
+import InventoryApiRespository from "../Library/InventoryApiRespository";
 
 interface IEditableTableProps {
   headCell: Array<Column<IData>>;
@@ -13,18 +14,21 @@ interface TableState {
   data: IData[];
 }
 
-export default function InventoryTable(props: IEditableTableProps) {
-  let { headCell, dataCell } = props;
-  const apiRepo = new ApiRespository();
+export default function InventoryTable() {
   const initState = {
-    columns: headCell,
-    data: dataCell
+    columns: [],
+    data: []
   };
   const [state, setState] = useState<TableState>(initState);
 
   useEffect(() => {
-    setState({ columns: headCell, data: dataCell });
-  }, [props]);
+    const fetchData = async () => {
+      const head = await InventoryApiRespository.getColumnNames();
+      const column = await InventoryApiRespository.getInventory();
+      setState({ columns: head, data: column });
+    };
+    fetchData();
+  }, []);
 
   return (
     <MaterialTable
@@ -39,7 +43,7 @@ export default function InventoryTable(props: IEditableTableProps) {
               setState((prevState: any) => {
                 const data = [...prevState.data];
                 data.push(newData);
-                apiRepo.saveInventory(newData);
+                InventoryApiRespository.saveInventory(newData);
                 return { ...prevState, data };
               });
             }, 600);
@@ -52,7 +56,7 @@ export default function InventoryTable(props: IEditableTableProps) {
                 setState(prevState => {
                   const data = [...prevState.data];
                   data[data.indexOf(oldData)] = newData;
-                  apiRepo.saveInventory(newData);
+                  InventoryApiRespository.saveInventory(newData);
                   console.log(newData);
                   return { ...prevState, data };
                 });
@@ -67,7 +71,7 @@ export default function InventoryTable(props: IEditableTableProps) {
                 const data = [...prevState.data];
                 data.splice(data.indexOf(oldData), 1);
 
-                apiRepo.deleteInventory(oldData.id);
+                InventoryApiRespository.deleteInventory(oldData.id);
                 return { ...prevState, data };
               });
             }, 600);
