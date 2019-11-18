@@ -67,7 +67,7 @@ const useStyles = makeStyles(theme => ({
 export default function Login() {
   const classes = useStyles();
   let history = useHistory();
-  const loginApi = new LoginApiRepository();
+
   const [state, setstate] = useState({
     isErrorShow: false
   });
@@ -78,8 +78,7 @@ export default function Login() {
     },
     onSubmit: values => {
       //   alert(JSON.stringify(values, null, 2));
-
-      new LoginApiRepository().login(values, (data: any) => {
+      LoginApiRepository.login(values, (data: any) => {
         if (data.status === ResponseCodes.Unauthorized) {
           setstate({
             isErrorShow: true
@@ -87,7 +86,7 @@ export default function Login() {
           return;
         }
 
-        login();
+        login(data.data);
         history.push("/inventory");
       });
     }

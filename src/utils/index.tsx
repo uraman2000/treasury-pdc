@@ -1,17 +1,36 @@
-const TOKEN_KEY = "jwt";
+import LoginApiRepository from "../Library/LoginApiRepository";
+import { ResponseCodes } from "../Constatnt";
 
-export const login = () => {
-  localStorage.setItem(TOKEN_KEY, "TestLogin");
+const ACCESS_TOKEN = "ACCESS_TOKEN";
+const REFRESH_TOKEN = "REFRESH_TOKEN";
+const EXPIRES_IN = "EXPIRES_IN";
+
+interface Access {
+  access_token: string;
+  expires_in: string;
+  refresh_token: string;
+}
+
+export const login = (value: Access) => {
+  localStorage.setItem(ACCESS_TOKEN, value.access_token);
+  localStorage.setItem(REFRESH_TOKEN, value.refresh_token);
+  localStorage.setItem(EXPIRES_IN, value.expires_in);
 };
 
 export const logout = () => {
-  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(ACCESS_TOKEN);
+  localStorage.removeItem(REFRESH_TOKEN);
+  localStorage.removeItem(EXPIRES_IN);
 };
 
-export const isLogin = () => {
-  if (localStorage.getItem(TOKEN_KEY)) {
-    return true;
-  }
+export const getAccess = () => {
+  return {
+    access_token: localStorage.getItem(ACCESS_TOKEN),
+    expires_in: localStorage.getItem(EXPIRES_IN),
+    refresh_token: localStorage.getItem(REFRESH_TOKEN)
+  };
+};
 
-  return false;
+export const isLogin = (status: number) => {
+  return status != ResponseCodes.Unauthorized;
 };

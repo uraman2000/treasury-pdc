@@ -7,8 +7,8 @@ interface LoginData {
   password: string;
 }
 
-class LoginApiRepository {
-  async login(loginData: LoginData, callback: any) {
+export default class LoginApiRepository {
+  public static async login(loginData: LoginData, callback: any) {
     try {
       await axios.post(`${baseUrl}/auth/login`, loginData).then(function(response) {
         callback(response);
@@ -18,32 +18,12 @@ class LoginApiRepository {
     }
   }
 
-  async getInventory() {
+  public static async isTokenExpired(access_token?: any) {
     try {
-      const response = await axios.get(`${baseUrl}/inventory/`);
+      const response = await axios.post(`${baseUrl}/auth/check-token`, { access_token: access_token });
       return response.data;
     } catch (error) {
-      return error.response.data;
-    }
-  }
-
-  async saveInventory(data: IData) {
-    try {
-      const response = await axios.post(`${baseUrl}/inventory/`, data);
-      return response.data;
-    } catch (error) {
-      return error.response.data;
-    }
-  }
-
-  async deleteInventory(id: number) {
-    try {
-      const response = await axios.delete(`${baseUrl}/inventory/${id}`);
-      return response.data;
-    } catch (error) {
-      return error.response.data;
+      return error.response;
     }
   }
 }
-
-export default LoginApiRepository;
