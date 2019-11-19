@@ -15,10 +15,6 @@ function App() {
       <Container>
         <Router>
           <Switch>
-            {console.log(getAccess().refresh_token)}
-            {/* <PublicRoute restricted={false} component={Home} path="/" exact /> */}
-            {/* <Route path="/login" exact component={Login} />
-            <Route path="/" exact component={InventoryTable} /> */}
             {/* {deleteAccess()} */}
             <Route path="/login" exact component={Login} />
             <ProtectedRoute path="/">

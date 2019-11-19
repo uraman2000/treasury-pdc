@@ -24,15 +24,10 @@ export default class HandleToken {
     });
 
     axiosInstance.interceptors.response.use(
-      function(response) {
-        // Any status code that lie within the range of 2xx cause this function to trigger
-        // Do something with response data
-
+      response => {
         return response;
       },
-      async function(error) {
-        // Any status codes that falls outside the range of 2xx cause this function to trigger
-        // Do something with response error
+      async error => {
         const data = error.response.data;
 
         if (error.response.status === ResponseCodes.Unauthorized && data.expiredAt) {
