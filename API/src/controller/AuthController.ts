@@ -98,7 +98,7 @@ class AuthController {
   static refreshToken = (req: Request, res: Response) => {
     let { refresh_token } = req.body;
     let jwtPayload;
-    const token_expiration = "1500";
+    const token_expiration = "8h";
 
     try {
       jwtPayload = <any>jwt.verify(refresh_token, config.jwtSecret);

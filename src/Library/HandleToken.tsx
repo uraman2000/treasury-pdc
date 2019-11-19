@@ -38,8 +38,9 @@ export default class HandleToken {
         if (error.response.status === ResponseCodes.Unauthorized && data.expiredAt) {
           const originalRequest = error.config;
           await setAccess(await HandleToken.refresh(getAccess().refresh_token));
-          console.log(originalRequest);
-          axios(originalRequest);
+          originalRequest.headers.access_token = getAccess().access_token;
+
+          return axios(originalRequest);
         }
         return Promise.reject(error);
       }
