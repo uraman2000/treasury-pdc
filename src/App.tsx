@@ -4,37 +4,26 @@ import { Container } from "@material-ui/core";
 import InventoryTable from "./Components/InventoryTable";
 import Login from "./Components/Login";
 import { BrowserRouter as Router, Switch, Route, useHistory } from "react-router-dom";
-import PrivateRoute from "./Components/PrivateRoute";
-import PublicRoute from "./Components/PublicRoute";
 import LoginApiRepository from "./Library/LoginApiRepository";
-import { getAccess } from "./utils";
+import { getAccess, deleteAccess } from "./utils";
+import ProtectedRoute from "./Components/ProtectedRoute";
+import InventoryApiRespository from "./Library/InventoryApiRespository";
 
 function App() {
-  const access_token = getAccess().access_token;
-  const [state, setstate] = useState({ status: 200 });
-  useEffect(() => {
-    const fetchData = async () => {
-      await setstate(await LoginApiRepository.isTokenExpired(access_token));
-    };
-
-    fetchData();
-  }, []);
-
   return (
     <div>
       <Container>
         <Router>
           <Switch>
+            {console.log(getAccess().refresh_token)}
             {/* <PublicRoute restricted={false} component={Home} path="/" exact /> */}
-            <PublicRoute
-              islogin={state.status}
-              restricted={false}
-              component={() => <Login />}
-              path="/login"
-              exact
-            />
-
-            <PrivateRoute islogin={state.status} component={InventoryTable} path="/inventory" exact />
+            {/* <Route path="/login" exact component={Login} />
+            <Route path="/" exact component={InventoryTable} /> */}
+            {/* {deleteAccess()} */}
+            <Route path="/login" exact component={Login} />
+            <ProtectedRoute path="/">
+              <InventoryTable />
+            </ProtectedRoute>
           </Switch>
         </Router>
       </Container>

@@ -11,7 +11,8 @@ class AuthController {
   static login = async (req: Request, res: Response) => {
     //Check if username and password are set
     const customRes: IResponse = {};
-    const token_expiration = "20000";
+    const token_expiration = "1500";
+    const refresh_token_expiration = "30d";
     let { username, password } = req.body;
 
     if (!(username && password)) {
@@ -41,7 +42,7 @@ class AuthController {
     //Sing JWT, valid for 1 hour
     const token = jwtSign(user.id, user.username, token_expiration, "access_token");
 
-    const Rtoken = jwtSign(user.id, user.username, token_expiration, "refresh_token");
+    const Rtoken = jwtSign(user.id, user.username, refresh_token_expiration, "refresh_token");
 
     //Send the jwt in the response
     res.send({
@@ -97,7 +98,7 @@ class AuthController {
   static refreshToken = (req: Request, res: Response) => {
     let { refresh_token } = req.body;
     let jwtPayload;
-    const token_expiration = "1h";
+    const token_expiration = "1500";
 
     try {
       jwtPayload = <any>jwt.verify(refresh_token, config.jwtSecret);

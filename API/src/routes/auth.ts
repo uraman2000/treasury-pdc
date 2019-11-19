@@ -9,7 +9,7 @@ router.post("/login", AuthController.login);
 //Change my password
 router.post("/change-password", [checkJwt], AuthController.changePassword);
 
-router.post("/accestoken", AuthController.refreshToken);
+router.post("/refresh-token", AuthController.refreshToken);
 
 router.post("/check-token", AuthController.isTokenExpired);
 export default router;

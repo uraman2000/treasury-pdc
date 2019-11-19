@@ -18,7 +18,7 @@ import { ResponseCodes } from "../Constatnt";
 import { red } from "@material-ui/core/colors";
 import { Redirect, useHistory } from "react-router";
 import { render } from "react-dom";
-import { login } from "../utils";
+import { setAccess } from "../utils";
 
 function Copyright() {
   return (
@@ -86,8 +86,8 @@ export default function Login() {
           return;
         }
 
-        login(data.data);
-        history.push("/inventory");
+        setAccess(data.data);
+        history.push("/");
       });
     }
   });
