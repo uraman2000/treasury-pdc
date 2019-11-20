@@ -1,38 +1,40 @@
 import axios from "axios";
 import IData from "../Components/Interfaces/IData";
-import { baseUrl } from "../Constatnt";
+import { baseUrl, ResponseCodes } from "../Constatnt";
+import { getAccess, setAccess } from "../utils";
+import HandleToken from "./HandleToken";
 
 class InventoryApiRespository {
-  async getColumnNames() {
+  public static async getColumnNames() {
     try {
-      const response = await axios.get(`${baseUrl}/inventory/column-names`);
+      const response = await (await HandleToken.getInstance()).get(`inventory/column-names`);
       return response.data;
     } catch (error) {
       return error.response.data;
     }
   }
 
-  async getInventory() {
+  public static async getInventory() {
     try {
-      const response = await axios.get(`${baseUrl}/inventory/`);
+      const response = await (await HandleToken.getInstance()).get(`inventory/`);
       return response.data;
     } catch (error) {
       return error.response.data;
     }
   }
 
-  async saveInventory(data: IData) {
+  public static async saveInventory(data: IData) {
     try {
-      const response = await axios.post(`${baseUrl}/inventory/`, data);
+      const response = await (await HandleToken.getInstance()).post(`inventory/`, data);
       return response.data;
     } catch (error) {
       return error.response.data;
     }
   }
 
-  async deleteInventory(id: number) {
+  public static async deleteInventory(id: number) {
     try {
-      const response = await axios.delete(`${baseUrl}/inventory/${id}`);
+      const response = await (await HandleToken.getInstance()).delete(`${baseUrl}/inventory/${id}`);
       return response.data;
     } catch (error) {
       return error.response.data;
