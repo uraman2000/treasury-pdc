@@ -58,3 +58,8 @@ export interface RouteProps {
   sensitive?: boolean;
   strict?: boolean;
 }
+
+
+# refresh token source
+
+https://medium.com/swlh/handling-access-and-refresh-tokens-using-axios-interceptors-3970b601a5da
