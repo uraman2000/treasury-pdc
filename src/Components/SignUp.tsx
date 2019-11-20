@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -15,17 +15,14 @@ import Container from "@material-ui/core/Container";
 import { useFormik } from "formik";
 import LoginApiRepository from "../Library/LoginApiRepository";
 import { ResponseCodes } from "../Constatnt";
-import { red } from "@material-ui/core/colors";
-import { Redirect, useHistory } from "react-router";
-import { render } from "react-dom";
-import { setAccess } from "../utils";
+import { useHistory } from "react-router";
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
-      <Link color="inherit" href="https://www.rfc.com.ph/">
-        Radio Wealth Finance
+      <Link color="inherit" href="https://material-ui.com/">
+        Your Website
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -51,42 +48,24 @@ const useStyles = makeStyles(theme => ({
   },
   form: {
     width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(3)
   },
   submit: {
     margin: theme.spacing(3, 0, 2)
-  },
-  username: {
-    marginTop: 8
-  },
-  invalidEror: {
-    color: red.A700
   }
 }));
 
-export default function Login() {
+export default function SignUp() {
   const classes = useStyles();
   let history = useHistory();
-
-  const [state, setstate] = useState({
-    isErrorShow: false
-  });
   const formik = useFormik({
     initialValues: {
       username: "",
-      password: ""
+      password: "",
+      role: ""
     },
     onSubmit: values => {
-      //   alert(JSON.stringify(values, null, 2));
-      LoginApiRepository.login(values, (data: any) => {
-        if (data.status === ResponseCodes.Unauthorized) {
-          setstate({
-            isErrorShow: true
-          });
-          return;
-        }
-
-        setAccess(data.data);
+      LoginApiRepository.SignUp(values, (data: any) => {
         history.push("/");
       });
     }
@@ -100,62 +79,64 @@ export default function Login() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          Sign up
         </Typography>
 
         <form className={classes.form} action={""} onSubmit={formik.handleSubmit}>
-          <Grid container>
-            <Grid item>
-              <Typography className={classes.invalidEror} variant="caption" display="block">
-                {state.isErrorShow ? "* Invalid UserName or Password " : null}
-              </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                id="username"
+                label="Username"
+                name="username"
+                onChange={formik.handleChange}
+                value={formik.values.username}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                onChange={formik.handleChange}
+                value={formik.values.password}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="role"
+                label="Role"
+                type="role"
+                id="role"
+                onChange={formik.handleChange}
+                value={formik.values.role}
+              />
             </Grid>
           </Grid>
-          <TextField
-            className={classes.username}
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="Username"
-            label="Username"
-            autoFocus
-            name="username"
-            onChange={formik.handleChange}
-            value={formik.values.username}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            onChange={formik.handleChange}
-            value={formik.values.password}
-          />
-          <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
           <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
-            Sign In
+            Sign Up
           </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
+          <Grid container justify="flex-end">
             <Grid item>
-              <Link href="/signup" variant="body2">
-                {"Don't have an account? Sign Up"}
+              <Link href="/login" variant="body2">
+                Already have an account? Sign in
               </Link>
             </Grid>
           </Grid>
         </form>
       </div>
-      <Box mt={8}>
+      <Box mt={5}>
         <Copyright />
       </Box>
     </Container>

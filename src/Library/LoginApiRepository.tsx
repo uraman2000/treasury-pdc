@@ -26,4 +26,14 @@ export default class LoginApiRepository {
       return error.response;
     }
   }
+
+  public static async SignUp(signup: any, callback: any) {
+    try {
+      await axios.post(`${baseUrl}/auth/signup`, signup).then(function(response) {
+        callback(response);
+      });
+    } catch (error) {
+      callback(error.response);
+    }
+  }
 }
