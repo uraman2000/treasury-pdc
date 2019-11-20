@@ -9,6 +9,7 @@ import { getAccess, deleteAccess } from "./utils";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import InventoryApiRespository from "./Library/InventoryApiRespository";
 import SignUp from "./Components/SignUp";
+import DrawerNavigation from "./Components/DrawerNavigation";
 
 function App() {
   return (
@@ -19,15 +20,17 @@ function App() {
         <SummaryStatus tableName={"client_check_status"} />
         <SummaryStatus tableName={"reason_for_bounce_status"} />
         <SummaryStatus tableName={"reson_for_hold_status"} /> */}
-  
+
         <Router>
           <Switch>
             {/* {deleteAccess()} */}
             <Route path="/login" exact component={Login} />
             <Route path="/signup" exact component={SignUp} />
-            <ProtectedRoute path="/">
-              <InventoryTable />
-            </ProtectedRoute>
+            <DrawerNavigation>
+              <ProtectedRoute path="/">
+                <InventoryTable />
+              </ProtectedRoute>
+            </DrawerNavigation>
           </Switch>
         </Router>
       </Container>
