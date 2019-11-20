@@ -13,6 +13,12 @@ function App() {
   return (
     <div>
       <Container>
+        {/* <SummaryStatus tableName={"check_deposite_status"} />
+        <SummaryStatus tableName={"account_status"} />
+        <SummaryStatus tableName={"client_check_status"} />
+        <SummaryStatus tableName={"reason_for_bounce_status"} />
+        <SummaryStatus tableName={"reson_for_hold_status"} /> */}
+
         <Router>
           <Switch>
             {/* {deleteAccess()} */}
