@@ -1,17 +1,6 @@
 import React, { useEffect, useState } from "react";
-
 import SummaryApiRepository from "../Library/SummaryApiRepository";
-import {
-  Card,
-  Typography,
-  CardContent,
-  Paper,
-  TableHead,
-  TableRow,
-  TableCell,
-  Table,
-  TableBody
-} from "@material-ui/core";
+import { Paper, TableHead, TableRow, TableCell, Table, TableBody } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
 const useStyles = makeStyles({
@@ -35,13 +24,12 @@ const useStyles = makeStyles({
 });
 
 export default function SummaryStatus(props: ISummaryProps) {
-  let { tableName } = props;
   const classes = useStyles();
   const [state, setstate] = useState<ISummaryStatusState>();
 
   useEffect(() => {
     const fetchData = async () => {
-      await setstate(await SummaryApiRepository.getSummary(tableName));
+      await setstate(await SummaryApiRepository.getSummary(props.tableName));
     };
     fetchData();
   }, []);

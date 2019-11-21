@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from "react";
-import ApiRespository from "./Library/InventoryApiRespository";
+import React from "react";
 import { Container } from "@material-ui/core";
 import InventoryTable from "./Components/InventoryTable";
 import Login from "./Components/Login";
-import { BrowserRouter as Router, Switch, Route, useHistory } from "react-router-dom";
-import LoginApiRepository from "./Library/LoginApiRepository";
-import { getAccess, deleteAccess } from "./utils";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import ProtectedRoute from "./Components/ProtectedRoute";
-import InventoryApiRespository from "./Library/InventoryApiRespository";
 import SignUp from "./Components/SignUp";
+import DrawerNavigation from "./Components/DrawerNavigation";
+import SummaryStatus from "./Components/SummaryStatus";
 
 function App() {
   return (
@@ -19,15 +17,16 @@ function App() {
         <SummaryStatus tableName={"client_check_status"} />
         <SummaryStatus tableName={"reason_for_bounce_status"} />
         <SummaryStatus tableName={"reson_for_hold_status"} /> */}
-  
+
         <Router>
           <Switch>
             {/* {deleteAccess()} */}
-            <Route path="/login" exact component={Login} />
-            <Route path="/signup" exact component={SignUp} />
-            <ProtectedRoute path="/">
-              <InventoryTable />
-            </ProtectedRoute>
+            <Route path="/login" component={Login} />
+            <Route path="/signup" component={SignUp} />
+            <DrawerNavigation>
+              <ProtectedRoute path="/" component={InventoryTable} />
+              <ProtectedRoute path="/summary" component={() => <SummaryStatus tableName={"account_status"} />} />
+            </DrawerNavigation>
           </Switch>
         </Router>
       </Container>
