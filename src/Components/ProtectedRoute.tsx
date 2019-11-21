@@ -3,18 +3,19 @@ import { BrowserRouter as Router, Switch, Route, Link, Redirect, useHistory, use
 import { RouteChildrenProps } from "react-router";
 import { getAccess } from "../utils";
 interface IProps {
-  children?: ((props: RouteChildrenProps<any>) => React.ReactNode) | React.ReactNode;
+  component: any;
   path?: string | string[];
 }
 
-export default function ProtectedRoute({ children, path, ...rest }: IProps) {
+export default function ProtectedRoute({ component: Component, ...rest }: IProps) {
   return (
     <>
       <Route
+        exact
         {...rest}
         render={({ location }) =>
           getAccess().access_token !== null ? (
-            children
+            <Component />
           ) : (
             <Redirect
               to={{

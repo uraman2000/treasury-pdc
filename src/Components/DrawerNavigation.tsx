@@ -23,7 +23,7 @@ import { deleteAccess } from "../utils";
 import AssessmentRoundedIcon from "@material-ui/icons/AssessmentRounded";
 import TableChartRoundedIcon from "@material-ui/icons/TableChartRounded";
 import SummaryStatus from "./SummaryStatus";
-
+import { Link, LinkProps } from "react-router-dom";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -98,6 +98,10 @@ interface IProps {
   children?: ((props: RouteChildrenProps<any>) => React.ReactNode) | React.ReactNode;
 }
 
+const AdapterLink = React.forwardRef<HTMLAnchorElement, LinkProps>((props, ref) => (
+  <Link innerRef={ref as any} {...props} />
+));
+
 export default function DrawerNavigation({ children }: IProps) {
   const classes = useStyles();
   const theme = useTheme();
@@ -120,14 +124,16 @@ export default function DrawerNavigation({ children }: IProps) {
 
   const sideDrawerList = [
     {
-      key: "summary",
-      icon: <AssessmentRoundedIcon />,
-      text: "Summary"
-    },
-    {
       key: "inventory",
       icon: <TableChartRoundedIcon />,
-      text: "Inventory"
+      text: "Inventory",
+      link: "/"
+    },
+    {
+      key: "summary",
+      icon: <AssessmentRoundedIcon />,
+      text: "Summary",
+      link: "/summary"
     }
   ];
 
@@ -180,36 +186,10 @@ export default function DrawerNavigation({ children }: IProps) {
           </IconButton>
         </div>
         <Divider />
-        {/* <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List> */}
-
-        {/* <List>
-          <ListItem button key={"summary"}>
-            <ListItemIcon>
-              <AssessmentRoundedIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Summary"} />
-          </ListItem>
-        </List> */}
 
         {sideDrawerList.map(item => {
           return (
-            <ListItem button key={item.key}>
+            <ListItem button key={item.key} component={AdapterLink} to={item.link}>
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItem>

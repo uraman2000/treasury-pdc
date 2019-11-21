@@ -10,6 +10,7 @@ import ProtectedRoute from "./Components/ProtectedRoute";
 import InventoryApiRespository from "./Library/InventoryApiRespository";
 import SignUp from "./Components/SignUp";
 import DrawerNavigation from "./Components/DrawerNavigation";
+import SummaryStatus from "./Components/SummaryStatus";
 
 function App() {
   return (
@@ -24,12 +25,11 @@ function App() {
         <Router>
           <Switch>
             {/* {deleteAccess()} */}
-            <Route path="/login" exact component={Login} />
-            <Route path="/signup" exact component={SignUp} />
+            <Route path="/login" component={Login} />
+            <Route path="/signup" component={SignUp} />
             <DrawerNavigation>
-              <ProtectedRoute path="/">
-                <InventoryTable />
-              </ProtectedRoute>
+              <ProtectedRoute path="/" component={InventoryTable} />
+              <ProtectedRoute path="/summary" component={() => <SummaryStatus tableName={"account_status"} />} />
             </DrawerNavigation>
           </Switch>
         </Router>
