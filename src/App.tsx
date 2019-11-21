@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from "react";
-import ApiRespository from "./Library/InventoryApiRespository";
+import React from "react";
 import { Container } from "@material-ui/core";
 import InventoryTable from "./Components/InventoryTable";
 import Login from "./Components/Login";
-import { BrowserRouter as Router, Switch, Route, useHistory } from "react-router-dom";
-import LoginApiRepository from "./Library/LoginApiRepository";
-import { getAccess, deleteAccess } from "./utils";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import ProtectedRoute from "./Components/ProtectedRoute";
-import InventoryApiRespository from "./Library/InventoryApiRespository";
 import SignUp from "./Components/SignUp";
 import DrawerNavigation from "./Components/DrawerNavigation";
 import SummaryStatus from "./Components/SummaryStatus";

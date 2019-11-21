@@ -1,6 +1,3 @@
-import LoginApiRepository from "../Library/LoginApiRepository";
-import { ResponseCodes } from "../Constatnt";
-
 const ACCESS_TOKEN = "ACCESS_TOKEN";
 const REFRESH_TOKEN = "REFRESH_TOKEN";
 const EXPIRES_IN = "EXPIRES_IN";

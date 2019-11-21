@@ -1,7 +1,5 @@
-import axios from "axios";
 import IData from "../Components/Interfaces/IData";
-import { baseUrl, ResponseCodes } from "../Constatnt";
-import { getAccess, setAccess } from "../utils";
+import { baseUrl } from "../Constatnt";
 import HandleToken from "./HandleToken";
 
 class InventoryApiRespository {

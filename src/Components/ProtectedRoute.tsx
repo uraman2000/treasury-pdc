@@ -1,6 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Switch, Route, Link, Redirect, useHistory, useLocation } from "react-router-dom";
-import { RouteChildrenProps } from "react-router";
+import { Route, Redirect } from "react-router-dom";
 import { getAccess } from "../utils";
 interface IProps {
   component: any;

@@ -1,5 +1,4 @@
 import axios from "axios";
-import IData from "../Components/Interfaces/IData";
 import { baseUrl } from "../Constatnt";
 
 interface LoginData {
