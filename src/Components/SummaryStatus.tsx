@@ -40,7 +40,7 @@ export default function SummaryStatus(props: ISummaryProps) {
         <Table className={classes.table} aria-label="spanning table">
           <TableHead>
             <TableRow>
-              <TableCell>CLIENT ACCOUNT STATUS</TableCell>
+              <TableCell>STATUS</TableCell>
               <TableCell>COUNT</TableCell>
               <TableCell>%</TableCell>
               <TableCell>AMOUNT</TableCell>
@@ -48,8 +48,8 @@ export default function SummaryStatus(props: ISummaryProps) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {state.statusItem.map((item: any) => (
-              <TableRow>
+            {state.statusItem.map((item: any, index: any) => (
+              <TableRow key={index}>
                 <TableCell>{item.status}</TableCell>
                 <TableCell>{item.count}</TableCell>
                 <TableCell>{item.countPercentage}</TableCell>

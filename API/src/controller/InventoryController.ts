@@ -9,6 +9,7 @@ import { ClientCheckStatus } from "../entity/statuses/ClientCheckStatus";
 import { ReasonForBounceStatus } from "../entity/statuses/ReasonForBounceStatus";
 import { ReasonForHoldStatus } from "../entity/statuses/ReasonForHoldStatus";
 import IResponse from "../../app/IResponse";
+import { CheckPayeeName } from "../entity/statuses/CheckPayeeName";
 
 class InventoryController {
   private userRepository = getRepository(PDCInventory);
@@ -73,7 +74,7 @@ class InventoryController {
       .addSelect("client_ID")
       .addSelect("account_status.status", "account_status")
       .addSelect("client_check_status.status", "client_check_status")
-      .addSelect("check_payee_name")
+      .addSelect("check_payee_name.name", "check_payee_name")
       .addSelect("check_deposit_status.status", "check_deposit_status")
       .addSelect("reason_for_bounce_status.status", "reason_for_bounce_status")
       .addSelect("deposit_today")
@@ -118,6 +119,7 @@ class InventoryController {
         "reason_for_hold_status",
         `PDCInventory.reason_for_hold_status_ID = reason_for_hold_status.id`
       )
+      .leftJoin(CheckPayeeName, "check_payee_name", `PDCInventory.check_payee_name_ID = check_payee_name.id`)
       .groupBy("PDCInventory.id")
       .getRawMany();
 

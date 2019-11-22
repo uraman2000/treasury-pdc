@@ -27,7 +27,8 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: "flex"
+      display: "flex",
+      backgroundColor: "#f5f5f5"
     },
     appBar: {
       zIndex: theme.zIndex.drawer + 1,
@@ -82,9 +83,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     content: {
       flexGrow: 1,
-      paddingTop: theme.spacing(3),
-      paddingBottom: theme.spacing(3),
-      paddingRight: theme.spacing(3)
+      padding: theme.spacing(3)
     },
     title: {
       flexGrow: 1

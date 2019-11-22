@@ -1,26 +1,44 @@
 import { getConnection } from "typeorm";
 import { Request, Response } from "express";
 import { PDCInventory } from "../entity/PDCInventory";
-import { AccountStatus } from "../entity/statuses/AccountStatus";
 import Convert from "../utils/Convert";
 
 class SummaryController {
-  static clientAccount = async (req: Request, res: Response) => {
+  static summaryStatus = async (req: Request, res: Response) => {
     let tableName = req.params.statusTableName;
 
+    if (tableName === "deposit_today_status" || tableName === "check_payee_name") {
+      res.status(200).send(await status(tableName));
+    }
+    res.status(200).send(await statusWithPercentage(tableName));
     // available Table status name are :
     // check_deposite_status
     // account_status
     // client_check_status
     // reason_for_bounce_status
     // reson_for_hold_status
-
-    res.status(200).send(await statusQuery(tableName));
   };
 }
 
-async function statusQuery(statusTable: string) {
-  let statusItem: StatusItem[] = await queryStatus(statusTable);
+async function status(tableName: string) {
+  let field = "status";
+  if (tableName === "check_payee_name") {
+    field = "name";
+  }
+  return await getConnection()
+    .createQueryBuilder()
+    .select(`${tableName}.id`, "ID")
+    .addSelect(`${tableName}.${field}`, "status")
+    .addSelect("Count(*)", "count")
+    .addSelect("SUM(check_amount)", "amount")
+    .from(tableName, tableName)
+    .leftJoin(PDCInventory, "PDCInventory", `PDCInventory.${tableName}_ID = ${tableName}.id`)
+    .groupBy(`${tableName}.id`)
+    .getRawMany();
+}
+
+async function statusWithPercentage(tableName: string) {
+  let statusItem: StatusItem[] = await queryWithPercentage(tableName);
   let statusList: StatusList = {};
   statusList.totalCount = 0;
   statusList.totalAmount = 0;
@@ -36,6 +54,26 @@ async function statusQuery(statusTable: string) {
   statusList = await calculatePercentage(statusList);
 
   return statusList;
+}
+async function queryWithPercentage(statusTable: string) {
+  const temp = await getConnection()
+    .createQueryBuilder()
+    .select(`${statusTable}.id`, "ID")
+    .addSelect(`${statusTable}.status`, "status")
+    .addSelect("Count(*)", "count")
+    .addSelect("SUM(check_amount)", "amount")
+    .from(statusTable, statusTable)
+    .leftJoin(PDCInventory, "PDCInventory", `PDCInventory.client_account_status_ID = ${statusTable}.id`)
+    .groupBy(`${statusTable}.id`)
+    .getRawMany();
+
+  const cleanup = temp.map(item => ({
+    ID: item.ID,
+    status: item.status,
+    count: item.amount == null ? 0 : parseFloat(item.count),
+    amount: item.amount == null ? 0 : parseFloat(item.amount)
+  }));
+  return cleanup;
 }
 
 function calculatePercentage(statusList: StatusList): StatusList {
@@ -62,27 +100,6 @@ function calculatePercentage(statusList: StatusList): StatusList {
   statusList.totalCountPercent = `${statusList.totalCountPercent}%`;
   statusList.totalAmountPercent = `${statusList.totalAmountPercent}%`;
   return listTemp;
-}
-
-async function queryStatus(statusTable: string) {
-  const temp = await getConnection()
-    .createQueryBuilder()
-    .select(`${statusTable}.id`, "ID")
-    .addSelect(`${statusTable}.status`, "status")
-    .addSelect("Count(*)", "count")
-    .addSelect("SUM(check_amount)", "amount")
-    .from(statusTable, statusTable)
-    .leftJoin(PDCInventory, "PDCInventory", `PDCInventory.client_account_status_ID = ${statusTable}.id`)
-    .groupBy(`${statusTable}.id`)
-    .getRawMany();
-
-  const cleanup = temp.map(item => ({
-    ID: item.ID,
-    status: item.status,
-    count: item.amount == null ? 0 : parseFloat(item.count),
-    amount: item.amount == null ? 0 : parseFloat(item.amount)
-  }));
-  return cleanup;
 }
 
 export default SummaryController;

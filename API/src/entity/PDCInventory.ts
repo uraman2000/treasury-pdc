@@ -33,8 +33,8 @@ export class PDCInventory {
   @Column({ type: "int" })
   client_check_status_ID: number;
 
-  @Column({ type: "varchar" })
-  check_payee_name: string;
+  @Column({ type: "int" })
+  check_payee_name_ID: number;
 
   @Column({ type: "int" })
   check_deposit_status_ID: number;

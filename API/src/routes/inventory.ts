@@ -8,7 +8,7 @@ router.post("/", [checkJwt], InventoryController.save);
 
 router.get("/column-names", [checkJwt], InventoryController.getColumnNames);
 
-router.get("/", [checkJwt], InventoryController.all);
+router.get("/", InventoryController.all);
 
 router.delete("/:id([0-9]+)", [checkJwt], InventoryController.remove);
 

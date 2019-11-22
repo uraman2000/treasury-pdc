@@ -38,11 +38,17 @@ export class CreateAllStatus1572831545143 implements MigrationInterface {
       "(ROC):REQUESTED FOR DEPOSIT-BOUNCED"
     ];
 
+    const DepositTodayStatus = [" FOR DEPOSIT-TODAY", "UNDEPOSITED-PDC", "CHANGE CDS"];
+
+    const CheckPayeeName = ["RADIOWEALTH FINANCE COMPANY INC"];
+
     await this.save(queryRunner, accountStatus, "account_status");
     await this.save(queryRunner, checkDespositeStatus, "check_deposit_status");
     await this.save(queryRunner, clientCkeckStatus, "client_check_status");
     await this.save(queryRunner, reasonForBounce, "reason_for_bounce_status");
     await this.save(queryRunner, ResonForHold, "reason_for_hold_status");
+    await this.save(queryRunner, DepositTodayStatus, "deposit_today_status");
+    await this.save(queryRunner, CheckPayeeName, "check_payee_name");
   }
   // DELETE FROM account_status;
   // DELETE FROM migrations;

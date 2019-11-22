@@ -4,6 +4,6 @@ import SummaryController from "../controller/SummaryController";
 
 const router = Router();
 
-router.get("/:statusTableName", SummaryController.clientAccount);
+router.get("/:statusTableName", SummaryController.summaryStatus);
 
 export default router;

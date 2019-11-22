@@ -1,6 +1,7 @@
 import IData from "../Components/Interfaces/IData";
-import { baseUrl } from "../Constatnt";
+import { baseUrl, ResponseCodes } from "../Constatnt";
 import HandleToken from "./HandleToken";
+import { deleteAccess } from "../utils";
 
 class InventoryApiRespository {
   public static async getColumnNames() {
@@ -8,6 +9,9 @@ class InventoryApiRespository {
       const response = await (await HandleToken.getInstance()).get(`inventory/column-names`);
       return response.data;
     } catch (error) {
+      if (error.response.status === ResponseCodes.Unauthorized) {
+        deleteAccess();
+      }
       return error.response.data;
     }
   }
@@ -17,6 +21,9 @@ class InventoryApiRespository {
       const response = await (await HandleToken.getInstance()).get(`inventory/`);
       return response.data;
     } catch (error) {
+      if (error.response.status === ResponseCodes.Unauthorized) {
+        deleteAccess();
+      }
       return error.response.data;
     }
   }
