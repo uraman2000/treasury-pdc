@@ -28,6 +28,9 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
+  @Column()
+  status: string;
+
   hashPassword() {
     this.password = bcrypt.hashSync(this.password, 8);
   }

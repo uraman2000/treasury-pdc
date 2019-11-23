@@ -11,7 +11,7 @@ class AuthController {
   static login = async (req: Request, res: Response) => {
     //Check if username and password are set
     const customRes: IResponse = {};
-    const token_expiration = "1500";
+    const token_expiration = "8h";
     const refresh_token_expiration = "30d";
     let { username, password } = req.body;
 
@@ -136,25 +136,6 @@ class AuthController {
       res.status(401).send(error);
       return;
     }
-  };
-
-  static signUp = async (req: Request, res: Response) => {
-    let { username, password, role } = req.body;
-    const userRepository = getRepository(User);
-    const customRes: IResponse = {};
-
-    let user = new User();
-    user.username = username;
-    user.password = password;
-    user.hashPassword();
-    user.role = role;
-
-    await userRepository.save(user);
-
-    customRes.message = "User has been successfully created";
-    customRes.status = "SUCCESS";
-    res.status(200).send(customRes);
-
   };
 }
 function jwtSign(userId, username, token_expiration, type) {

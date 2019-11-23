@@ -12,7 +12,9 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Button
+  Button,
+  Collapse,
+  List
 } from "@material-ui/core";
 import { RouteChildrenProps, useHistory } from "react-router";
 import { deleteAccess } from "../utils";
@@ -22,6 +24,13 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import { Link, LinkProps } from "react-router-dom";
+import ExpandLess from "@material-ui/icons/ExpandLess";
+import ExpandMore from "@material-ui/icons/ExpandMore";
+import StarBorder from "@material-ui/icons/StarBorder";
+import SupervisorAccountRoundedIcon from "@material-ui/icons/SupervisorAccountRounded";
+import GroupRoundedIcon from "@material-ui/icons/GroupRounded";
+import PersonRoundedIcon from "@material-ui/icons/PersonRounded";
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -87,6 +96,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       flexGrow: 1
+    },
+    nested: {
+      paddingLeft: theme.spacing(4)
     }
   })
 );
@@ -106,12 +118,18 @@ export default function DrawerNavigation({ children }: IProps) {
 
   const history = useHistory();
 
-  const handleDrawerOpen = () => {
+  const [openAdminList, setopenAdminList] = React.useState(false);
+
+  const handleClick = () => {
+    setopenAdminList(!openAdminList);
     setOpen(true);
   };
 
-  const handleDrawerClose = () => {
-    setOpen(false);
+  const drawerHandler = () => {
+    setOpen(!open);
+    if (open) {
+      setopenAdminList(false);
+    }
   };
 
   const logOutHandler = () => {
@@ -147,7 +165,7 @@ export default function DrawerNavigation({ children }: IProps) {
           <IconButton
             color="inherit"
             aria-label="open drawer"
-            onClick={handleDrawerOpen}
+            onClick={drawerHandler}
             edge="start"
             className={clsx(classes.menuButton, {
               [classes.hide]: open
@@ -178,10 +196,29 @@ export default function DrawerNavigation({ children }: IProps) {
         open={open}
       >
         <div className={classes.toolbar}>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton onClick={drawerHandler}>
             {theme.direction === "rtl" ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </div>
+        <Divider />
+        <ListItem button onClick={handleClick}>
+          <ListItemIcon>
+            <PersonRoundedIcon />
+          </ListItemIcon>
+          <ListItemText primary="Admin" />
+          {openAdminList ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse in={openAdminList} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItem button className={classes.nested}>
+              <ListItemIcon>
+                <GroupRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Users" />
+            </ListItem>
+          </List>
+        </Collapse>
+
         <Divider />
 
         {sideDrawerList.map(item => {

@@ -9,7 +9,7 @@ class UserController {
     //Get users from database
     const userRepository = getRepository(User);
     const users = await userRepository.find({
-      select: ["id", "username", "role"] //We dont want to send the passwords on response
+      select: ["id", "username", "role", "status"] //We dont want to send the passwords on response
     });
 
     //Send the users object
@@ -19,7 +19,7 @@ class UserController {
   static getOneById = async (req: Request, res: Response) => {
     //Get the ID from the url
 
-    const id: number = req.params.id;
+    const id: string = req.params.id;
 
     //Get the user from database
     const userRepository = getRepository(User);
@@ -39,6 +39,7 @@ class UserController {
     user.username = username;
     user.password = password;
     user.role = role;
+    user.status = "pending";
 
     //Validade if the parameters are ok
     const errors = await validate(user);
