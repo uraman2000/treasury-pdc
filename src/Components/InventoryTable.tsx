@@ -3,11 +3,6 @@ import MaterialTable, { Column } from "material-table";
 import IData from "./Interfaces/IData";
 import InventoryApiRespository from "../Library/InventoryApiRespository";
 
-interface IEditableTableProps {
-  headCell: Array<Column<IData>>;
-  dataCell: IData[];
-}
-
 interface TableState {
   columns: Array<Column<IData>>;
   data: IData[];
@@ -56,7 +51,6 @@ export default function InventoryTable() {
                   const data = [...prevState.data];
                   data[data.indexOf(oldData)] = newData;
                   InventoryApiRespository.saveInventory(newData);
-                  console.log(newData);
                   return { ...prevState, data };
                 });
               }
@@ -69,7 +63,6 @@ export default function InventoryTable() {
               setState(prevState => {
                 const data = [...prevState.data];
                 data.splice(data.indexOf(oldData), 1);
-
                 InventoryApiRespository.deleteInventory(oldData.id);
                 return { ...prevState, data };
               });

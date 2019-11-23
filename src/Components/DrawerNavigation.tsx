@@ -17,7 +17,7 @@ import {
   List
 } from "@material-ui/core";
 import { RouteChildrenProps, useHistory } from "react-router";
-import { deleteAccess } from "../utils";
+import { deleteAccess, getAccess } from "../utils";
 import AssessmentRoundedIcon from "@material-ui/icons/AssessmentRounded";
 import TableChartRoundedIcon from "@material-ui/icons/TableChartRounded";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -201,26 +201,30 @@ export default function DrawerNavigation({ children }: IProps) {
           </IconButton>
         </div>
         <Divider />
-        <ListItem button onClick={handleClick}>
-          <ListItemIcon>
-            <PersonRoundedIcon />
-          </ListItemIcon>
-          <ListItemText primary="Admin" />
-          {openAdminList ? <ExpandLess /> : <ExpandMore />}
-        </ListItem>
-        <Collapse in={openAdminList} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItem button className={classes.nested}>
+        {/* console.log(getAccess()); */}
+
+        {getAccess().isAdmin === "true" ? (
+          <div>
+            <ListItem button onClick={handleClick}>
               <ListItemIcon>
-                <GroupRoundedIcon />
+                <PersonRoundedIcon />
               </ListItemIcon>
-              <ListItemText primary="Users" />
+              <ListItemText primary="Admin" />
+              {openAdminList ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
-          </List>
-        </Collapse>
-
+            <Collapse in={openAdminList} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <ListItem button className={classes.nested} component={AdapterLink} to={"/admin/user"}>
+                  <ListItemIcon>
+                    <GroupRoundedIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Users" />
+                </ListItem>
+              </List>
+            </Collapse>
+          </div>
+        ) : null}
         <Divider />
-
         {sideDrawerList.map(item => {
           return (
             <ListItem button key={item.key} component={AdapterLink} to={item.link}>

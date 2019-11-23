@@ -70,7 +70,8 @@ export default function Login() {
   let history = useHistory();
 
   const [state, setstate] = useState({
-    isErrorShow: false
+    isErrorShow: false,
+    isErrorMessage: ""
   });
   const formik = useFormik({
     initialValues: {
@@ -82,7 +83,8 @@ export default function Login() {
       LoginApiRepository.login(values, (data: any) => {
         if (data.status === ResponseCodes.Unauthorized) {
           setstate({
-            isErrorShow: true
+            isErrorShow: true,
+            isErrorMessage: data.data.message
           });
           return;
         }
@@ -108,7 +110,7 @@ export default function Login() {
           <Grid container>
             <Grid item>
               <Typography className={classes.invalidEror} variant="caption" display="block">
-                {state.isErrorShow ? "* Invalid UserName or Password " : null}
+                {state.isErrorShow ? `* ${state.isErrorMessage}` : null}
               </Typography>
             </Grid>
           </Grid>
