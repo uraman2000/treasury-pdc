@@ -3,17 +3,25 @@ import { getRepository } from "typeorm";
 import { validate } from "class-validator";
 
 import { User } from "../entity/User";
+import { UserStatus } from "../entity/statuses/UserStatus";
 
 class UserController {
   static listAll = async (req: Request, res: Response) => {
     //Get users from database
     const userRepository = getRepository(User);
     const users = await userRepository.find({
-      select: ["id", "username", "role", "status"] //We dont want to send the passwords on response
+      select: ["id", "username", "password", "role", "status"] //We dont want to send the passwords on response
     });
 
+    const userData = users.map(item => ({
+      id: item.id,
+      username: item.username,
+      password: "",
+      role: item.role,
+      status: item.status
+    }));
     //Send the users object
-    res.send(users);
+    res.send(userData);
   };
 
   static getOneById = async (req: Request, res: Response) => {
@@ -39,7 +47,7 @@ class UserController {
     user.username = username;
     user.password = password;
     user.role = role;
-    user.status = "pending";
+    user.status = 1;
 
     //Validade if the parameters are ok
     const errors = await validate(user);
@@ -69,7 +77,7 @@ class UserController {
     const id = req.params.id;
 
     //Get values from the body
-    const { username, role } = req.body;
+    const { username, role, status, password } = req.body;
 
     //Try to find user on database
     const userRepository = getRepository(User);
@@ -85,6 +93,10 @@ class UserController {
     //Validate the new values on model
     user.username = username;
     user.role = role;
+    user.status = status;
+    user.password = password;
+
+    user.hashPassword();
     const errors = await validate(user);
     if (errors.length > 0) {
       res.status(400).send(errors);
@@ -118,6 +130,15 @@ class UserController {
 
     //After all send a 204 (no content, but accepted) response
     res.status(204).send();
+  };
+
+  static status = async (req: Request, res: Response) => {
+    //Get users from database
+    const userRepository = getRepository(UserStatus);
+    const status = await userRepository.find();
+
+    //Send the users object
+    res.send(status);
   };
 }
 

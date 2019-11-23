@@ -6,6 +6,7 @@ import { validate } from "class-validator";
 import { User } from "../entity/User";
 import config from "../config/config";
 import IResponse from "../../app/IResponse";
+import { checkRole, isAdmin } from "../middlewares/checkRole";
 
 class AuthController {
   static login = async (req: Request, res: Response) => {
@@ -31,8 +32,14 @@ class AuthController {
       return;
     }
 
-    //Check if encrypted password match
+    if (user.status !== 2) {
+      customRes.status = "FAILED";
+      customRes.message = "Your Account May Haven't Been Approved Or Disabled";
+      res.status(401).send(customRes);
+    }
+
     if (!user.checkIfUnencryptedPasswordIsValid(password)) {
+      //Check if encrypted password match
       customRes.status = "FAILED";
       customRes.message = "invalid Username or Password";
       res.status(401).send(customRes);
@@ -43,12 +50,13 @@ class AuthController {
     const token = jwtSign(user.id, user.username, token_expiration, "access_token");
 
     const Rtoken = jwtSign(user.id, user.username, refresh_token_expiration, "refresh_token");
-
+    const isadmin = await isAdmin(user.id);
     //Send the jwt in the response
     res.send({
       access_token: token,
       expires_in: token_expiration,
-      refresh_token: Rtoken
+      refresh_token: Rtoken,
+      isAdmin: isadmin
     });
   };
 

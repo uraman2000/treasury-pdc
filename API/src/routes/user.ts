@@ -20,4 +20,6 @@ router.patch("/:id([0-9]+)", [checkJwt, checkRole(["ADMIN"])], UserController.ed
 //Delete one user
 router.delete("/:id([0-9]+)", [checkJwt, checkRole(["ADMIN"])], UserController.deleteUser);
 
+router.get("/status", UserController.status);
+
 export default router;

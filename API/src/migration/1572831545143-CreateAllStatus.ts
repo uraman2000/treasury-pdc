@@ -41,7 +41,7 @@ export class CreateAllStatus1572831545143 implements MigrationInterface {
     const DepositTodayStatus = [" FOR DEPOSIT-TODAY", "UNDEPOSITED-PDC", "CHANGE CDS"];
 
     const CheckPayeeName = ["RADIOWEALTH FINANCE COMPANY INC"];
-
+    const UserStatus = ["Pending", "Active", "Deactivate"];
     await this.save(queryRunner, accountStatus, "account_status");
     await this.save(queryRunner, checkDespositeStatus, "check_deposit_status");
     await this.save(queryRunner, clientCkeckStatus, "client_check_status");
@@ -49,6 +49,7 @@ export class CreateAllStatus1572831545143 implements MigrationInterface {
     await this.save(queryRunner, ResonForHold, "reason_for_hold_status");
     await this.save(queryRunner, DepositTodayStatus, "deposit_today_status");
     await this.save(queryRunner, CheckPayeeName, "check_payee_name");
+    await this.save(queryRunner, UserStatus, "user_status");
   }
   // DELETE FROM account_status;
   // DELETE FROM migrations;
