@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { createStyles, makeStyles, useTheme, Theme } from "@material-ui/core/styles";
 import {
@@ -14,7 +14,15 @@ import {
   ListItemText,
   Button,
   Collapse,
-  List
+  List,
+  Badge,
+  Popover,
+  Paper,
+  Box,
+  Container,
+  ListItemAvatar,
+  Avatar,
+  ListSubheader
 } from "@material-ui/core";
 import { RouteChildrenProps, useHistory } from "react-router";
 import { deleteAccess, getAccess } from "../utils";
@@ -30,6 +38,11 @@ import StarBorder from "@material-ui/icons/StarBorder";
 import SupervisorAccountRoundedIcon from "@material-ui/icons/SupervisorAccountRounded";
 import GroupRoundedIcon from "@material-ui/icons/GroupRounded";
 import PersonRoundedIcon from "@material-ui/icons/PersonRounded";
+import NotificationsIcon from "@material-ui/icons/Notifications";
+import UserApiRespository from "../Library/UserApiRespository";
+import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded";
+
+import TimeAgo from "react-timeago";
 
 const drawerWidth = 240;
 
@@ -99,6 +112,14 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     nested: {
       paddingLeft: theme.spacing(4)
+    },
+    notificationListRoot: {
+      width: "100%",
+      maxWidth: 360,
+      backgroundColor: theme.palette.background.paper
+    },
+    inline: {
+      display: "inline"
     }
   })
 );
@@ -115,10 +136,35 @@ export default function DrawerNavigation({ children }: IProps) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-
+  const [state, setstate] = useState([]);
   const history = useHistory();
+  // getAllPending;
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const peding = await UserApiRespository.getAllPending();
+      setstate(peding);
+    };
+
+    fetchData();
+  }, []);
 
   const [openAdminList, setopenAdminList] = React.useState(false);
+
+  const handleNotificationClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleNotificationItemClick = () => {
+    history.push("/admin/user");
+  };
+  const handleNotificationClose = () => {
+    setAnchorEl(null);
+  };
+
+  const openNotification = Boolean(anchorEl);
+  const id = openNotification ? "simple-popover" : undefined;
 
   const handleClick = () => {
     setopenAdminList(!openAdminList);
@@ -176,6 +222,57 @@ export default function DrawerNavigation({ children }: IProps) {
           <Typography variant="h6" className={classes.title}>
             Mini variant drawer
           </Typography>
+          {getAccess().isAdmin === "true" ? (
+            <>
+              <IconButton aria-label="show 11 new notifications" color="inherit" onClick={handleNotificationClick}>
+                <Badge badgeContent={state.length} color="secondary">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+
+              <Popover
+                id={id}
+                open={openNotification}
+                anchorEl={anchorEl}
+                onClose={handleNotificationClose}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left"
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right"
+                }}
+              >
+                <Paper>
+                  <List
+                    className={classes.notificationListRoot}
+                    subheader={
+                      <ListSubheader component="div" id="nested-list-subheader">
+                        Pending Users
+                      </ListSubheader>
+                    }
+                  >
+                    {state.map((item: any, key: any) => (
+                      <>
+                        <ListItem key={key} alignItems="flex-start" button onClick={handleNotificationItemClick}>
+                          <ListItemAvatar>
+                            <Avatar>
+                              <AccountCircleRoundedIcon />
+                            </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText primary={item.username} secondary={<TimeAgo date={item.createdAt} />} />
+                        </ListItem>
+
+                        {key < state.length - 1 ? <Divider component="li" /> : null}
+                      </>
+                    ))}
+                  </List>
+                </Paper>
+              </Popover>
+            </>
+          ) : null}
+
           <Button color="inherit" onClick={logOutHandler}>
             Log Out
           </Button>
@@ -201,7 +298,6 @@ export default function DrawerNavigation({ children }: IProps) {
           </IconButton>
         </div>
         <Divider />
-        {/* console.log(getAccess()); */}
 
         {getAccess().isAdmin === "true" ? (
           <div>

@@ -34,6 +34,15 @@ class UserApiRespository {
       return error.response.data;
     }
   }
+
+  public static async getAllPending() {
+    try {
+      const response = await (await HandleToken.getInstance()).get(`user/pending`);
+      return response.data;
+    } catch (error) {
+      return error.response.data;
+    }
+  }
 }
 
 export default UserApiRespository;

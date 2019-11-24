@@ -22,4 +22,6 @@ router.delete("/:id([0-9]+)", [checkJwt, checkRole(["ADMIN"])], UserController.d
 
 router.get("/status", UserController.status);
 
+router.get("/pending", [checkJwt, checkRole(["ADMIN"])], UserController.allPendingStatus);
+
 export default router;

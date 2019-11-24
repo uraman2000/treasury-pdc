@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
-import { getRepository } from "typeorm";
+import { getRepository, getConnection } from "typeorm";
 import { validate } from "class-validator";
 
 import { User } from "../entity/User";
 import { UserStatus } from "../entity/statuses/UserStatus";
+import { async } from "q";
 
 class UserController {
   static listAll = async (req: Request, res: Response) => {
@@ -139,6 +140,18 @@ class UserController {
 
     //Send the users object
     res.send(status);
+  };
+
+  static allPendingStatus = async (req: Request, res: Response) => {
+    // SELECT * FROM `user` WHERE status = 1
+    const status = await getConnection()
+      .createQueryBuilder()
+      .select(`*`)
+      .from(User, "User")
+      .where("status = :status")
+      .setParameter("status", 1)
+      .getRawMany();
+    res.status(200).send(status);
   };
 }
 
