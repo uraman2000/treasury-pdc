@@ -41,7 +41,7 @@ import PersonRoundedIcon from "@material-ui/icons/PersonRounded";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import UserApiRespository from "../Library/UserApiRespository";
 import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded";
-
+import ShowChartRoundedIcon from "@material-ui/icons/ShowChartRounded";
 import TimeAgo from "react-timeago";
 
 const drawerWidth = 240;
@@ -183,20 +183,36 @@ export default function DrawerNavigation({ children }: IProps) {
     history.push("/");
   };
 
-  const sideDrawerList = [
-    {
-      key: "inventory",
-      icon: <TableChartRoundedIcon />,
-      text: "Inventory",
-      link: "/"
-    },
-    {
-      key: "summary",
-      icon: <AssessmentRoundedIcon />,
-      text: "Summary",
-      link: "/summary"
-    }
-  ];
+  const sideDrawerList = {
+    public: [
+      {
+        key: "inventory",
+        icon: <TableChartRoundedIcon />,
+        text: "Inventory",
+        link: "/"
+      },
+      {
+        key: "summary",
+        icon: <AssessmentRoundedIcon />,
+        text: "Summary",
+        link: "/summary"
+      }
+    ],
+    private: [
+      {
+        key: "users",
+        icon: <GroupRoundedIcon />,
+        text: "Users",
+        link: "/admin/user"
+      },
+      {
+        key: "sttatus",
+        icon: <ShowChartRoundedIcon />,
+        text: "Status",
+        link: "/admin/status"
+      }
+    ]
+  };
 
   return (
     <div className={classes.root}>
@@ -309,22 +325,23 @@ export default function DrawerNavigation({ children }: IProps) {
               {openAdminList ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
             <Collapse in={openAdminList} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                <ListItem button className={classes.nested} component={AdapterLink} to={"/admin/user"}>
-                  <ListItemIcon>
-                    <GroupRoundedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Users" />
-                </ListItem>
-              </List>
+              {sideDrawerList.private.map((item: any, key: any) => (
+                <List component="div" disablePadding key={key}>
+                  <ListItem button className={classes.nested} component={AdapterLink} to={item.link}>
+                    <ListItemIcon>{item.icon}</ListItemIcon>
+                    <ListItemText primary={item.text} />
+                  </ListItem>
+                </List>
+              ))}
             </Collapse>
           </div>
         ) : null}
         <Divider />
-        {sideDrawerList.map(item => {
+        {sideDrawerList.public.map((item: any, key: any) => {
           return (
-            <ListItem button key={item.key} component={AdapterLink} to={item.link}>
+            <ListItem button key={key} component={AdapterLink} to={item.link}>
               <ListItemIcon>{item.icon}</ListItemIcon>
+
               <ListItemText primary={item.text} />
             </ListItem>
           );

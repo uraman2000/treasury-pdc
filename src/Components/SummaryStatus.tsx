@@ -81,5 +81,5 @@ interface ISummaryStatusState {
 }
 
 interface ISummaryProps {
-  tableName: string;
+  tableName?: any;
 }

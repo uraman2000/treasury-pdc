@@ -7,9 +7,33 @@ import ProtectedRoute from "./Components/ProtectedRoute";
 import SignUp from "./Components/SignUp";
 import DrawerNavigation from "./Components/DrawerNavigation";
 import SummaryStatus from "./Components/SummaryStatus";
-import SummaryNav from "./Components/SummaryNav";
-import { setAccess } from "./utils";
+import TabNavigation from "./Components/TabNavigation";
+import { setAccess, getAccess } from "./utils";
 import AdminUser from "./Components/AdminUser";
+import AdminStatus from "./Components/AdminStatus";
+import PageNotFound from "./Components/PageNotFound";
+
+const status = [
+  "ACCOUNT STATUS",
+  "CHECK DEPOSIT STATUS",
+  // "CHECK PAYEE NAME",
+  // "DEPOSIT TODAY STATUS",
+  "CLIENT CHECK STATUS",
+  "REASON FOR BOUNCE STATUS",
+  "REASON FOR HOLD STATUS"
+];
+
+
+const adminStatus = [
+  "ACCOUNT STATUS",
+  "CHECK DEPOSIT STATUS",
+  "CHECK PAYEE NAME",
+  // "DEPOSIT TODAY STATUS",
+  "CLIENT CHECK STATUS",
+  "REASON FOR BOUNCE STATUS",
+  "REASON FOR HOLD STATUS"
+];
+
 
 function App() {
   return (
@@ -17,13 +41,24 @@ function App() {
       <Router>
         <Switch>
           {/* {deleteAccess()} */}
-          <Route path="/login" component={Login} />
+
+          <Route roles={["admin", "manager"]} path="/login" component={Login} />
           <Route path="/signup" component={SignUp} />
+
           <DrawerNavigation>
-            <ProtectedRoute path="/" component={InventoryTable} />
-            <ProtectedRoute path="/summary" component={SummaryNav} />
+            <ProtectedRoute path="/home" component={InventoryTable} />
+
+            <ProtectedRoute
+              path="/summary"
+              component={() => <TabNavigation statusTabs={status} tabContentComponent={SummaryStatus} />}
+            />
             <ProtectedRoute path="/admin/user" component={AdminUser} />
+            <ProtectedRoute
+              path="/admin/status"
+              component={() => <TabNavigation statusTabs={adminStatus} tabContentComponent={AdminStatus} />}
+            />
           </DrawerNavigation>
+          <Route path="*" exact component={PageNotFound} />
         </Switch>
       </Router>
     </>
