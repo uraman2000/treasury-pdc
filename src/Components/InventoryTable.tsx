@@ -8,18 +8,39 @@ interface TableState {
   data: IData[];
 }
 
+function column(headData: any) {
+  const column: any = headData.map((item: any) => {
+    const itemTittle = item.toUpperCase().replace("_", " ");
+    if (item === "id") {
+      return {
+        title: itemTittle,
+        field: item,
+        editable: "never"
+      };
+    }
+    return {
+      title: itemTittle,
+      field: item
+    };
+  });
+
+  return column;
+}
+
 export default function InventoryTable() {
   const initState = {
     columns: [],
     data: []
   };
+
   const [state, setState] = useState<TableState>(initState);
 
   useEffect(() => {
     const fetchData = async () => {
-      const head = await InventoryApiRespository.getColumnNames();
-      const column = await InventoryApiRespository.getInventory();
-      setState({ columns: head, data: column });
+      // const head = await InventoryApiRespository.getColumnNames();
+      const data = await InventoryApiRespository.getInventory();
+      const header = await Object.keys(data[0]);
+      setState({ columns: column(header), data: data });
     };
     fetchData();
   }, []);

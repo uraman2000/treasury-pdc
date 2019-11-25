@@ -23,7 +23,6 @@ const status = [
   "REASON FOR HOLD STATUS"
 ];
 
-
 const adminStatus = [
   "ACCOUNT STATUS",
   "CHECK DEPOSIT STATUS",
@@ -34,20 +33,16 @@ const adminStatus = [
   "REASON FOR HOLD STATUS"
 ];
 
-
 function App() {
   return (
     <>
       <Router>
         <Switch>
-          {/* {deleteAccess()} */}
-
           <Route roles={["admin", "manager"]} path="/login" component={Login} />
           <Route path="/signup" component={SignUp} />
 
           <DrawerNavigation>
-            <ProtectedRoute path="/home" component={InventoryTable} />
-
+            <ProtectedRoute path="/" component={InventoryTable} />
             <ProtectedRoute
               path="/summary"
               component={() => <TabNavigation statusTabs={status} tabContentComponent={SummaryStatus} />}

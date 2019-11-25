@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import MaterialTable, { Column } from "material-table";
 import UserApiRespository from "../Library/UserApiRespository";
-import { getAccess } from "../utils";
 import StatusApiRespository from "../Library/StatusApiRespository";
+import { array } from "prop-types";
 
 interface Row {
   id: number;
-  username: string;
-  password: string;
-  role: string;
   status: string;
 }
 
@@ -38,7 +35,14 @@ export default function AdminStatus(props: Iprops) {
       const data = await StatusApiRespository.All(props.tableName);
       const header = await Object.keys(data[0]);
 
-      const column = header.map(item => {
+      const column: any = header.map((item: any) => {
+        if (item === "id") {
+          return {
+            title: item.toUpperCase(),
+            field: item,
+            editable: "never"
+          };
+        }
         return {
           title: item.toUpperCase(),
           field: item
@@ -46,8 +50,6 @@ export default function AdminStatus(props: Iprops) {
       });
 
       setState({ columns: column, data: data });
-
-      // await setheader(Object.keys(user[0]));
     };
     fetchData();
   }, []);

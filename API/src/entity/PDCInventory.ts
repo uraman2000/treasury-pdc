@@ -1,5 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, Double, Long } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, Double, Long, JoinColumn, OneToOne } from "typeorm";
 import { Client } from "./Client";
+import { AccountStatus } from "./statuses/AccountStatus";
+import { ClientCheckStatus } from "./statuses/ClientCheckStatus";
+import { CheckPayeeName } from "./statuses/CheckPayeeName";
+import { CheckDepositStatus } from "./statuses/CheckDepositStatus";
+import { ReasonForBounceStatus } from "./statuses/ReasonForBounceStatus";
+import { ReasonForHoldStatus } from "./statuses/ReasonForHoldStatus";
 
 @Entity()
 export class PDCInventory {
@@ -27,20 +33,25 @@ export class PDCInventory {
   @Column({ type: "int" })
   client_ID: number;
 
-  @Column({ type: "int" })
-  client_account_status_ID: number;
+  @OneToOne(type => AccountStatus)
+  @JoinColumn()
+  client_account_status: AccountStatus;
 
-  @Column({ type: "int" })
-  client_check_status_ID: number;
+  @OneToOne(type => ClientCheckStatus)
+  @JoinColumn()
+  client_check_status: ClientCheckStatus;
 
-  @Column({ type: "int" })
-  check_payee_name_ID: number;
+  @OneToOne(type => CheckPayeeName)
+  @JoinColumn()
+  check_payee_name: CheckPayeeName;
 
-  @Column({ type: "int" })
-  check_deposit_status_ID: number;
+  @OneToOne(type => CheckDepositStatus)
+  @JoinColumn()
+  check_deposit_status: CheckDepositStatus;
 
-  @Column({ type: "int" })
-  reason_for_bounce_status_ID: number;
+  @OneToOne(type => ReasonForBounceStatus)
+  @JoinColumn()
+  reason_for_bounce_status: ReasonForBounceStatus;
 
   @Column({ type: "varchar" })
   deposit_today: string;
@@ -60,14 +71,16 @@ export class PDCInventory {
   @Column({ type: "varchar" })
   aging_redep: string;
 
-  @Column({ type: "int" })
-  check_re_deposit_status_ID: number;
+  @OneToOne(type => CheckDepositStatus)
+  @JoinColumn()
+  check_re_deposit_status: CheckDepositStatus;
 
   @Column({ type: "date" })
   date_hold: Date;
 
-  @Column({ type: "int" })
-  reason_for_hold_status_ID: number;
+  @OneToOne(type => ReasonForHoldStatus)
+  @JoinColumn()
+  reason_for_hold_status: ReasonForHoldStatus;
 
   @Column({ type: "int" })
   hold_check_aging: number;

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import MaterialTable, { Column } from "material-table";
 import UserApiRespository from "../Library/UserApiRespository";
 import { getAccess } from "../utils";
+import { TextField } from "@material-ui/core";
 
 interface Row {
   id: number;
@@ -33,21 +34,35 @@ export default function AdminUser() {
       const data = await UserApiRespository.get();
       const header = await Object.keys(data[0]);
 
-      const column = header.map(item => {
+      const column: any = header.map(item => {
         if (item === "password") {
           return {
             title: item.toUpperCase(),
             field: item,
             editComponent: (props: any) => (
-              <div className="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl">
-                <input
-                  className="MuiInputBase-input MuiInput-input"
-                  type="password"
-                  value={props.value}
-                  onChange={e => props.onChange(e.target.value)}
-                />
-              </div>
+              // <div className="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl">
+              //   <input
+              //     className="MuiInputBase-input MuiInput-input"
+              //     type="password"
+              //     value={props.value}
+              //     onChange={e => props.onChange(e.target.value)}
+              //   />
+              // </div>
+              <TextField
+                id="standard-password-input"
+                type="password"
+                autoComplete="current-password"
+                margin="normal"
+              />
             )
+          };
+        }
+
+        if (item === "id") {
+          return {
+            title: item.toUpperCase(),
+            field: item,
+            editable: "never"
           };
         }
         if (item === "status") {

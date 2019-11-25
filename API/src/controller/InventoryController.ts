@@ -62,9 +62,22 @@ class InventoryController {
   // GROUP BY
   //     pdc_inventory.id
   static all = async (req: Request, res: Response) => {
-    const ass = await getConnection()
+    // const PDCInventoryRepository = await getRepository(PDCInventory);
+    // const dataPDCInventory = await PDCInventoryRepository.find({
+    //   relations: [
+    //     "client_account_status",
+    //     "client_check_status",
+    //     "check_payee_name",
+    //     "check_deposit_status",
+    //     "reason_for_bounce_status",
+    //     "check_re_deposit_status",
+    //     "reason_for_hold_status"
+    //   ]
+    // });
+
+    const result = await getConnection()
       .createQueryBuilder()
-      .select("PDCInventory.id", "id")
+      .select("id")
       .addSelect("region")
       .addSelect("branch_name")
       .addSelect("client_bank_name")
@@ -72,58 +85,28 @@ class InventoryController {
       .addSelect("check_number")
       .addSelect("check_amount")
       .addSelect("client_ID")
-      .addSelect("account_status.status", "account_status")
-      .addSelect("client_check_status.status", "client_check_status")
-      .addSelect("check_payee_name.name", "check_payee_name")
-      .addSelect("check_deposit_status.status", "check_deposit_status")
-      .addSelect("reason_for_bounce_status.status", "reason_for_bounce_status")
+      .addSelect("clientAccountStatusId")
+      .addSelect("clientCheckStatusId")
+      .addSelect("checkPayeeNameId")
+      .addSelect("checkDepositStatusId")
+      .addSelect("reasonForBounceStatusId")
       .addSelect("deposit_today")
       .addSelect("aging_undeposited")
       .addSelect("check_type_as_of_current_day")
       .addSelect("date_bounced")
       .addSelect("date_re_deposited")
       .addSelect("aging_redep")
-      .addSelect("check_re_deposit_status.status", "check_re_deposit_status")
+      .addSelect("checkReDepositStatusId")
       .addSelect("date_hold")
-      .addSelect("reason_for_hold_status.status", "reason_for_hold_status")
+      .addSelect("reasonForHoldStatusId")
       .addSelect("hold_check_aging")
       .addSelect("OR_number")
       .addSelect("OR_date")
       .addSelect("remarks")
-
       .from(PDCInventory, "PDCInventory")
-      // .leftJoin(PDCInventory, "PDCInventory", `PDCInventory.client_account_status_ID = ${statusTable}.id`)
-      .leftJoin(AccountStatus, "account_status", `PDCInventory.client_account_status_ID = account_status.id`)
-      .leftJoin(
-        CheckDepositStatus,
-        "check_deposit_status",
-        `PDCInventory.check_deposit_status_ID = check_deposit_status.id`
-      )
-      .leftJoin(
-        ClientCheckStatus,
-        "client_check_status",
-        `PDCInventory.client_check_status_ID = client_check_status.id`
-      )
-      .leftJoin(
-        ClientCheckStatus,
-        "check_re_deposit_status",
-        `PDCInventory.check_re_deposit_status_ID = check_re_deposit_status.id`
-      )
-      .leftJoin(
-        ReasonForBounceStatus,
-        "reason_for_bounce_status",
-        `PDCInventory.reason_for_bounce_status_ID = reason_for_bounce_status.id`
-      )
-      .leftJoin(
-        ReasonForHoldStatus,
-        "reason_for_hold_status",
-        `PDCInventory.reason_for_hold_status_ID = reason_for_hold_status.id`
-      )
-      .leftJoin(CheckPayeeName, "check_payee_name", `PDCInventory.check_payee_name_ID = check_payee_name.id`)
-      .groupBy("PDCInventory.id")
       .getRawMany();
 
-    res.status(200).send(ass);
+    res.status(200).send(result);
   };
 
   static save = async (req: Request, res: Response) => {
