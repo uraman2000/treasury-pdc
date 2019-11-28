@@ -1,6 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, Double, Long, JoinColumn, OneToOne } from "typeorm";
-import { Client } from "./Client";
-import { AccountStatus } from "./statuses/AccountStatus";
+import { ClientAccountStatus } from "./statuses/ClientAccountStatus";
 import { ClientCheckStatus } from "./statuses/ClientCheckStatus";
 import { CheckPayeeName } from "./statuses/CheckPayeeName";
 import { CheckDepositStatus } from "./statuses/CheckDepositStatus";
@@ -33,34 +32,32 @@ export class PDCInventory {
   @Column({ type: "int" })
   client_ID: number;
 
-  @OneToOne(type => AccountStatus)
-  @JoinColumn()
-  client_account_status: AccountStatus;
+  @Column({ type: "int" })
+  client_account_status: ClientAccountStatus;
 
-  @OneToOne(type => ClientCheckStatus)
-  @JoinColumn()
+  @Column({ type: "int" })
   client_check_status: ClientCheckStatus;
 
-  @OneToOne(type => CheckPayeeName)
-  @JoinColumn()
+  @Column({ type: "int" })
   check_payee_name: CheckPayeeName;
 
-  @OneToOne(type => CheckDepositStatus)
-  @JoinColumn()
+  @Column({ type: "int" })
   check_deposit_status: CheckDepositStatus;
 
-  @OneToOne(type => ReasonForBounceStatus)
-  @JoinColumn()
+  @Column({ type: "int" })
   reason_for_bounce_status: ReasonForBounceStatus;
 
   @Column({ type: "varchar" })
   deposit_today: string;
 
-  @Column({ type: "varchar" })
-  aging_undeposited: string;
+  @Column({ type: "int" })
+  aging_undeposited: number;
 
   @Column({ type: "varchar" })
   check_type_as_of_current_day: string;
+
+  @Column({ type: "date" })
+  date_deposited: Date;
 
   @Column({ type: "date" })
   date_bounced: Date;
@@ -71,15 +68,13 @@ export class PDCInventory {
   @Column({ type: "varchar" })
   aging_redep: string;
 
-  @OneToOne(type => CheckDepositStatus)
-  @JoinColumn()
+  @Column({ type: "int" })
   check_re_deposit_status: CheckDepositStatus;
 
   @Column({ type: "date" })
   date_hold: Date;
 
-  @OneToOne(type => ReasonForHoldStatus)
-  @JoinColumn()
+  @Column({ type: "int" })
   reason_for_hold_status: ReasonForHoldStatus;
 
   @Column({ type: "int" })

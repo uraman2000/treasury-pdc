@@ -53,6 +53,8 @@ export default function AdminUser() {
                 type="password"
                 autoComplete="current-password"
                 margin="normal"
+                value={props.value}
+                onChange={e => props.onChange(e.target.value)}
               />
             )
           };

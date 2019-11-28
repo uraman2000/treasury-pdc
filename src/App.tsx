@@ -14,7 +14,7 @@ import AdminStatus from "./Components/AdminStatus";
 import PageNotFound from "./Components/PageNotFound";
 
 const status = [
-  "ACCOUNT STATUS",
+  "CLIENT ACCOUNT STATUS",
   "CHECK DEPOSIT STATUS",
   // "CHECK PAYEE NAME",
   // "DEPOSIT TODAY STATUS",
@@ -24,7 +24,7 @@ const status = [
 ];
 
 const adminStatus = [
-  "ACCOUNT STATUS",
+  "CLIENT ACCOUNT STATUS",
   "CHECK DEPOSIT STATUS",
   "CHECK PAYEE NAME",
   // "DEPOSIT TODAY STATUS",

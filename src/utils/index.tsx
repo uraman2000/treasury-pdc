@@ -29,3 +29,14 @@ export const getAccess = () => {
     isAdmin: localStorage.getItem(ISADMIN)
   };
 };
+
+export const localDate = (date: any) => new Date(date).toLocaleDateString();
+
+export const today = () => new Date().toLocaleDateString();
+
+export const agingDate = (fromDate: string, toDate: string) => {
+  const fd: any = new Date(fromDate).getTime();
+  const td: any = new Date(toDate).getTime();
+
+  return Math.round((fd - td) / (1000 * 3600 * 24)).toString();
+};

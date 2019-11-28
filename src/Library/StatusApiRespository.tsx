@@ -3,6 +3,14 @@ import { baseUrl } from "../Constatnt";
 import HandleToken from "./HandleToken";
 
 export default class StatusApiRespository {
+  public static async allStatus() {
+    try {
+      const response = await (await HandleToken.getInstance()).get(`status/`);
+      return response.data;
+    } catch (error) {
+      return error.response.data;
+    }
+  }
   public static async All(tableName: string) {
     try {
       const response = await (await HandleToken.getInstance()).get(`status/${tableName}`);

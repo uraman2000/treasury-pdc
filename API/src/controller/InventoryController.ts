@@ -3,13 +3,14 @@ import { NextFunction, Request, Response } from "express";
 import { User } from "../entity/User";
 import { PDCInventory } from "../entity/PDCInventory";
 import { validate } from "class-validator";
-import { AccountStatus } from "../entity/statuses/AccountStatus";
 import { CheckDepositStatus } from "../entity/statuses/CheckDepositStatus";
 import { ClientCheckStatus } from "../entity/statuses/ClientCheckStatus";
 import { ReasonForBounceStatus } from "../entity/statuses/ReasonForBounceStatus";
 import { ReasonForHoldStatus } from "../entity/statuses/ReasonForHoldStatus";
 import IResponse from "../../app/IResponse";
 import { CheckPayeeName } from "../entity/statuses/CheckPayeeName";
+import { async } from "q";
+import { number } from "prop-types";
 
 class InventoryController {
   private userRepository = getRepository(PDCInventory);
@@ -74,39 +75,23 @@ class InventoryController {
     //     "reason_for_hold_status"
     //   ]
     // });
+    const ass = await (await getAll()).getRawMany();
 
-    const result = await getConnection()
-      .createQueryBuilder()
-      .select("id")
-      .addSelect("region")
-      .addSelect("branch_name")
-      .addSelect("client_bank_name")
-      .addSelect("check_date")
-      .addSelect("check_number")
-      .addSelect("check_amount")
-      .addSelect("client_ID")
-      .addSelect("clientAccountStatusId")
-      .addSelect("clientCheckStatusId")
-      .addSelect("checkPayeeNameId")
-      .addSelect("checkDepositStatusId")
-      .addSelect("reasonForBounceStatusId")
-      .addSelect("deposit_today")
-      .addSelect("aging_undeposited")
-      .addSelect("check_type_as_of_current_day")
-      .addSelect("date_bounced")
-      .addSelect("date_re_deposited")
-      .addSelect("aging_redep")
-      .addSelect("checkReDepositStatusId")
-      .addSelect("date_hold")
-      .addSelect("reasonForHoldStatusId")
-      .addSelect("hold_check_aging")
-      .addSelect("OR_number")
-      .addSelect("OR_date")
-      .addSelect("remarks")
-      .from(PDCInventory, "PDCInventory")
-      .getRawMany();
+    const date = new Date();
+    const formattedDate = date.toLocaleDateString();
+    console.log(formattedDate);
 
-    res.status(200).send(result);
+    const shh = await getRepository(PDCInventory).find();
+
+    // shh.forEach(element => {
+    //   element["check_date"] = "";
+    //   element["date_bounced"] = element.date_bounced.toLocaleDateString() || null;
+    //   element["date_re_deposited"] = element.date_re_deposited.toLocaleDateString() || null;
+    //   element["date_hold"] = element.date_hold.toLocaleDateString() || null;
+    //   element["OR_date"] = element.OR_date.toLocaleDateString() || null;
+    // });
+
+    res.status(200).send(shh);
   };
 
   static save = async (req: Request, res: Response) => {
@@ -115,14 +100,17 @@ class InventoryController {
   };
 
   static getColumnNames = async (req: Request, res: Response) => {
-    const columns = await getConnection()
-      .getMetadata(PDCInventory)
-      .ownColumns.map(column => ({
-        title: toTitleCase(column.propertyName.replace("_ID", "").replace(/_/g, " ")),
-        field: column.propertyName.replace("_ID", "")
-      }));
+    const columns = Object.keys(await (await getAll()).getRawOne());
 
-    res.status(201).send(columns);
+    const formated = columns.map(item => {
+      return {
+        title: toTitleCase(item.replace("_ID", "").replace(/_/g, " ")),
+        field: item.replace("_ID", "")
+      };
+    });
+
+    console.log(await getStatus("account_status"));
+    res.status(200).send(formated);
   };
 
   static remove = async (req: Request, res: Response) => {
@@ -156,4 +144,42 @@ async function validateErrors(res: any, object: any) {
     res.status(400).send(errors);
     return;
   }
+}
+
+async function getAll() {
+  return await getConnection()
+    .createQueryBuilder()
+    .select("id")
+    .addSelect("region")
+    .addSelect("branch_name")
+    .addSelect("client_bank_name")
+    .addSelect("check_date")
+    .addSelect("check_number")
+    .addSelect("check_amount")
+    .addSelect("client_ID")
+    .addSelect("client_account_status", "client_account_status")
+    .addSelect("client_check_status", "client_check_status")
+    .addSelect("check_payee_name", "check_payee_name")
+    .addSelect("check_deposit_status", "check_deposit_status")
+    .addSelect("reason_for_bounce_status", "reason_for_bounce_status")
+    .addSelect("deposit_today")
+    .addSelect("aging_undeposited")
+    .addSelect("check_type_as_of_current_day")
+    .addSelect("date_deposited")
+    .addSelect("date_bounced")
+    .addSelect("date_re_deposited")
+    .addSelect("aging_redep")
+    .addSelect("check_re_deposit_status", "check_re_deposit_status")
+    .addSelect("date_hold")
+    .addSelect("reason_for_hold_status", "reason_for_hold_status")
+    .addSelect("hold_check_aging")
+    .addSelect("OR_number")
+    .addSelect("OR_date")
+    .addSelect("remarks")
+    .from(PDCInventory, "PDCInventory");
+}
+
+async function getStatus(statusTable: string) {
+  const userRepository = await getRepository(statusTable);
+  return await userRepository.find();
 }

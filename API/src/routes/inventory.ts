@@ -6,7 +6,7 @@ const router = Router();
 
 router.post("/", [checkJwt], InventoryController.save);
 
-router.get("/column-names", [checkJwt], InventoryController.getColumnNames);
+router.get("/column-names", InventoryController.getColumnNames);
 
 router.get("/", InventoryController.all);
 

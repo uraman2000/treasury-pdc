@@ -42,7 +42,7 @@ export class CreateAllStatus1572831545143 implements MigrationInterface {
 
     const CheckPayeeName = ["RADIOWEALTH FINANCE COMPANY INC"];
     const UserStatus = ["Pending", "Active", "Deactivate"];
-    await this.save(queryRunner, accountStatus, "account_status");
+    await this.save(queryRunner, accountStatus, "client_account_status");
     await this.save(queryRunner, checkDespositeStatus, "check_deposit_status");
     await this.save(queryRunner, clientCkeckStatus, "client_check_status");
     await this.save(queryRunner, reasonForBounce, "reason_for_bounce_status");
