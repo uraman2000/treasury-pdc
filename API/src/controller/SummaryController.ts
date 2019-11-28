@@ -63,7 +63,7 @@ async function queryWithPercentage(statusTable: string) {
     .addSelect("Count(*)", "count")
     .addSelect("SUM(check_amount)", "amount")
     .from(statusTable, statusTable)
-    .leftJoin(PDCInventory, "PDCInventory", `PDCInventory.client_account_status_ID = ${statusTable}.id`)
+    .leftJoin(PDCInventory, "PDCInventory", `PDCInventory.${statusTable} = ${statusTable}.id`)
     .groupBy(`${statusTable}.id`)
     .getRawMany();
 
@@ -83,8 +83,8 @@ function calculatePercentage(statusList: StatusList): StatusList {
     status: item.status,
     count: item.count,
     amount: item.amount,
-    countPercentage: (item.count / listTemp.totalCount) * 100 + "%",
-    amountPercentage: ((item.amount / listTemp.totalAmount) * 100).toFixed(3) + "%"
+    countPercentage: item.count == 0 ? "0%" : (item.count / listTemp.totalCount) * 100 + "%",
+    amountPercentage: item.count == 0 ? "0%" : ((item.amount / listTemp.totalAmount) * 100).toFixed(3) + "%"
   }));
 
   listTemp.statusItem = statusItemTemp;
