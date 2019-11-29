@@ -14,13 +14,8 @@ interface TableState {
 }
 
 function deposit_today_logic(props: any) {
-  const {
-    check_amount,
-    date_deposited,
-    check_type_as_of_current_day,
-    check_date,
-    aging_undeposited
-  } = props.rowData;
+  const { check_amount, date_deposited, check_type_as_of_current_day, check_date, aging_undeposited } =
+    props.rowData || props;
   const today = new Date().toLocaleDateString();
   let value = "";
 
@@ -40,12 +35,12 @@ function deposit_today_logic(props: any) {
     value = "PDC";
   }
 
-  return <TableTextField props={props} value={value} />;
+  return value;
 }
 
 function agingUnDepositLogic(props: any) {
   let value = "";
-  const { check_amount, date_deposited, check_date } = props.rowData;
+  const { check_amount, date_deposited, check_date } = props.rowData || props;
 
   if (check_amount <= 0) {
     value = "";
@@ -57,12 +52,12 @@ function agingUnDepositLogic(props: any) {
   if (value === "NaN") {
     value = "PLS. CHECK";
   }
-  return <TableTextField props={props} value={value} />;
+  return value;
 }
 
 function agingReDepositLogic(props: any) {
   let value = "";
-  const { date_bounced, date_re_deposited, check_deposit_status } = props.rowData;
+  const { date_bounced, date_re_deposited, check_deposit_status } = props.rowData || props;
   const BOUNCED = "2";
 
   if (date_bounced === "") {
@@ -73,7 +68,7 @@ function agingReDepositLogic(props: any) {
     value = agingDate(localDate(date_re_deposited), localDate(date_bounced));
   }
 
-  return <TableTextField props={props} value={value} />;
+  return value;
 }
 
 function statusLogic(item: any, statuses: any) {
@@ -105,7 +100,7 @@ function typeLogic(item: any) {
 
 function holdChecksAging(props: any) {
   let value = "";
-  const { OR_number, date_hold } = props.rowData;
+  const { OR_number, date_hold } = props.rowData || props;
 
   if (OR_number > 0) {
     value = "";
@@ -113,7 +108,7 @@ function holdChecksAging(props: any) {
     value = agingDate(today(), localDate(date_hold));
   }
 
-  return <TableTextField props={props} value={value} />;
+  return value;
 }
 
 function column(headData: any, statuses: any) {
@@ -128,23 +123,23 @@ function column(headData: any, statuses: any) {
 
     if (item === "deposit_today") {
       obj["editComponent"] = (props: any) => {
-        return deposit_today_logic(props);
+        return <TableTextField props={props} value={deposit_today_logic(props)} />;
       };
     }
 
     if (item === "aging_undeposited") {
       obj["editComponent"] = (props: any) => {
-        return agingUnDepositLogic(props);
+        return <TableTextField props={props} value={agingUnDepositLogic(props)} />;
       };
     }
     if (item === "aging_redep") {
       obj["editComponent"] = (props: any) => {
-        return agingReDepositLogic(props);
+        return <TableTextField props={props} value={agingReDepositLogic(props)} />;
       };
     }
     if (item === "hold_check_aging") {
       obj["editComponent"] = (props: any) => {
-        return holdChecksAging(props);
+        return <TableTextField props={props} value={holdChecksAging(props)} />;
       };
     }
     obj["title"] = itemTittle;
@@ -183,8 +178,9 @@ export default function InventoryTable() {
         element.OR_date = cleanDates(element.OR_date);
       });
       const header = await Object.keys(data[0]);
-      console.log(data);
-      setState({ columns: column(header, statuses), data: data });
+      const ass = column(header, statuses);
+      console.log(ass);
+      setState({ columns: ass, data: data });
     };
     fetchData();
   }, []);
@@ -214,7 +210,10 @@ export default function InventoryTable() {
               if (oldData) {
                 setState(prevState => {
                   const data = [...prevState.data];
-                  newData["deposit_today"] = "asdwq";
+                  newData["deposit_today"] = deposit_today_logic(newData);
+                  newData["aging_undeposited"] = agingUnDepositLogic(newData);
+                  newData["aging_redep"] = agingReDepositLogic(newData);
+                  newData["hold_check_aging"] = Number(holdChecksAging(newData));
                   data[data.indexOf(oldData)] = newData;
                   console.log(newData);
                   InventoryApiRespository.saveInventory(newData);
