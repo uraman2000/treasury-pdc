@@ -11,11 +11,11 @@ export class PDCInventory {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "varchar" })
-  region: string;
+  @Column({ type: "int" })
+  region: number;
 
   @Column({ type: "varchar" })
-  branch_name: string;
+  branch: string;
 
   @Column({ type: "varchar" })
   client_bank_name: string;
@@ -33,19 +33,19 @@ export class PDCInventory {
   client_ID: number;
 
   @Column({ type: "int" })
-  client_account_status: ClientAccountStatus;
+  client_account_status: number;
 
   @Column({ type: "int" })
-  client_check_status: ClientCheckStatus;
+  client_check_status: number;
 
   @Column({ type: "int" })
-  check_payee_name: CheckPayeeName;
+  check_payee_name: number;
 
   @Column({ type: "int" })
-  check_deposit_status: CheckDepositStatus;
+  check_deposit_status: number;
 
   @Column({ type: "int" })
-  reason_for_bounce_status: ReasonForBounceStatus;
+  reason_for_bounce_status: number;
 
   @Column({ type: "varchar" })
   deposit_today: string;
@@ -69,13 +69,13 @@ export class PDCInventory {
   aging_redep: string;
 
   @Column({ type: "int" })
-  check_re_deposit_status: CheckDepositStatus;
+  check_re_deposit_status: number;
 
   @Column({ type: "date" })
   date_hold: Date;
 
   @Column({ type: "int" })
-  reason_for_hold_status: ReasonForHoldStatus;
+  reason_for_hold_status: number;
 
   @Column({ type: "int" })
   hold_check_aging: number;

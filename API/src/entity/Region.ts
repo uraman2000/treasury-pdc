@@ -6,8 +6,8 @@ export class Region {
   id: number;
 
   @Column()
-  region_name: string;
+  name: string;
 
   @Column()
-  code: string;
+  region_code: string;
 }

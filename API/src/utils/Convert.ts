@@ -1,7 +1,6 @@
 export class Convert {
   static amount = (value: number) => {
-  
-    return parseFloat(value.toFixed(4));
+    return (value * 1).toFixed(4);
   };
 }
 

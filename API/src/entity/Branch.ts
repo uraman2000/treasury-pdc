@@ -6,8 +6,11 @@ export class Branch {
   id: number;
 
   @Column()
-  branch_name: string;
+  name: string;
 
   @Column()
   code: string;
+
+  @Column()
+  region_code: string;
 }
