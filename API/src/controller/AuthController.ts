@@ -103,7 +103,7 @@ class AuthController {
     res.status(200).send(customRes);
   };
 
-  static refreshToken = (req: Request, res: Response) => {
+  static refreshToken = async (req: Request, res: Response) => {
     let { refresh_token } = req.body;
     let jwtPayload;
     const token_expiration = "8h";
@@ -120,11 +120,14 @@ class AuthController {
     const access_token = jwtSign(userId, username, token_expiration, "access_token");
 
     const new_refresh_token = jwtSign(userId, username, token_expiration, "refresh_token");
+    const isadmin = await isAdmin(userId);
+    //Send the jwt in the response
 
     res.status(200).send({
       access_token: access_token,
       expires_in: token_expiration,
-      refresh_token: new_refresh_token
+      refresh_token: new_refresh_token,
+      isAdmin: isadmin
     });
   };
 

@@ -11,4 +11,13 @@ export default class SummaryApiRepository {
       return error.response.data;
     }
   }
+
+  public static async getSummaryPerBranch(region: string) {
+    try {
+      const response = await (await HandleToken.getInstance()).get(`summary-per-branch/1}`);
+      return response.data;
+    } catch (error) {
+      return error.response.data;
+    }
+  }
 }

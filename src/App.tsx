@@ -12,6 +12,7 @@ import { setAccess, getAccess } from "./utils";
 import AdminUser from "./Components/AdminUser";
 import AdminStatus from "./Components/AdminStatus";
 import PageNotFound from "./Components/PageNotFound";
+import SummaryPerBranch from "./Components/SummaryPerBranch";
 
 const status = [
   "CLIENT ACCOUNT STATUS",
@@ -47,6 +48,7 @@ function App() {
               path="/summary"
               component={() => <TabNavigation statusTabs={status} tabContentComponent={SummaryStatus} />}
             />
+            <ProtectedRoute path="/summary-per-branch" component={SummaryPerBranch} />
             <ProtectedRoute path="/admin/user" component={AdminUser} />
             <ProtectedRoute
               path="/admin/status"

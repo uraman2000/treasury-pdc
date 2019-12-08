@@ -119,6 +119,7 @@ function column(headData: any, statuses: any) {
     obj["type"] = typeLogic(item);
     if (item === "id") {
       obj["editable"] = "never";
+      obj["defaultSort"] = "asc";
     }
 
     if (item === "deposit_today") {
@@ -164,7 +165,6 @@ export default function InventoryTable() {
 
   useEffect(() => {
     const fetchData = async () => {
-      // const head = await InventoryApiRespository.getColumnNames()
       const statuses = await StatusApiRespository.allStatus();
 
       const data = await InventoryApiRespository.getInventory();
@@ -178,18 +178,24 @@ export default function InventoryTable() {
         element.OR_date = cleanDates(element.OR_date);
       });
       const header = await Object.keys(data[0]);
-      const ass = column(header, statuses);
-      console.log(ass);
-      setState({ columns: ass, data: data });
+      const columns = column(header, statuses);
+      console.log(columns);
+
+      setState({ columns: columns, data: data });
     };
     fetchData();
   }, []);
 
   return (
     <MaterialTable
-      title="Editable Example"
+      title=""
       columns={state.columns}
       data={state.data}
+      options={{
+        pageSize: 100,
+        pageSizeOptions: [100, 200, 500],
+        loadingType: "linear"
+      }}
       editable={{
         onRowAdd: newData =>
           new Promise(resolve => {

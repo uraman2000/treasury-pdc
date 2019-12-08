@@ -59,6 +59,9 @@ export default function AdminStatus(props: Iprops) {
       <MaterialTable
         title=""
         columns={state.columns}
+        options={{
+          paging: false
+        }}
         data={state.data}
         editable={{
           onRowAdd: newData =>

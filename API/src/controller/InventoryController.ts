@@ -151,7 +151,7 @@ async function getAll() {
     .createQueryBuilder()
     .select("id")
     .addSelect("region")
-    .addSelect("branch_name")
+    .addSelect("branch")
     .addSelect("client_bank_name")
     .addSelect("check_date")
     .addSelect("check_number")

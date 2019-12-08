@@ -196,6 +196,12 @@ export default function DrawerNavigation({ children }: IProps) {
         icon: <AssessmentRoundedIcon />,
         text: "Summary",
         link: "/summary"
+      },
+      {
+        key: "summary-per-branch",
+        icon: <AssessmentRoundedIcon />,
+        text: "Summary Per Branch",
+        link: "/summary-per-branch"
       }
     ],
     private: [
