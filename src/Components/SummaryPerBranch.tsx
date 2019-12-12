@@ -18,17 +18,7 @@ const useStyles = makeStyles({
   }
 });
 
-function createData(name: string, calories: number, fat: number, carbs: number, protein: number) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9)
-];
+const setHead = (state: any) => {};
 
 export default function SummaryPerBranch() {
   const classes = useStyles();
@@ -44,8 +34,6 @@ export default function SummaryPerBranch() {
 
   const items = (row: string) => {
     state[row].values.map((item: any, key: any) => {
-      //   console.log(item.amount);
-
       return (
         <div key={key}>
           <TableCell>{item.amount}</TableCell>
@@ -61,76 +49,90 @@ export default function SummaryPerBranch() {
         <Table className={classes.table} aria-label="simple table">
           <TableHead>
             <TableRow>
+              <TableCell align="center">region</TableCell>
+              <TableCell align="center" colSpan={10}>
+                TYPE OF PDC
+              </TableCell>
+              <TableCell align="center" colSpan={17}>
+                CHECK DEPOSIT STATUS
+              </TableCell>
+            </TableRow>
+            <TableRow>
               <TableCell>BRANCH</TableCell>
-              <TableCell align="center" colSpan={2}>
-                CLEARED
-              </TableCell>
-              <TableCell align="center" colSpan={2}>
-                BOUNCED
-              </TableCell>
-              <TableCell align="center" colSpan={2}>
-                FOR DEPOSIT-TODAY
-              </TableCell>
-              <TableCell align="center" colSpan={2}>
-                HOLD
-              </TableCell>
-              <TableCell align="center" colSpan={2}>
-                PDC
-              </TableCell>
-              <TableCell align="center" colSpan={2}>
-                UNDEPOSITED-PDC
-              </TableCell>
-              <TableCell align="center" colSpan={2}>
-                CHANGE CDS
-              </TableCell>
-              <TableCell align="center" colSpan={2}>
-                REDEPOSIT
-              </TableCell>
+
+              {state[state.entities[0]].client_check_status.values.map((element: any, key: any) => (
+                <TableCell key={key} align="center" colSpan={4}>
+                  {element.status}
+                </TableCell>
+              ))}
+
+              <TableCell align="center">TOTAL PDC</TableCell>
+              <TableCell align="center">TOTAL PDC</TableCell>
+
+              {state[state.entities[0]].check_deposit_status.values.map((element: any, key: any) => (
+                <TableCell key={key} align="center" colSpan={2}>
+                  {element.status}
+                </TableCell>
+              ))}
+
               <TableCell align="center" colSpan={2} rowSpan={2}>
                 Total Deposit
               </TableCell>
             </TableRow>
             <TableRow>
               <TableCell></TableCell>
-
-              <TableCell>Amount</TableCell>
-              <TableCell>%</TableCell>
-              <TableCell>Amount</TableCell>
-              <TableCell>%</TableCell>
-              <TableCell>Amount</TableCell>
-              <TableCell>%</TableCell>
-              <TableCell>Amount</TableCell>
-              <TableCell>%</TableCell>
-              <TableCell>Amount</TableCell>
-              <TableCell>%</TableCell>
-              <TableCell>Amount</TableCell>
-              <TableCell>%</TableCell>
-              <TableCell>Amount</TableCell>
-              <TableCell>%</TableCell>
-              <TableCell>Amount</TableCell>
-              <TableCell>%</TableCell>
+              {state[state.entities[0]].client_check_status.values.map((element: any, key: any) => (
+                <>
+                  <TableCell align="center">Count</TableCell>
+                  <TableCell align="center">%</TableCell>
+                  <TableCell align="center">Amount</TableCell>
+                  <TableCell align="center">%</TableCell>
+                </>
+              ))}
+              <TableCell align="center">Count</TableCell>
+              <TableCell align="center">Amount</TableCell>
+              {state[state.entities[0]].check_deposit_status.values.map((element: any, key: any) => (
+                <>
+                  <TableCell align="center">Amount</TableCell>
+                  <TableCell align="center">%</TableCell>
+                </>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {state.entities.map((row: any) => {
+            {state.entities.map((row: any, key: any) => {
+              const client_check_status = state[row].client_check_status;
+              const check_deposit_status = state[row].check_deposit_status;
               return (
                 <>
-                  <TableRow key={row}>
+                  <TableRow key={key}>
                     <TableCell>{row}</TableCell>
-                    {state[row].values.map((item: any, key: any) => {
-                      return (
-                        <>
-                          <TableCell>{item.amount}</TableCell>
-                          <TableCell>{item.percentage}</TableCell>
-                        </>
-                      );
-                    })}
-                    <TableCell>{state[row].totalDeposit}</TableCell>
+
+                    {client_check_status.values.map((element: any, key: any) => (
+                      <>
+                        <TableCell align="right">{element.count}</TableCell>
+                        <TableCell align="right">{element.countPercentage}</TableCell>
+                        <TableCell align="right">{element.amount}</TableCell>
+                        <TableCell align="right">{element.amountPercentage}</TableCell>
+                      </>
+                    ))}
+                    <TableCell align="right">{client_check_status.totalCount}</TableCell>
+                    <TableCell align="right">{client_check_status.totalDeposit}</TableCell>
+
+                    {check_deposit_status.values.map((element: any, key: any) => (
+                      <>
+                        <TableCell align="right">{element.amount}</TableCell>
+                        <TableCell align="right">{element.amountPercentage}</TableCell>
+                      </>
+                    ))}
+
+                    <TableCell align="right">{state[row].check_deposit_status.totalDeposit}</TableCell>
                   </TableRow>
                 </>
               );
             })}
 
+            {generateGrandTotal(state)}
             {/* {rows.map(row => (
               <TableRow key={row.name}>
                 <TableCell component="th" scope="row">
@@ -149,3 +151,7 @@ export default function SummaryPerBranch() {
   }
   return <div></div>;
 }
+
+const generateGrandTotal = (data: object) => {
+  console.log(data);
+};

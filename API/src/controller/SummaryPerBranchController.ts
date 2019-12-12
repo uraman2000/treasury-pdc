@@ -4,11 +4,19 @@ import IResponse from "../../app/IResponse";
 import { PDCInventory } from "../entity/PDCInventory";
 import { CheckDepositStatus } from "../entity/statuses/CheckDepositStatus";
 import { Branch } from "../entity/Branch";
-import { number } from "prop-types";
+import { number, array } from "prop-types";
 import Convert from "../utils/Convert";
 
 function statusRepository(statusTable: string) {
   return getRepository(statusTable);
+}
+
+function setModel(branch_name, client_check_status, check_deposit_status) {
+  return {
+    branch_name: branch_name,
+    client_check_status: client_check_status,
+    check_deposit_status: check_deposit_status
+  };
 }
 
 function getCheckDepositStatus(region: any) {
@@ -16,7 +24,7 @@ function getCheckDepositStatus(region: any) {
     .createQueryBuilder()
     .select("branch.name", "branch_name")
     .addSelect(`check_deposit_status.status`, "status")
-    .addSelect("SUM(check_amount)", "Amount")
+    .addSelect("SUM(check_amount)", "amount")
     .from("check_deposit_status", "check_deposit_status")
     .leftJoin(PDCInventory, "pdc_inventory", `pdc_inventory.check_deposit_status = check_deposit_status.id`)
     .leftJoin(Branch, "branch", "pdc_inventory.branch = branch.code")
@@ -34,8 +42,8 @@ function getClientCheckStatus(region: any) {
     .createQueryBuilder()
     .select("branch.name", "branch_name")
     .addSelect(`client_check_status.status`, "status")
-    .addSelect("count(*)", "Count")
-    .addSelect("SUM(check_amount)", "Amount")
+    .addSelect("count(*)", "count")
+    .addSelect("SUM(check_amount)", "amount")
     .from("client_check_status", "client_check_status")
     .leftJoin(PDCInventory, "pdc_inventory", `pdc_inventory.client_check_status = client_check_status.id`)
     .leftJoin(Branch, "branch", "pdc_inventory.branch = branch.code")
@@ -48,55 +56,180 @@ function getClientCheckStatus(region: any) {
     .getRawMany();
 }
 
+function getStatus(status) {
+  return getConnection()
+    .createQueryBuilder()
+    .select("*")
+    .from(status, status)
+    .getRawMany();
+}
+
 export default class SummaryPerBranchController {
   static async all(req: Request, res: Response, next: NextFunction) {
     let region = req.params.regionId;
-
-    const check_deposit_status = await getCheckDepositStatus(region);
+    let result = [];
     const client_check_status = await getClientCheckStatus(region);
+    const check_deposit_status = await getCheckDepositStatus(region);
+
+    const model = initializeData(await getStatus("client_check_status"), await getStatus("check_deposit_status"));
 
     let obj: any = {};
+
     let grandTotal = 0;
-    obj["entities"] = [];
 
     //  obj["grandTotal"] = Convert.amount(grandTotal);
-    setValuesAndEntities(client_check_status, obj, "client_check_status");
-    setTotalDeposit(obj, "client_check_status");
-    setPercent(obj, "client_check_status");
+    // setValuesAndEntities(client_check_status, obj, "client_check_status");
+    // setTotalDeposit(obj, "client_check_status");
+    // setPercent(obj, "client_check_status");
 
-    setValuesAndEntities(check_deposit_status, obj, "check_deposit_status");
-    setTotalDeposit(obj, "check_deposit_status");
-    setPercent(obj, "check_deposit_status");
-    return res.status(200).send(obj);
+    // setValuesAndEntities(check_deposit_status, obj, "check_deposit_status");
+    // setTotalDeposit(obj, "check_deposit_status");
+    // setPercent(obj, "check_deposit_status");
+
+    // setEmptyValues(obj, await getStatus("client_check_status"), "client_check_status");
+    // setEmptyValues(obj, await getStatus("check_deposit_status"), "check_deposit_status");
+    // console.log(Convert.total(check_deposit_status, "amount"));
+
+    // return res.status(200).send(model["client_check_status"].values);
+
+    // setStatusValues(result, check_deposit_status, "check_deposit_status", model);
+    // setStatusValues(result, client_check_status, "client_check_status", model);
+
+    check_deposit_status.map((item: any) => {
+      //loop per status
+      const tempModel = {
+        branch_name: model.branch_name,
+        client_check_status: [],
+        check_deposit_status: []
+      };
+      var isPresent = result.some(e => e.branch_name === item.branch_name);
+      if (!isPresent) {
+        tempModel.branch_name = item.branch_name;
+        result.push(tempModel);
+      }
+      // tempModel[typeOfStatus]["values"] = tempModel[typeOfStatus]["values"].concat(value(item, typeOfStatus));
+    });
+    const typeOfStatus = "check_deposit_status";
+    check_deposit_status.map((item: any) => {
+      result.map((res: any) => {
+        if (res.branch_name === item.branch_name) {
+          setValues(res, item, typeOfStatus);
+        }
+      });
+    });
+
+    result.map((item: any) => {
+      model.check_deposit_status.values.map((modelValue: any) => {
+        const isPresent = item.check_deposit_status.values.some(e => e.status === modelValue.status);
+        if (!isPresent) {
+          item.check_deposit_status.values.push(modelValue);
+        }
+      });
+    });
+    // result["check_deposit_status"].values.map((item: any) => {
+    //   console.log(item);
+    //   // model.check_deposit_status.values.forEach(element => {
+    //   //   console.log(element);
+    //   //   // if (element.status != item.status) {
+    //   //   //   result["check_deposit_status"].values.push(element);
+    //   //   // }
+    //   // });
+    // });
+    return res.status(200).send(result);
   }
 }
 
-async function setValuesAndEntities(status, obj, typeOfStatus) {
-  await status.forEach((item: any, index: any) => {
-    //converting int by * 1 is much faster see this
-    //https://flaviocopes.com/how-to-convert-string-to-number-javascript/
-    // grandTotal += item.Amount * 1;
-    setEntity(obj, item);
-    if (!obj[item.branch_name]) {
-      obj[item.branch_name] = { client_check_status: [], check_deposit_status: [] };
+function setStatusValues(result, statusData, typeOfStatus, model) {
+  statusData.map((item: any) => {
+    const tempModel = {
+      branch_name: model.branch_name,
+      client_check_status: model.client_check_status,
+      check_deposit_status: model.check_deposit_status
+    };
+    var isPresent = result.some(e => e.branch_name === item.branch_name);
+    if (!isPresent) {
+      tempModel.branch_name = item.branch_name;
+      result.push(tempModel);
     }
 
-    setValues(obj, item, typeOfStatus);
+    result.map((element: any) => {
+      if (element.branch_name === item.branch_name) {
+        tempModel[typeOfStatus].values.map((status: any) => {
+          if (status.status === item.status) {
+            if (typeOfStatus === "check_deposit_status") {
+              return (status.amount = item.amount);
+            }
+            status.count = item.count;
+            status.amount = item.amount;
+          }
+          console.log(tempModel);
+          // model["check_deposit_status"].totalDeposit = Convert.total(check_deposit_status, "amount");
+          if (typeOfStatus === "check_deposit_status") {
+            return (tempModel[typeOfStatus].totalDeposit = Convert.total(
+              tempModel[typeOfStatus].values,
+              "amount"
+            ));
+          }
+
+          console.log(tempModel);
+          tempModel[typeOfStatus].totalDeposit = Convert.total(element[typeOfStatus].values, "amount");
+          tempModel[typeOfStatus].totalCount = Convert.total(element[typeOfStatus].values, "count");
+        });
+      }
+    });
   });
 }
 
-function setValues(obj, item, typeOfStatus) {
-  if (obj[item.branch_name][typeOfStatus].length === 0) {
-    obj[item.branch_name][typeOfStatus] = instantiateValue(item, typeOfStatus);
-    return;
-  }
-
-  obj[item.branch_name][typeOfStatus]["values"] = obj[item.branch_name][typeOfStatus]["values"].concat(
-    value(item, typeOfStatus)
+function initializeData(client_check_status, check_deposit_status) {
+  return setModel(
+    "",
+    initializeStatus(client_check_status, "client_check_status"),
+    initializeStatus(check_deposit_status, "check_deposit_status")
   );
 }
 
-function instantiateValue(item, typeOfStatus) {
+function initializeStatus(status, typeOfStatus) {
+  let values = status.map((item: any) => value(item, typeOfStatus));
+  if (typeOfStatus === "client_check_status") {
+    return {
+      values: values,
+      totalDeposit: "0",
+      totalCount: "0"
+    };
+  }
+  return {
+    values: values,
+    totalDeposit: "0"
+  };
+}
+function value(item, typeOfStatus: string) {
+  if (typeOfStatus === "check_deposit_status") {
+    return {
+      // branch: item.branch_name,
+      status: item.status,
+      amount: item.amount ? Convert.amount(item.amount) : "0",
+      amountPercentage: "0%"
+    };
+  }
+
+  return {
+    status: item.status,
+    count: item.count ? item.count : "0",
+    countPercentage: "0%",
+    amount: item.amount ? Convert.amount(item.amount) : "0",
+    amountPercentage: "0%"
+  };
+}
+
+function setValues(res, item, typeOfStatus) {
+  if (res.check_deposit_status["values"].length === 0) {
+    res.check_deposit_status = instantiateValue(item, typeOfStatus);
+    return;
+  }
+  res[typeOfStatus]["values"] = res[typeOfStatus]["values"].concat(value(item, typeOfStatus));
+}
+
+function instantiateValue(item, typeOfStatus): any {
   if (typeOfStatus === "check_deposit_status") {
     return {
       values: [value(item, typeOfStatus)],
@@ -109,31 +242,6 @@ function instantiateValue(item, typeOfStatus) {
     totalDeposit: 0,
     totalCount: 0
   };
-}
-
-function value(item, typeOfStatus: string) {
-  if (typeOfStatus === "check_deposit_status") {
-    return {
-      // branch: item.branch_name,
-      status: item.status,
-      amount: Convert.amount(item.Amount),
-      amountPercentage: "0%"
-    };
-  }
-
-  return {
-    status: item.status,
-    count: item.Count,
-    countPercentage: "0%",
-    amount: Convert.amount(item.Amount),
-    amountPercentage: "0%"
-  };
-}
-
-function setEntity(obj, item) {
-  if (obj["entities"].indexOf(item.branch_name) == -1) {
-    obj["entities"].push(item.branch_name);
-  }
 }
 
 function setTotalDeposit(obj, typeOfStatus: string) {
