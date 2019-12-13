@@ -1,7 +1,7 @@
 import { getConnection } from "typeorm";
 import { Request, Response } from "express";
 import { PDCInventory } from "../entity/PDCInventory";
-import Convert from "../utils/Convert";
+import Utils from "../utils/Utils";
 
 class SummaryController {
   static summaryStatus = async (req: Request, res: Response) => {
@@ -47,7 +47,7 @@ async function statusWithPercentage(tableName: string) {
     statusList.totalCount += item.count;
     statusList.totalAmount += item.amount;
   });
-  statusList.totalAmount = Convert.amount(statusList.totalAmount);
+  statusList.totalAmount = Utils.amount(statusList.totalAmount);
 
   statusList.statusItem = statusItem;
 
