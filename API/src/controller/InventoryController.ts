@@ -119,10 +119,8 @@ class InventoryController {
     try {
       await getRepository(PDCInventory).remove(userToRemove);
       customRes.message = `${userToRemove.client_ID} has been deleted`;
-      customRes.status = "SUCCESS";
     } catch (error) {
       customRes.message = "data has been deleted already";
-      customRes.status = "FAILED";
     }
     res.status(200).send(customRes);
   };

@@ -26,21 +26,18 @@ class AuthController {
     try {
       user = await userRepository.findOneOrFail({ where: { username } });
     } catch (error) {
-      customRes.status = "FAILED";
       customRes.message = "invalid Username or Password";
       res.status(401).send(customRes);
       return;
     }
 
     if (user.status !== 2) {
-      customRes.status = "FAILED";
       customRes.message = "Your Account May Haven't Been Approved Or Disabled";
       res.status(401).send(customRes);
     }
 
     if (!user.checkIfUnencryptedPasswordIsValid(password)) {
       //Check if encrypted password match
-      customRes.status = "FAILED";
       customRes.message = "invalid Username or Password";
       res.status(401).send(customRes);
       return;
@@ -99,7 +96,6 @@ class AuthController {
     user.hashPassword();
     userRepository.save(user);
     customRes.message = "Password Change Succesfully";
-    customRes.status = "SUCCESS";
     res.status(200).send(customRes);
   };
 
@@ -139,7 +135,6 @@ class AuthController {
     try {
       jwtPayload = <any>jwt.verify(access_token, config.jwtSecret);
       customRes.message = "Token still available";
-      customRes.status = "SUCCESS";
       customRes.data = true;
       res.status(200).send(customRes);
     } catch (error) {

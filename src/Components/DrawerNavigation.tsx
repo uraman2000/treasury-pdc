@@ -132,12 +132,51 @@ const AdapterLink = React.forwardRef<HTMLAnchorElement, LinkProps>((props, ref) 
   <Link innerRef={ref as any} {...props} />
 ));
 
+const sideDrawerList = {
+  public: [
+    {
+      key: "inventory",
+      icon: <TableChartRoundedIcon />,
+      text: "Inventory",
+      link: "/"
+    },
+    {
+      key: "summary",
+      icon: <AssessmentRoundedIcon />,
+      text: "Summary",
+      link: "/summary"
+    },
+    {
+      key: "summary-per-branch",
+      icon: <AssessmentRoundedIcon />,
+      text: "Summary Per Branch",
+      link: "/summary-per-branch"
+    }
+  ],
+  private: [
+    {
+      key: "users",
+      icon: <GroupRoundedIcon />,
+      text: "Users",
+      link: "/admin/user"
+    },
+    {
+      key: "sttatus",
+      icon: <ShowChartRoundedIcon />,
+      text: "Status",
+      link: "/admin/status"
+    }
+  ]
+};
+
 export default function DrawerNavigation({ children }: IProps) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [state, setstate] = useState([]);
   const history = useHistory();
+
+  const [title, settitle] = useState("RFC");
   // getAllPending;
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
 
@@ -183,43 +222,6 @@ export default function DrawerNavigation({ children }: IProps) {
     history.push("/");
   };
 
-  const sideDrawerList = {
-    public: [
-      {
-        key: "inventory",
-        icon: <TableChartRoundedIcon />,
-        text: "Inventory",
-        link: "/"
-      },
-      {
-        key: "summary",
-        icon: <AssessmentRoundedIcon />,
-        text: "Summary",
-        link: "/summary"
-      },
-      {
-        key: "summary-per-branch",
-        icon: <AssessmentRoundedIcon />,
-        text: "Summary Per Branch",
-        link: "/summary-per-branch"
-      }
-    ],
-    private: [
-      {
-        key: "users",
-        icon: <GroupRoundedIcon />,
-        text: "Users",
-        link: "/admin/user"
-      },
-      {
-        key: "sttatus",
-        icon: <ShowChartRoundedIcon />,
-        text: "Status",
-        link: "/admin/status"
-      }
-    ]
-  };
-
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -242,7 +244,7 @@ export default function DrawerNavigation({ children }: IProps) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            Mini variant drawer
+            {title}
           </Typography>
           {getAccess().isAdmin === "true" ? (
             <>
@@ -333,7 +335,15 @@ export default function DrawerNavigation({ children }: IProps) {
             <Collapse in={openAdminList} timeout="auto" unmountOnExit>
               {sideDrawerList.private.map((item: any, key: any) => (
                 <List component="div" disablePadding key={key}>
-                  <ListItem button className={classes.nested} component={AdapterLink} to={item.link}>
+                  <ListItem
+                    button
+                    className={classes.nested}
+                    component={AdapterLink}
+                    to={item.link}
+                    onClick={(e: any) => {
+                      settitle(item.text);
+                    }}
+                  >
                     <ListItemIcon>{item.icon}</ListItemIcon>
                     <ListItemText primary={item.text} />
                   </ListItem>
@@ -345,7 +355,15 @@ export default function DrawerNavigation({ children }: IProps) {
         <Divider />
         {sideDrawerList.public.map((item: any, key: any) => {
           return (
-            <ListItem button key={key} component={AdapterLink} to={item.link}>
+            <ListItem
+              button
+              key={key}
+              component={AdapterLink}
+              to={item.link}
+              onClick={(e: any) => {
+                settitle(item.text);
+              }}
+            >
               <ListItemIcon>{item.icon}</ListItemIcon>
 
               <ListItemText primary={item.text} />

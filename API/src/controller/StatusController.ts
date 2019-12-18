@@ -22,10 +22,8 @@ export default class StatusController {
     try {
       await statusRepository(statusTable).save(req.body);
       customRes.message = "saved succesfully";
-      customRes.status = "SUCCESS";
     } catch (error) {
       customRes.errors = error;
-      customRes.status = "FAILED";
     }
     return res.status(200).send(customRes);
   }
@@ -36,10 +34,8 @@ export default class StatusController {
       let userToRemove = await statusRepository(statusTable).findOne(req.params.id);
       await statusRepository(statusTable).remove(userToRemove);
       customRes.message = `id : ${req.params.id} has been deleted succesfully`;
-      customRes.status = "SUCCESS";
     } catch (error) {
       customRes.errors = error;
-      customRes.status = "FAILED";
     }
     return res.status(200).send(customRes);
   }

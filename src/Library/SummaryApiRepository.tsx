@@ -14,7 +14,7 @@ export default class SummaryApiRepository {
 
   public static async getSummaryPerBranch(region: string) {
     try {
-      const response = await (await HandleToken.getInstance()).get(`summary-per-branch/1}`);
+      const response = await (await HandleToken.getInstance()).get(`summary-per-branch/${region}}`);
       return response.data;
     } catch (error) {
       return error.response.data;
