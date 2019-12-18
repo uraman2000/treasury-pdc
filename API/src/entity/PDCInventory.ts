@@ -30,7 +30,10 @@ export class PDCInventory {
   check_amount: number;
 
   @Column({ type: "int" })
-  client_ID: number;
+  account_number: number;
+
+  @Column()
+  client_name: string;
 
   @Column({ type: "int" })
   client_account_status: number;

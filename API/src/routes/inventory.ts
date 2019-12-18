@@ -8,13 +8,10 @@ router.post("/", [checkJwt], InventoryController.save);
 
 router.get("/column-names", InventoryController.getColumnNames);
 
+router.get("/summary-held-checks", InventoryController.summaryHeldChecks);
+
 router.get("/", InventoryController.all);
 
 router.delete("/:id([0-9]+)", [checkJwt], InventoryController.remove);
-
-//Change my password
-// router.post("/change-password", [checkJwt], AuthController.changePassword);
-
-// router.post("/accestoken", AuthController.refreshToken);
 
 export default router;

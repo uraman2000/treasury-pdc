@@ -6,7 +6,7 @@ export default interface IData {
   check_date: string;
   check_number: number;
   check_amount: number;
-  client_ID: number;
+  client_name: string;
   client_account_status: string;
   client_check_status: string;
   check_payee_name: string;

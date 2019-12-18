@@ -1,95 +1,84 @@
-import { getRepository, Repository, Connection, getConnection } from "typeorm";
+import { getRepository, getConnection } from "typeorm";
 import { NextFunction, Request, Response } from "express";
-import { User } from "../entity/User";
 import { PDCInventory } from "../entity/PDCInventory";
 import { validate } from "class-validator";
-import { CheckDepositStatus } from "../entity/statuses/CheckDepositStatus";
-import { ClientCheckStatus } from "../entity/statuses/ClientCheckStatus";
-import { ReasonForBounceStatus } from "../entity/statuses/ReasonForBounceStatus";
-import { ReasonForHoldStatus } from "../entity/statuses/ReasonForHoldStatus";
 import IResponse from "../../app/IResponse";
-import { CheckPayeeName } from "../entity/statuses/CheckPayeeName";
-import { async } from "q";
-import { number } from "prop-types";
+import { CheckDepositStatus } from "../entity/statuses/CheckDepositStatus";
+import { Branch } from "../entity/Branch";
+import { ClientAccountStatus } from "../entity/statuses/ClientAccountStatus";
+import { ReasonForHoldStatus } from "../entity/statuses/ReasonForHoldStatus";
 
-class InventoryController {
+export default class InventoryController {
   private userRepository = getRepository(PDCInventory);
 
   async all(request: Request, response: Response, next: NextFunction) {
     return this.userRepository.find();
   }
-
-  async one(request: Request, response: Response, next: NextFunction) {
-    return this.userRepository.findOne(request.params.id);
-  }
-
-  //   SELECT
-  //     pdc_inventory.id,
-  //     region,
-  //     branch_name,
+  // SELECT
+  //     branch.name,
   //     client_bank_name,
   //     check_date,
   //     check_number,
   //     check_amount,
-  //     client_ID,
-  //     account_status.status,
-  //     client_check_status.status,
-  //     check_payee_name,
-  //     check_deposit_status.status,
-  //     reason_for_bounce_status.status,
-  //     deposit_today,
-  //     aging_undeposited,
-  //     check_type_as_of_current_day,
-  //     date_bounced,
-  //     date_re_deposited,
-  //     aging_redep,
-  //     check_re_deposit_status.status,
+  //     account_number,
+  //     client_name,
+  //     client_account_status.status,
   //     date_hold,
   //     reason_for_hold_status.status,
-  //     hold_check_aging,
-  //     OR_number,
-  //     OR_date,
-  //     remarks
+  //     hold_check_aging
   // FROM
   //     `pdc_inventory`
-  // LEFT JOIN account_status ON account_status.id = pdc_inventory.client_account_status_ID
-  // LEFT JOIN check_deposit_status ON check_deposit_status.id = pdc_inventory.check_deposit_status_ID
-  // LEFT JOIN client_check_status ON client_check_status.id = pdc_inventory.client_check_status_ID
-  // LEFT JOIN client_check_status AS check_re_deposit_status
-  // ON
-  //     check_re_deposit_status.id = pdc_inventory.check_re_deposit_status_ID
-  // LEFT JOIN reason_for_bounce_status ON reason_for_bounce_status.id = pdc_inventory.reason_for_bounce_status_ID
-  // LEFT JOIN reason_for_hold_status ON reason_for_hold_status.id = pdc_inventory.reason_for_hold_status_ID
-  // GROUP BY
-  //     pdc_inventory.id
-  static all = async (req: Request, res: Response) => {
-    // const PDCInventoryRepository = await getRepository(PDCInventory);
-    // const dataPDCInventory = await PDCInventoryRepository.find({
-    //   relations: [
-    //     "client_account_status",
-    //     "client_check_status",
-    //     "check_payee_name",
-    //     "check_deposit_status",
-    //     "reason_for_bounce_status",
-    //     "check_re_deposit_status",
-    //     "reason_for_hold_status"
-    //   ]
-    // });
-    const ass = await (await getAll()).getRawMany();
+  // LEFT JOIN check_deposit_status ON pdc_inventory.check_deposit_status = check_deposit_status.id
+  // LEFT JOIN client_account_status ON pdc_inventory.client_account_status = client_account_status.id
+  // LEFT JOIN branch ON pdc_inventory.branch = branch.id
+  // LEFT JOIN reason_for_hold_status ON pdc_inventory.reason_for_hold_status = reason_for_hold_status.id
+  // WHERE
+  //     check_deposit_status.status = "HOLD"
+  static summaryHeldChecks = async (request: Request, response: Response, next: NextFunction) => {
+    const pdc = await getConnection()
+      .createQueryBuilder()
+      .select("branch.name", "branch_name")
+      .addSelect("client_bank_name")
+      .addSelect("check_date")
+      .addSelect("check_number")
+      .addSelect("check_amount")
+      .addSelect("account_number")
+      .addSelect("client_name")
+      .addSelect("client_account_status.status", "client_account_status")
+      .addSelect("date_hold")
+      .addSelect(" reason_for_hold_status.status", " reason_for_hold_status")
+      .addSelect(" hold_check_aging")
+      .from(PDCInventory, "PDCInventory")
+      .leftJoin(Branch, "branch", "PDCInventory.branch = branch.id")
+      .leftJoin(
+        CheckDepositStatus,
+        "check_deposit_status",
+        "PDCInventory.check_deposit_status = check_deposit_status.id"
+      )
+      .leftJoin(
+        ClientAccountStatus,
+        "client_account_status",
+        "PDCInventory.client_account_status = client_account_status.id"
+      )
+      .leftJoin(
+        ReasonForHoldStatus,
+        "reason_for_hold_status",
+        "PDCInventory.reason_for_hold_status = reason_for_hold_status.id"
+      )
+      .where("check_deposit_status.status = :status", { status: "HOLD" })
+      .getRawMany();
+    response.send(pdc);
+  };
 
+  async one(request: Request, response: Response, next: NextFunction) {
+    return this.userRepository.findOne(request.params.id);
+  }
+  static all = async (req: Request, res: Response) => {
     const date = new Date();
     const formattedDate = date.toLocaleDateString();
     console.log(formattedDate);
 
     const shh = await getRepository(PDCInventory).find();
-
-    // shh.forEach(element => {
-    //   element["check_date"] = "";
-    //   element["date_bounced"] = element.date_bounced.toLocaleDateString() || null;
-    //   element["date_re_deposited"] = element.date_re_deposited.toLocaleDateString() || null;
-    //   element["date_hold"] = element.date_hold.toLocaleDateString() || null;
-    //   element["OR_date"] = element.OR_date.toLocaleDateString() || null;
-    // });
 
     res.status(200).send(shh);
   };
@@ -118,15 +107,13 @@ class InventoryController {
     let userToRemove = await getRepository(PDCInventory).findOne(req.params.id);
     try {
       await getRepository(PDCInventory).remove(userToRemove);
-      customRes.message = `${userToRemove.client_ID} has been deleted`;
+      customRes.message = `${userToRemove.client_name} has been deleted`;
     } catch (error) {
       customRes.message = "data has been deleted already";
     }
     res.status(200).send(customRes);
   };
 }
-
-export default InventoryController;
 
 function toTitleCase(phrase: any) {
   return phrase
@@ -154,7 +141,7 @@ async function getAll() {
     .addSelect("check_date")
     .addSelect("check_number")
     .addSelect("check_amount")
-    .addSelect("client_ID")
+    .addSelect("client_name")
     .addSelect("client_account_status", "client_account_status")
     .addSelect("client_check_status", "client_check_status")
     .addSelect("check_payee_name", "check_payee_name")
