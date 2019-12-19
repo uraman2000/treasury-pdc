@@ -8,7 +8,7 @@ router.post("/", [checkJwt], InventoryController.save);
 
 router.get("/column-names", InventoryController.getColumnNames);
 
-router.get("/summary-held-checks", InventoryController.summaryHeldChecks);
+router.get("/summary-held-checks/:regionId([0-9]+)", InventoryController.summaryHeldChecks);
 
 router.get("/", InventoryController.all);
 

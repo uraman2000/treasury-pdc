@@ -9,6 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import SummaryApiRepository from "../Library/SummaryApiRepository";
 import { FormControl, InputLabel, Select, MenuItem, FormHelperText, Container, Box } from "@material-ui/core";
 import RegionRepository from "../Library/RegionRepository";
+import RegionSelector from "./RegionSelector";
 // borderLeft : border-right: 1px solid rgba(224, 224, 224, 1);
 // border-left: 1px solid rgba(224, 224, 224, 1);
 const useStyles = makeStyles({
@@ -20,7 +21,7 @@ const useStyles = makeStyles({
     minWidth: 650
   },
   formControl: {
-    margin: 1,
+    margin: 10,
     minWidth: 120
   },
   selectEmpty: {
@@ -103,98 +104,65 @@ export default function SummaryPerBranch() {
   const classes = useStyles();
 
   const [state, setstate] = useState();
-  const [region, setregion] = useState();
-  const [selectedRegion, setSelectedRegion] = React.useState("");
-  useEffect(() => {
-    const fetchData = async () => {
-      await setregion(await RegionRepository.All());
-    };
-    fetchData();
-  }, []);
 
-  const handleChange = async (event: any) => {
-    const valueID: string = event.target.value as string;
-    setSelectedRegion(valueID);
-
-    await setstate(await SummaryApiRepository.getSummaryPerBranch(valueID));
+  const populateTable = async (value: any) => {
+    const tableData = await SummaryApiRepository.getSummaryPerBranch(value);
+    setstate(tableData);
   };
 
-  if (region) {
-    return (
-      <Container>
-        <FormControl variant="filled" className={classes.formControl}>
-          <InputLabel id="demo-simple-select-helper-label">Region</InputLabel>
-          <Select
-            labelId="demo-simple-select-helper-label"
-            id="demo-simple-select-helper"
-            value={selectedRegion}
-            onChange={handleChange}
-          >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            {region.map((item: any, key: any) => (
-              <MenuItem key={key} value={item.id}>
-                {item.region_code}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        {state ? (
-          <Paper className={classes.root}>
-            {console.log(state)}
-            <Table className={classes.table} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell align="center"></TableCell>
-                  <TableCell align="center" colSpan={10} className={classes.borderLeftRight}>
-                    TYPE OF PDC
-                  </TableCell>
-                  <TableCell align="center" colSpan={20} className={classes.borderLeftRight}>
-                    CHECK DEPOSIT STATUS
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell rowSpan={2}>BRANCH</TableCell>
-                  {getTableHeader(state[0].client_check_status, 4, classes)}
-                  <TableCell align="center">TOTAL PDC</TableCell>
-                  <TableCell align="center">TOTAL PDC</TableCell>
+  return (
+    <Container>
+      <Paper>
+        <RegionSelector callback={populateTable} />
+        {!state ? null : (
+          <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell align="center"></TableCell>
+                <TableCell align="center" colSpan={10} className={classes.borderLeftRight}>
+                  TYPE OF PDC
+                </TableCell>
+                <TableCell align="center" colSpan={20} className={classes.borderLeftRight}>
+                  CHECK DEPOSIT STATUS
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell rowSpan={2}>BRANCH</TableCell>
+                {getTableHeader(state[0].client_check_status, 4, classes)}
+                <TableCell align="center">TOTAL PDC</TableCell>
+                <TableCell align="center">TOTAL PDC</TableCell>
 
-                  {getTableHeader(state[0].check_deposit_status, 2, classes)}
-                  <TableCell align="center" colSpan={2} rowSpan={2}>
-                    Total Deposit
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  {getCountAmountHeader(state[0].client_check_status, true, classes)}
-                  <TableCell align="center">Count</TableCell>
-                  <TableCell align="center">Amount</TableCell>
-                  {getCountAmountHeader(state[0].check_deposit_status, false, classes)}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {state.map((item: any, key: any) => {
-                  return (
-                    <TableRow key={key}>
-                      <TableCell>{item.branch_name}</TableCell>
-                      {getTableBodyStatusValue(item.client_check_status.values, true, classes)}
-                      <TableCell align="right">{item.client_check_status.totalCount}</TableCell>
-                      <TableCell align="right">{item.client_check_status.totalDeposit}</TableCell>
-                      {getTableBodyStatusValue(item.check_deposit_status.values, false, classes)}
-                      <TableCell align="right">{item.check_deposit_status.totalDeposit}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </Paper>
-        ) : (
-          <div></div>
+                {getTableHeader(state[0].check_deposit_status, 2, classes)}
+                <TableCell align="center" colSpan={2} rowSpan={2}>
+                  Total Deposit
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                {getCountAmountHeader(state[0].client_check_status, true, classes)}
+                <TableCell align="center">Count</TableCell>
+                <TableCell align="center">Amount</TableCell>
+                {getCountAmountHeader(state[0].check_deposit_status, false, classes)}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {state.map((item: any, key: any) => {
+                return (
+                  <TableRow key={key}>
+                    <TableCell>{item.branch_name}</TableCell>
+                    {getTableBodyStatusValue(item.client_check_status.values, true, classes)}
+                    <TableCell align="right">{item.client_check_status.totalCount}</TableCell>
+                    <TableCell align="right">{item.client_check_status.totalDeposit}</TableCell>
+                    {getTableBodyStatusValue(item.check_deposit_status.values, false, classes)}
+                    <TableCell align="right">{item.check_deposit_status.totalDeposit}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
         )}
-      </Container>
-    );
-  }
-  return <div></div>;
+      </Paper>
+    </Container>
+  );
 }
 
 const generateGrandTotal = (data: object) => {

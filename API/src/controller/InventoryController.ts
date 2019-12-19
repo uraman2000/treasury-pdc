@@ -7,34 +7,20 @@ import { CheckDepositStatus } from "../entity/statuses/CheckDepositStatus";
 import { Branch } from "../entity/Branch";
 import { ClientAccountStatus } from "../entity/statuses/ClientAccountStatus";
 import { ReasonForHoldStatus } from "../entity/statuses/ReasonForHoldStatus";
+import ResponseCodes from "../../Constants/ResponseCodes";
 
+function nullIdentifier(value: any) {
+  return value ? value : "";
+}
 export default class InventoryController {
   private userRepository = getRepository(PDCInventory);
 
   async all(request: Request, response: Response, next: NextFunction) {
     return this.userRepository.find();
   }
-  // SELECT
-  //     branch.name,
-  //     client_bank_name,
-  //     check_date,
-  //     check_number,
-  //     check_amount,
-  //     account_number,
-  //     client_name,
-  //     client_account_status.status,
-  //     date_hold,
-  //     reason_for_hold_status.status,
-  //     hold_check_aging
-  // FROM
-  //     `pdc_inventory`
-  // LEFT JOIN check_deposit_status ON pdc_inventory.check_deposit_status = check_deposit_status.id
-  // LEFT JOIN client_account_status ON pdc_inventory.client_account_status = client_account_status.id
-  // LEFT JOIN branch ON pdc_inventory.branch = branch.id
-  // LEFT JOIN reason_for_hold_status ON pdc_inventory.reason_for_hold_status = reason_for_hold_status.id
-  // WHERE
-  //     check_deposit_status.status = "HOLD"
-  static summaryHeldChecks = async (request: Request, response: Response, next: NextFunction) => {
+
+  static summaryHeldChecks = async (req: Request, res: Response, next: NextFunction) => {
+    let region = req.params.regionId;
     const pdc = await getConnection()
       .createQueryBuilder()
       .select("branch.name", "branch_name")
@@ -66,8 +52,26 @@ export default class InventoryController {
         "PDCInventory.reason_for_hold_status = reason_for_hold_status.id"
       )
       .where("check_deposit_status.status = :status", { status: "HOLD" })
+      .andWhere("PDCInventory.region = :region", { region: region })
       .getRawMany();
-    response.send(pdc);
+    nullIdentifier("ass");
+
+    const cleanPDC = pdc.map((item: any, key: any) => {
+      return {
+        branch_name: nullIdentifier(item.branch_name),
+        client_account_status: nullIdentifier(item.client_account_status),
+        client_bank_name: nullIdentifier(item.client_bank_name),
+        check_date: nullIdentifier(item.check_date),
+        check_number: nullIdentifier(item.check_number),
+        check_amount: nullIdentifier(item.check_amount),
+        account_number: nullIdentifier(item.account_number),
+        client_name: nullIdentifier(item.client_name),
+        date_hold: nullIdentifier(item.date_hold),
+        reason_for_hold_status: nullIdentifier(item.reason_for_hold_status),
+        hold_check_aging: nullIdentifier(item.hold_check_aging)
+      };
+    });
+    res.status(ResponseCodes.OK).send(cleanPDC);
   };
 
   async one(request: Request, response: Response, next: NextFunction) {

@@ -13,6 +13,7 @@ import AdminUser from "./Components/AdminUser";
 import AdminStatus from "./Components/AdminStatus";
 import PageNotFound from "./Components/PageNotFound";
 import SummaryPerBranch from "./Components/SummaryPerBranch";
+import Report from "./Components/Report";
 
 const status = [
   "CLIENT ACCOUNT STATUS",
@@ -44,6 +45,7 @@ function App() {
 
           <DrawerNavigation>
             <ProtectedRoute path="/" component={InventoryTable} />
+            <ProtectedRoute path="/report" component={Report} />
             <ProtectedRoute
               path="/summary"
               component={() => <TabNavigation statusTabs={status} tabContentComponent={SummaryStatus} />}

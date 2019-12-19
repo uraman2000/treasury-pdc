@@ -43,6 +43,7 @@ import UserApiRespository from "../Library/UserApiRespository";
 import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded";
 import ShowChartRoundedIcon from "@material-ui/icons/ShowChartRounded";
 import TimeAgo from "react-timeago";
+import ListAltRoundedIcon from "@material-ui/icons/ListAltRounded";
 
 const drawerWidth = 240;
 
@@ -151,6 +152,12 @@ const sideDrawerList = {
       icon: <AssessmentRoundedIcon />,
       text: "Summary Per Branch",
       link: "/summary-per-branch"
+    },
+    {
+      key: "report",
+      icon: <ListAltRoundedIcon />,
+      text: "Report",
+      link: "/report"
     }
   ],
   private: [
@@ -161,7 +168,7 @@ const sideDrawerList = {
       link: "/admin/user"
     },
     {
-      key: "sttatus",
+      key: "status",
       icon: <ShowChartRoundedIcon />,
       text: "Status",
       link: "/admin/status"
