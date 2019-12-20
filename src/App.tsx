@@ -8,7 +8,6 @@ import SignUp from "./Components/SignUp";
 import DrawerNavigation from "./Components/DrawerNavigation";
 import SummaryStatus from "./Components/SummaryStatus";
 import TabNavigation from "./Components/TabNavigation";
-import { setAccess, getAccess } from "./utils";
 import AdminUser from "./Components/AdminUser";
 import AdminStatus from "./Components/AdminStatus";
 import PageNotFound from "./Components/PageNotFound";

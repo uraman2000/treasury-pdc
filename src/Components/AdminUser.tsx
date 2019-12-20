@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MaterialTable, { Column } from "material-table";
 import UserApiRespository from "../Library/UserApiRespository";
-import { getAccess } from "../utils";
 import { TextField } from "@material-ui/core";
 
 interface Row {

@@ -6,7 +6,6 @@ import { validate } from "class-validator";
 import { User } from "../entity/User";
 import config from "../config/config";
 import IResponse from "../../app/IResponse";
-import { checkRole, isAdmin } from "../middlewares/checkRole";
 
 class AuthController {
   static login = async (req: Request, res: Response) => {
@@ -47,13 +46,13 @@ class AuthController {
     const token = jwtSign(user.id, user.username, token_expiration, "access_token");
 
     const Rtoken = jwtSign(user.id, user.username, refresh_token_expiration, "refresh_token");
-    const isadmin = await isAdmin(user.id);
+
     //Send the jwt in the response
     res.send({
       access_token: token,
       expires_in: token_expiration,
       refresh_token: Rtoken,
-      isAdmin: isadmin
+      role: user.role
     });
   };
 
@@ -113,17 +112,18 @@ class AuthController {
     }
 
     const { userId, username } = jwtPayload;
+
+    const user = await getRepository(User).findOne(userId);
+
     const access_token = jwtSign(userId, username, token_expiration, "access_token");
 
     const new_refresh_token = jwtSign(userId, username, token_expiration, "refresh_token");
-    const isadmin = await isAdmin(userId);
-    //Send the jwt in the response
 
     res.status(200).send({
       access_token: access_token,
       expires_in: token_expiration,
       refresh_token: new_refresh_token,
-      isAdmin: isadmin
+      role: user.role
     });
   };
 

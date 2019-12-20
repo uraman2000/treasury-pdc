@@ -253,7 +253,7 @@ export default function DrawerNavigation({ children }: IProps) {
           <Typography variant="h6" className={classes.title}>
             {title}
           </Typography>
-          {getAccess().isAdmin === "true" ? (
+          {getAccess().role === "ADMIN" ? (
             <>
               <IconButton aria-label="show 11 new notifications" color="inherit" onClick={handleNotificationClick}>
                 <Badge badgeContent={state.length} color="secondary">
@@ -330,7 +330,7 @@ export default function DrawerNavigation({ children }: IProps) {
         </div>
         <Divider />
 
-        {getAccess().isAdmin === "true" ? (
+        {getAccess().role === "ADMIN" ? (
           <div>
             <ListItem button onClick={handleClick}>
               <ListItemIcon>
