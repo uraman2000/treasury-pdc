@@ -4,14 +4,14 @@ import InventoryController from "../controller/InventoryController";
 
 const router = Router();
 
+router.get("/", InventoryController.all);
+
 router.post("/", [checkJwt], InventoryController.save);
+
+router.delete("/:id([0-9]+)", [checkJwt], InventoryController.remove);
 
 router.get("/column-names", InventoryController.getColumnNames);
 
 router.get("/summary-held-checks/:regionId([0-9]+)", InventoryController.summaryHeldChecks);
-
-router.get("/", InventoryController.all);
-
-router.delete("/:id([0-9]+)", [checkJwt], InventoryController.remove);
 
 export default router;

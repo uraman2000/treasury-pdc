@@ -152,9 +152,6 @@ function column(headData: any, statuses: any) {
   return column;
 }
 
-function cleanDates(data: any) {
-  return data === "0000-00-00" ? "" : data;
-}
 export default function InventoryTable() {
   const initState = {
     columns: [],
@@ -168,15 +165,6 @@ export default function InventoryTable() {
       const statuses = await StatusApiRespository.allStatus();
 
       const data = await InventoryApiRespository.getInventory();
-      const clearDate = {};
-      data.forEach((element: any) => {
-        element.check_date = cleanDates(element.check_date);
-        element.date_deposited = cleanDates(element.date_deposited);
-        element.date_bounced = cleanDates(element.date_bounced);
-        element.date_re_deposited = cleanDates(element.date_re_deposited);
-        element.date_hold = cleanDates(element.date_hold);
-        element.OR_date = cleanDates(element.OR_date);
-      });
       const header = await Object.keys(data[0]);
       const columns = column(header, statuses);
       console.log(columns);

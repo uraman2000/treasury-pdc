@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
-import { getRepository } from "typeorm";
+import { getRepository, getConnection } from "typeorm";
 import { validate } from "class-validator";
-
+import * as bcrypt from "bcryptjs";
 import { User } from "../entity/User";
 import config from "../config/config";
 import IResponse from "../../app/IResponse";
+import { Roles } from "../entity/statuses/Roles";
 
 class AuthController {
   static login = async (req: Request, res: Response) => {
@@ -23,7 +24,19 @@ class AuthController {
     const userRepository = getRepository(User);
     let user: User;
     try {
-      user = await userRepository.findOneOrFail({ where: { username } });
+      user = await getConnection()
+        .createQueryBuilder()
+        .select("user.id", "id")
+        .addSelect("username")
+        .addSelect("password")
+        .addSelect("roles.role", "role")
+        .addSelect("status")
+        .addSelect("createdAt")
+        .addSelect("updatedAt")
+        .from(User, "user")
+        .leftJoin(Roles, "roles", "user.role = roles.id")
+        .where("user.username = :username", { username: username })
+        .getRawOne();
     } catch (error) {
       customRes.message = "invalid Username or Password";
       res.status(401).send(customRes);
@@ -34,8 +47,8 @@ class AuthController {
       customRes.message = "Your Account May Haven't Been Approved Or Disabled";
       res.status(401).send(customRes);
     }
-
-    if (!user.checkIfUnencryptedPasswordIsValid(password)) {
+    console.log(user);
+    if (!bcrypt.compareSync(password, user.password)) {
       //Check if encrypted password match
       customRes.message = "invalid Username or Password";
       res.status(401).send(customRes);
@@ -113,7 +126,18 @@ class AuthController {
 
     const { userId, username } = jwtPayload;
 
-    const user = await getRepository(User).findOne(userId);
+    const user = await getConnection()
+      .createQueryBuilder()
+      .select("username")
+      .addSelect("password")
+      .addSelect("roles.role", "role")
+      .addSelect("status")
+      .addSelect("createdAt")
+      .addSelect("updatedAt")
+      .from(User, "user")
+      .leftJoin(Roles, "roles", "user.role = roles.id")
+      .where("user.username = :username", { username: username })
+      .getRawOne();
 
     const access_token = jwtSign(userId, username, token_expiration, "access_token");
 

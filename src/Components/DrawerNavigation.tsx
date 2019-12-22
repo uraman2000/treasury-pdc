@@ -172,6 +172,12 @@ const sideDrawerList = {
       icon: <ShowChartRoundedIcon />,
       text: "Status",
       link: "/admin/status"
+    },
+    {
+      key: "role",
+      icon: <GroupRoundedIcon />,
+      text: "Role",
+      link: "/admin/roles"
     }
   ]
 };
@@ -253,6 +259,7 @@ export default function DrawerNavigation({ children }: IProps) {
           <Typography variant="h6" className={classes.title}>
             {title}
           </Typography>
+
           {getAccess().role === "ADMIN" ? (
             <>
               <IconButton aria-label="show 11 new notifications" color="inherit" onClick={handleNotificationClick}>

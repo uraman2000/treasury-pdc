@@ -6,6 +6,7 @@ import summary from "./summary";
 import status from "./status";
 import summaryBranch from "./summaryBranch";
 import region from "./region";
+import roles from "./roles";
 
 const routes = Router();
 
@@ -22,5 +23,7 @@ routes.use("/status", status);
 routes.use("/summary-per-branch", summaryBranch);
 
 routes.use("/region", region);
+
+routes.use("/roles", roles);
 
 export default routes;

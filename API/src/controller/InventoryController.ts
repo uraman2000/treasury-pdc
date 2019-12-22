@@ -80,11 +80,19 @@ export default class InventoryController {
   static all = async (req: Request, res: Response) => {
     const date = new Date();
     const formattedDate = date.toLocaleDateString();
-    console.log(formattedDate);
 
-    const shh = await getRepository(PDCInventory).find();
+    const pdc = await getRepository(PDCInventory).find();
 
-    res.status(200).send(shh);
+    pdc.forEach((element: any) => {
+      element.check_date = cleanDates(element.check_date);
+      element.date_deposited = cleanDates(element.date_deposited);
+      element.date_bounced = cleanDates(element.date_bounced);
+      element.date_re_deposited = cleanDates(element.date_re_deposited);
+      element.date_hold = cleanDates(element.date_hold);
+      element.OR_date = cleanDates(element.OR_date);
+    });
+
+    res.status(200).send(pdc);
   };
 
   static save = async (req: Request, res: Response) => {
@@ -171,4 +179,8 @@ async function getAll() {
 async function getStatus(statusTable: string) {
   const userRepository = await getRepository(statusTable);
   return await userRepository.find();
+}
+
+function cleanDates(params: string) {
+  return params === "0000-00-00" ? "" : params;
 }

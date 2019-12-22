@@ -1,41 +1,29 @@
 import { Request, Response, NextFunction } from "express";
-import { getRepository } from "typeorm";
+import { getRepository, getConnection } from "typeorm";
 
 import { User } from "../entity/User";
 import { async } from "q";
+import { Roles } from "../entity/statuses/Roles";
 
 export const checkRole = (roles: Array<string>) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     //Get the user ID from previous midleware
     const id = res.locals.jwtPayload.userId;
-
-    //Get user role from the database
-    const userRepository = getRepository(User);
     let user: User;
     try {
-      user = await userRepository.findOneOrFail(id);
+      user = await getConnection()
+        .createQueryBuilder()
+        .select("roles.role", "role")
+        .from(User, "user")
+        .leftJoin(Roles, "roles", "user.role = roles.id")
+        .where("user.id = :id", { id: id })
+        .getRawOne();
     } catch (id) {
       res.status(401).send();
     }
 
     //Check if array of authorized roles includes the user's role
-    if (roles.indexOf(user.role) > -1) next();
+    if (roles.indexOf(user.role.toString()) > -1) next();
     else res.status(401).send();
   };
-};
-
-export const isAdmin = async id => {
-  //Get the user ID from previous midleware
-
-  //Get user role from the database
-  const userRepository = getRepository(User);
-  let user: User;
-  try {
-    user = await userRepository.findOneOrFail(id);
-  } catch (id) {
-    return id;
-  }
-
-  //Check if array of authorized roles includes the user's role
-  return user.role === "ADMIN";
 };
