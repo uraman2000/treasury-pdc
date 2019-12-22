@@ -1,17 +1,18 @@
 import { Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
-import { getRepository } from "typeorm";
+import { getRepository, getConnection } from "typeorm";
 import { validate } from "class-validator";
-
+import * as bcrypt from "bcryptjs";
 import { User } from "../entity/User";
 import config from "../config/config";
 import IResponse from "../../app/IResponse";
+import { Roles } from "../entity/statuses/Roles";
 
 class AuthController {
   static login = async (req: Request, res: Response) => {
     //Check if username and password are set
     const customRes: IResponse = {};
-    const token_expiration = "1500";
+    const token_expiration = "8h";
     const refresh_token_expiration = "30d";
     let { username, password } = req.body;
 
@@ -23,17 +24,32 @@ class AuthController {
     const userRepository = getRepository(User);
     let user: User;
     try {
-      user = await userRepository.findOneOrFail({ where: { username } });
+      user = await getConnection()
+        .createQueryBuilder()
+        .select("user.id", "id")
+        .addSelect("username")
+        .addSelect("password")
+        .addSelect("roles.role", "role")
+        .addSelect("status")
+        .addSelect("createdAt")
+        .addSelect("updatedAt")
+        .from(User, "user")
+        .leftJoin(Roles, "roles", "user.role = roles.id")
+        .where("user.username = :username", { username: username })
+        .getRawOne();
     } catch (error) {
-      customRes.status = "FAILED";
       customRes.message = "invalid Username or Password";
       res.status(401).send(customRes);
       return;
     }
 
-    //Check if encrypted password match
-    if (!user.checkIfUnencryptedPasswordIsValid(password)) {
-      customRes.status = "FAILED";
+    if (user.status !== 2) {
+      customRes.message = "Your Account May Haven't Been Approved Or Disabled";
+      res.status(401).send(customRes);
+    }
+    console.log(user);
+    if (!bcrypt.compareSync(password, user.password)) {
+      //Check if encrypted password match
       customRes.message = "invalid Username or Password";
       res.status(401).send(customRes);
       return;
@@ -48,7 +64,8 @@ class AuthController {
     res.send({
       access_token: token,
       expires_in: token_expiration,
-      refresh_token: Rtoken
+      refresh_token: Rtoken,
+      role: user.role
     });
   };
 
@@ -91,11 +108,10 @@ class AuthController {
     user.hashPassword();
     userRepository.save(user);
     customRes.message = "Password Change Succesfully";
-    customRes.status = "SUCCESS";
     res.status(200).send(customRes);
   };
 
-  static refreshToken = (req: Request, res: Response) => {
+  static refreshToken = async (req: Request, res: Response) => {
     let { refresh_token } = req.body;
     let jwtPayload;
     const token_expiration = "8h";
@@ -109,6 +125,20 @@ class AuthController {
     }
 
     const { userId, username } = jwtPayload;
+
+    const user = await getConnection()
+      .createQueryBuilder()
+      .select("username")
+      .addSelect("password")
+      .addSelect("roles.role", "role")
+      .addSelect("status")
+      .addSelect("createdAt")
+      .addSelect("updatedAt")
+      .from(User, "user")
+      .leftJoin(Roles, "roles", "user.role = roles.id")
+      .where("user.username = :username", { username: username })
+      .getRawOne();
+
     const access_token = jwtSign(userId, username, token_expiration, "access_token");
 
     const new_refresh_token = jwtSign(userId, username, token_expiration, "refresh_token");
@@ -116,7 +146,8 @@ class AuthController {
     res.status(200).send({
       access_token: access_token,
       expires_in: token_expiration,
-      refresh_token: new_refresh_token
+      refresh_token: new_refresh_token,
+      role: user.role
     });
   };
 
@@ -128,7 +159,6 @@ class AuthController {
     try {
       jwtPayload = <any>jwt.verify(access_token, config.jwtSecret);
       customRes.message = "Token still available";
-      customRes.status = "SUCCESS";
       customRes.data = true;
       res.status(200).send(customRes);
     } catch (error) {
@@ -136,25 +166,6 @@ class AuthController {
       res.status(401).send(error);
       return;
     }
-  };
-
-  static signUp = async (req: Request, res: Response) => {
-    let { username, password, role } = req.body;
-    const userRepository = getRepository(User);
-    const customRes: IResponse = {};
-
-    let user = new User();
-    user.username = username;
-    user.password = password;
-    user.hashPassword();
-    user.role = role;
-
-    await userRepository.save(user);
-
-    customRes.message = "User has been successfully created";
-    customRes.status = "SUCCESS";
-    res.status(200).send(customRes);
-
   };
 }
 function jwtSign(userId, username, token_expiration, type) {

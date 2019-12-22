@@ -1,16 +1,21 @@
-import { Entity, PrimaryGeneratedColumn, Column, Double, Long } from "typeorm";
-import { Client } from "./Client";
+import { Entity, PrimaryGeneratedColumn, Column, Double, Long, JoinColumn, OneToOne } from "typeorm";
+import { ClientAccountStatus } from "./statuses/ClientAccountStatus";
+import { ClientCheckStatus } from "./statuses/ClientCheckStatus";
+import { CheckPayeeName } from "./statuses/CheckPayeeName";
+import { CheckDepositStatus } from "./statuses/CheckDepositStatus";
+import { ReasonForBounceStatus } from "./statuses/ReasonForBounceStatus";
+import { ReasonForHoldStatus } from "./statuses/ReasonForHoldStatus";
 
 @Entity()
 export class PDCInventory {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "varchar" })
-  region: string;
+  @Column({ type: "int" })
+  region: number;
 
   @Column({ type: "varchar" })
-  branch_name: string;
+  branch: string;
 
   @Column({ type: "varchar" })
   client_bank_name: string;
@@ -25,31 +30,37 @@ export class PDCInventory {
   check_amount: number;
 
   @Column({ type: "int" })
-  client_ID: number;
+  account_number: number;
+
+  @Column()
+  client_name: string;
 
   @Column({ type: "int" })
-  client_account_status_ID: number;
+  client_account_status: number;
 
   @Column({ type: "int" })
-  client_check_status_ID: number;
+  client_check_status: number;
 
   @Column({ type: "int" })
-  check_payee_name_ID: number;
+  check_payee_name: number;
 
   @Column({ type: "int" })
-  check_deposit_status_ID: number;
+  check_deposit_status: number;
 
   @Column({ type: "int" })
-  reason_for_bounce_status_ID: number;
+  reason_for_bounce_status: number;
 
   @Column({ type: "varchar" })
   deposit_today: string;
 
-  @Column({ type: "varchar" })
-  aging_undeposited: string;
+  @Column({ type: "int" })
+  aging_undeposited: number;
 
   @Column({ type: "varchar" })
   check_type_as_of_current_day: string;
+
+  @Column({ type: "date" })
+  date_deposited: Date;
 
   @Column({ type: "date" })
   date_bounced: Date;
@@ -61,13 +72,13 @@ export class PDCInventory {
   aging_redep: string;
 
   @Column({ type: "int" })
-  check_re_deposit_status_ID: number;
+  check_re_deposit_status: number;
 
   @Column({ type: "date" })
   date_hold: Date;
 
   @Column({ type: "int" })
-  reason_for_hold_status_ID: number;
+  reason_for_hold_status: number;
 
   @Column({ type: "int" })
   hold_check_aging: number;

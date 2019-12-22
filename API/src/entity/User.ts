@@ -16,9 +16,9 @@ export class User {
   @Length(4, 100)
   password: string;
 
-  @Column()
+  @Column({ type: "int" })
   @IsNotEmpty()
-  role: string;
+  role: number;
 
   @Column()
   @CreateDateColumn()
@@ -27,6 +27,9 @@ export class User {
   @Column()
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @Column()
+  status: number;
 
   hashPassword() {
     this.password = bcrypt.hashSync(this.password, 8);

@@ -1,7 +1,7 @@
 import { getConnection } from "typeorm";
 import { Request, Response } from "express";
 import { PDCInventory } from "../entity/PDCInventory";
-import Convert from "../utils/Convert";
+import Utils from "../utils/Utils";
 
 class SummaryController {
   static summaryStatus = async (req: Request, res: Response) => {
@@ -47,7 +47,7 @@ async function statusWithPercentage(tableName: string) {
     statusList.totalCount += item.count;
     statusList.totalAmount += item.amount;
   });
-  statusList.totalAmount = Convert.amount(statusList.totalAmount);
+  statusList.totalAmount = Utils.amount(statusList.totalAmount);
 
   statusList.statusItem = statusItem;
 
@@ -63,7 +63,7 @@ async function queryWithPercentage(statusTable: string) {
     .addSelect("Count(*)", "count")
     .addSelect("SUM(check_amount)", "amount")
     .from(statusTable, statusTable)
-    .leftJoin(PDCInventory, "PDCInventory", `PDCInventory.client_account_status_ID = ${statusTable}.id`)
+    .leftJoin(PDCInventory, "PDCInventory", `PDCInventory.${statusTable} = ${statusTable}.id`)
     .groupBy(`${statusTable}.id`)
     .getRawMany();
 
@@ -83,8 +83,8 @@ function calculatePercentage(statusList: StatusList): StatusList {
     status: item.status,
     count: item.count,
     amount: item.amount,
-    countPercentage: (item.count / listTemp.totalCount) * 100 + "%",
-    amountPercentage: ((item.amount / listTemp.totalAmount) * 100).toFixed(3) + "%"
+    countPercentage: item.count == 0 ? "0%" : (item.count / listTemp.totalCount) * 100 + "%",
+    amountPercentage: item.count == 0 ? "0%" : ((item.amount / listTemp.totalAmount) * 100).toFixed(3) + "%"
   }));
 
   listTemp.statusItem = statusItemTemp;

@@ -13,6 +13,4 @@ router.post("/refresh-token", AuthController.refreshToken);
 
 router.post("/check-token", AuthController.isTokenExpired);
 
-router.post("/signup", AuthController.signUp);
-
 export default router;

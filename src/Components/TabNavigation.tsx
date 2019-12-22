@@ -15,6 +15,11 @@ interface TabPanelProps {
   value: any;
 }
 
+interface Iprops {
+  statusTabs: any;
+  tabContentComponent: any;
+}
+
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
@@ -46,7 +51,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
-export default function SummaryNav() {
+export default function SummaryNav({ statusTabs, tabContentComponent: TabContentComponent }: Iprops) {
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
@@ -59,16 +64,6 @@ export default function SummaryNav() {
     setValue(index);
   };
 
-  const status = [
-    "ACCOUNT STATUS",
-    "CHECK DEPOSIT STATUS",
-    // "CHECK PAYEE NAME",
-    // "DEPOSIT TODAY STATUS",
-    "CLIENT CHECK STATUS",
-    "REASON FOR BOUNCE STATUS",
-    "REASON FOR HOLD STATUS"
-  ];
-
   return (
     <div className={classes.root}>
       <AppBar position="static" color="default">
@@ -80,7 +75,7 @@ export default function SummaryNav() {
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          {status.map((item: any, index: any) => (
+          {statusTabs.map((item: any, index: any) => (
             <Tab key={index} label={item} {...a11yProps(index)} />
           ))}
         </Tabs>
@@ -91,11 +86,11 @@ export default function SummaryNav() {
         index={value}
         onChangeIndex={handleChangeIndex}
       >
-        {status.map((item: any, index: any) => {
+        {statusTabs.map((item: any, index: any) => {
           const lowerCaseItem = item.toLowerCase().replace(/\W/g, "_");
           return (
             <TabPanel key={index} value={value} index={index} dir={theme.direction}>
-              <SummaryStatus tableName={lowerCaseItem} />
+              <TabContentComponent tableName={lowerCaseItem} />
             </TabPanel>
           );
         })}

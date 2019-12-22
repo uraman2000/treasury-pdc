@@ -32,6 +32,7 @@ export default class HandleToken {
 
         if (error.response.status === ResponseCodes.Unauthorized && data.expiredAt) {
           const originalRequest = error.config;
+
           await setAccess(await HandleToken.refresh(getAccess().refresh_token));
           originalRequest.headers.access_token = getAccess().access_token;
 

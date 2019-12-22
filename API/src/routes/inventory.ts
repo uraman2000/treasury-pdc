@@ -4,17 +4,14 @@ import InventoryController from "../controller/InventoryController";
 
 const router = Router();
 
-router.post("/", [checkJwt], InventoryController.save);
-
-router.get("/column-names", [checkJwt], InventoryController.getColumnNames);
-
 router.get("/", InventoryController.all);
+
+router.post("/", [checkJwt], InventoryController.save);
 
 router.delete("/:id([0-9]+)", [checkJwt], InventoryController.remove);
 
-//Change my password
-// router.post("/change-password", [checkJwt], AuthController.changePassword);
+router.get("/column-names", InventoryController.getColumnNames);
 
-// router.post("/accestoken", AuthController.refreshToken);
+router.get("/summary-held-checks/:regionId([0-9]+)", InventoryController.summaryHeldChecks);
 
 export default router;

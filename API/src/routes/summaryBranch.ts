@@ -5,8 +5,6 @@ import SumarryPerBranchController from "../controller/SummaryPerBranchController
 
 const router = Router();
 
-router.get("/per-branch/:statusTableName", SumarryPerBranchController.all);
-router.get("/:statusTableName", SummaryController.summaryStatus);
-
+router.get("/:regionId", SumarryPerBranchController.all);
 
 export default router;

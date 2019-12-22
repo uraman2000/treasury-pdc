@@ -7,21 +7,58 @@ import ProtectedRoute from "./Components/ProtectedRoute";
 import SignUp from "./Components/SignUp";
 import DrawerNavigation from "./Components/DrawerNavigation";
 import SummaryStatus from "./Components/SummaryStatus";
-import SummaryNav from "./Components/SummaryNav";
-import { setAccess } from "./utils";
+import TabNavigation from "./Components/TabNavigation";
+import AdminUser from "./Components/AdminUser";
+import AdminStatus from "./Components/AdminStatus";
+import PageNotFound from "./Components/PageNotFound";
+import SummaryPerBranch from "./Components/SummaryPerBranch";
+import Report from "./Components/Report";
+import AdminRoles from "./Components/AdminRoles";
+
+const status = [
+  "CLIENT ACCOUNT STATUS",
+  "CHECK DEPOSIT STATUS",
+  // "CHECK PAYEE NAME",
+  // "DEPOSIT TODAY STATUS",
+  "CLIENT CHECK STATUS",
+  "REASON FOR BOUNCE STATUS",
+  "REASON FOR HOLD STATUS"
+];
+
+const adminStatus = [
+  "CLIENT ACCOUNT STATUS",
+  "CHECK DEPOSIT STATUS",
+  "CHECK PAYEE NAME",
+  // "DEPOSIT TODAY STATUS",
+  "CLIENT CHECK STATUS",
+  "REASON FOR BOUNCE STATUS",
+  "REASON FOR HOLD STATUS"
+];
 
 function App() {
   return (
     <>
       <Router>
         <Switch>
-          {/* {deleteAccess()} */}
-          <Route path="/login" component={Login} />
+          <Route roles={["admin", "manager"]} path="/login" component={Login} />
           <Route path="/signup" component={SignUp} />
+
           <DrawerNavigation>
             <ProtectedRoute path="/" component={InventoryTable} />
-            <ProtectedRoute path="/summary" component={SummaryNav} />
+            <ProtectedRoute path="/report" component={Report} />
+            <ProtectedRoute
+              path="/summary"
+              component={() => <TabNavigation statusTabs={status} tabContentComponent={SummaryStatus} />}
+            />
+            <ProtectedRoute path="/summary-per-branch" component={SummaryPerBranch} />
+            <ProtectedRoute path="/admin/user" component={AdminUser} />
+            <ProtectedRoute path="/admin/roles" component={AdminRoles} />
+            <ProtectedRoute
+              path="/admin/status"
+              component={() => <TabNavigation statusTabs={adminStatus} tabContentComponent={AdminStatus} />}
+            />
           </DrawerNavigation>
+          <Route path="*" exact component={PageNotFound} />
         </Switch>
       </Router>
     </>
