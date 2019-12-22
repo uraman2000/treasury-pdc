@@ -8,6 +8,7 @@ export default class SummaryApiRepository {
       const response = await (await HandleToken.getInstance()).get(`summary/${tableName}`);
       return response.data;
     } catch (error) {
+      HandleToken.delete(error);
       return error.response.data;
     }
   }
@@ -17,6 +18,7 @@ export default class SummaryApiRepository {
       const response = await (await HandleToken.getInstance()).get(`summary-per-branch/${region}`);
       return response.data;
     } catch (error) {
+      HandleToken.delete(error);
       return error.response.data;
     }
   }
@@ -26,6 +28,7 @@ export default class SummaryApiRepository {
       const response = await (await HandleToken.getInstance()).get(`inventory/summary-held-checks/${region}`);
       return response.data;
     } catch (error) {
+      HandleToken.delete(error);
       return error.response.data;
     }
   }

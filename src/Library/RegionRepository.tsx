@@ -6,12 +6,10 @@ import HandleToken from "./HandleToken";
 export default class RegionRepository {
   public static async All() {
     try {
-      const response = await(await HandleToken.getInstance()).get(`region/`);
+      const response = await (await HandleToken.getInstance()).get(`region/`);
       return response.data;
     } catch (error) {
-      if (error.response.status === ResponseCodes.Unauthorized) {
-        deleteAccess();
-      }
+      HandleToken.delete(error);
       return error.response.data;
     }
   }

@@ -9,9 +9,7 @@ class UserApiRespository {
       const response = await (await HandleToken.getInstance()).get(`user`);
       return response.data;
     } catch (error) {
-      if (error.response.status === ResponseCodes.Unauthorized) {
-        deleteAccess();
-      }
+      HandleToken.delete(error);
       return error.response.data;
     }
   }
@@ -21,7 +19,7 @@ class UserApiRespository {
       const response = await (await HandleToken.getInstance()).patch(`user/${data.id}`, data);
       return response.data;
     } catch (error) {
-      console.log(error.response);
+      HandleToken.delete(error);
       return error.response.data;
     }
   }
@@ -31,6 +29,7 @@ class UserApiRespository {
       const response = await (await HandleToken.getInstance()).delete(`${baseUrl}/user/${id}`);
       return response.data;
     } catch (error) {
+      HandleToken.delete(error);
       return error.response.data;
     }
   }
@@ -40,6 +39,7 @@ class UserApiRespository {
       const response = await (await HandleToken.getInstance()).get(`user/pending`);
       return response.data;
     } catch (error) {
+      HandleToken.delete(error);
       return error.response.data;
     }
   }

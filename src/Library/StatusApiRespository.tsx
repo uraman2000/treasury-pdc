@@ -8,6 +8,7 @@ export default class StatusApiRespository {
       const response = await (await HandleToken.getInstance()).get(`status/`);
       return response.data;
     } catch (error) {
+      HandleToken.delete(error);
       return error.response.data;
     }
   }
@@ -16,6 +17,7 @@ export default class StatusApiRespository {
       const response = await (await HandleToken.getInstance()).get(`status/${tableName}`);
       return response.data;
     } catch (error) {
+      HandleToken.delete(error);
       return error.response.data;
     }
   }
@@ -24,6 +26,7 @@ export default class StatusApiRespository {
       const response = await (await HandleToken.getInstance()).post(`status/${tableName}`, data);
       return response.data;
     } catch (error) {
+      HandleToken.delete(error);
       return error.response.data;
     }
   }
@@ -32,6 +35,7 @@ export default class StatusApiRespository {
       const response = await (await HandleToken.getInstance()).delete(`status/${tableName}/${id}`);
       return response.data;
     } catch (error) {
+      HandleToken.delete(error);
       return error.response.data;
     }
   }

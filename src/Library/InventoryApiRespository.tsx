@@ -9,9 +9,7 @@ class InventoryApiRespository {
       const response = await (await HandleToken.getInstance()).get(`inventory/column-names`);
       return response.data;
     } catch (error) {
-      if (error.response.status === ResponseCodes.Unauthorized) {
-        deleteAccess();
-      }
+      HandleToken.delete(error);
       return error.response.data;
     }
   }
@@ -21,9 +19,7 @@ class InventoryApiRespository {
       const response = await (await HandleToken.getInstance()).get(`inventory/`);
       return response.data;
     } catch (error) {
-      if (error.response.status === ResponseCodes.Unauthorized) {
-        deleteAccess();
-      }
+      HandleToken.delete(error);
       return error.response.data;
     }
   }
@@ -33,6 +29,7 @@ class InventoryApiRespository {
       const response = await (await HandleToken.getInstance()).post(`inventory/`, data);
       return response.data;
     } catch (error) {
+      HandleToken.delete(error);
       return error.response.data;
     }
   }
@@ -42,6 +39,7 @@ class InventoryApiRespository {
       const response = await (await HandleToken.getInstance()).delete(`${baseUrl}/inventory/${id}`);
       return response.data;
     } catch (error) {
+      HandleToken.delete(error);
       return error.response.data;
     }
   }
