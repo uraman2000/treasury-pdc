@@ -1,6 +1,6 @@
 import axios from "axios";
 import { baseUrl, ResponseCodes } from "../Constatnt";
-import { getAccess, setAccess } from "../utils";
+import { getAccess, setAccess, deleteAccess } from "../utils";
 
 export default class HandleToken {
   public static async refresh(refresh_token: any) {
@@ -43,5 +43,11 @@ export default class HandleToken {
     );
 
     return axiosInstance;
+  }
+
+  public static delete(error: any) {
+    if (error.response.status === ResponseCodes.Unauthorized) {
+      deleteAccess();
+    }
   }
 }

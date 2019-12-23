@@ -9,4 +9,8 @@ export class Roles {
   @Column()
   @IsNotEmpty()
   role: string;
+
+  @Column({ length: 700 })
+  @IsNotEmpty()
+  access: string;
 }
