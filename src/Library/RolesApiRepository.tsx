@@ -13,9 +13,19 @@ export default class RolesApiRepository {
       return error.response.data;
     }
   }
+
+  public static async getLookUp() {
+    try {
+      const response = await (await HandleToken.getInstance()).get(`roles/lookup`);
+      return response.data;
+    } catch (error) {
+      HandleToken.delete(error);
+      return error.response.data;
+    }
+  }
   public static async getOne(id: any) {
     try {
-      const response = await (await HandleToken.getInstance()).get(`roles/${id}`);
+      const response = await (await HandleToken.getInstance()).get(`roles/roleName/${id}`);
       return response.data;
     } catch (error) {
       HandleToken.delete(error);

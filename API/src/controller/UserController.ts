@@ -5,6 +5,7 @@ import { validate } from "class-validator";
 import { User } from "../entity/User";
 import { UserStatus } from "../entity/statuses/UserStatus";
 import { async } from "q";
+import HandleResponse from "../../Constants/HandleResponse";
 
 class UserController {
   static listAll = async (req: Request, res: Response) => {
@@ -43,34 +44,34 @@ class UserController {
 
   static newUser = async (req: Request, res: Response) => {
     //Get parameters from the body
-    let { username, password, role } = req.body;
+    let { username, password } = req.body;
     let user = new User();
     user.username = username;
     user.password = password;
-    user.role = role;
+    // user.role = role;
     user.status = 1;
 
     //Validade if the parameters are ok
-    const errors = await validate(user);
-    if (errors.length > 0) {
-      res.status(400).send(errors);
-      return;
-    }
+    // const errors = await validate(user);
+    // if (errors.length > 0) {
+    //   res.status(400).send(errors);
+    //   return;
+    // }
 
     //Hash the password, to securely store on DB
     user.hashPassword();
 
-    //Try to save. If fails, the username is already in use
-    const userRepository = getRepository(User);
-    try {
-      await userRepository.save(user);
-    } catch (e) {
-      res.status(409).send("username already in use");
-      return;
-    }
+    // //Try to save. If fails, the username is already in use
+    // const userRepository = getRepository(User);
+    // try {
+    //   await userRepository.save(user);
+    // } catch (e) {
+    //   res.status(409).send("username already in use");
+    //   return;
+    // }
 
     //If all ok, send 201 response
-    res.status(201).send("User created");
+    HandleResponse.save(res, user, User);
   };
 
   static editUser = async (req: Request, res: Response) => {

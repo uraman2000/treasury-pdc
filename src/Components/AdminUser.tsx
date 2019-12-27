@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import MaterialTable, { Column } from "material-table";
 import UserApiRespository from "../Library/UserApiRespository";
+import RolesApiRepository from "../Library/RolesApiRepository";
 import { TextField } from "@material-ui/core";
 
 interface Row {
@@ -32,6 +33,7 @@ export default function AdminUser() {
     const fetchData = async () => {
       const data = await UserApiRespository.get();
       const header = await Object.keys(data[0]);
+      const role = await RolesApiRepository.getLookUp();
 
       const column: any = header.map(item => {
         if (item === "password") {
@@ -64,6 +66,14 @@ export default function AdminUser() {
             title: item.toUpperCase(),
             field: item,
             editable: "never"
+          };
+        }
+
+        if (item === "role") {
+          return {
+            title: item.toUpperCase(),
+            field: item,
+            lookup: role
           };
         }
         if (item === "status") {

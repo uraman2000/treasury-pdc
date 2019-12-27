@@ -17,7 +17,6 @@ export class User {
   password: string;
 
   @Column({ type: "int" })
-  @IsNotEmpty()
   role: number;
 
   @Column()

@@ -99,7 +99,7 @@ export default function SignUp() {
             </Grid>
 
             <Grid item xs={12}>
-              <TextField
+              {/* <TextField
                 variant="outlined"
                 required
                 fullWidth
@@ -109,7 +109,7 @@ export default function SignUp() {
                 id="role"
                 onChange={formik.handleChange}
                 value={formik.values.role}
-              />
+              /> */}
             </Grid>
           </Grid>
           <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>

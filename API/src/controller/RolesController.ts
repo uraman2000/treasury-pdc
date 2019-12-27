@@ -13,14 +13,16 @@ export default class RolesController {
     let roles = await getRepository(Roles).findOne({ role: req.params.role });
     roles.access = JSON.parse(roles.access);
 
-    // roles.access.forEach((element: any) => {
-    //   if (element === false) {
-    //     element = "never";
-    //     return;
-    //   }
-    //   element = "";
-    // });
     res.status(ResponseCodes.OK).send(roles);
+  };
+
+  static lookUp = async (req: Request, res: Response) => {
+    let roles = await getRepository(Roles).find({ select: ["id", "role"] });
+    let obj = {};
+    roles.forEach((element: any) => {
+      obj[element.id] = element.role;
+    });
+    res.status(ResponseCodes.OK).send(obj);
   };
 
   static all = async (req: Request, res: Response) => {
@@ -45,7 +47,7 @@ export default class RolesController {
     let access: Access = req.body.access;
     const customRes: IResponse = {};
     const getone = await getRepository(Roles).findOne({ role: role });
- 
+
     if (getone && id === undefined) {
       customRes.message = "Role Already Exist";
       res.status(ResponseCodes.CONFLICT).send(customRes);

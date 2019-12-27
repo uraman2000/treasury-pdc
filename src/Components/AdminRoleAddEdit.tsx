@@ -40,13 +40,14 @@ export default function AdminRoleAddEdit() {
   const keys: any = [];
   const [state, setState] = useState<defaultState>({ role: "", access: {} });
 
-  const fetchData = async () => {
-    const access = await RolesApiRepository.getAccessValues();
-    setState({ ...state, access: access });
-  };
   useEffect(() => {
+    const fetchData = async () => {
+      const access = await RolesApiRepository.getAccessValues();
+      setState({ ...state, access: access });
+    };
     if (data === null) {
       fetchData();
+
       return;
     }
 
