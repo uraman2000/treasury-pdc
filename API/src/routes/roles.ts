@@ -5,6 +5,7 @@ import RolesController from "../controller/RolesController";
 const router = Router();
 
 router.get("/", RolesController.all);
+router.get("/access-values", RolesController.accessValue);
 
 router.post("/", RolesController.save);
 

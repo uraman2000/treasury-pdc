@@ -10,7 +10,17 @@ import ResponseCodes from "../../Constants/ResponseCodes";
 
 export default class RolesController {
   static all = async (req: Request, res: Response) => {
-    res.send(await getRepository(Roles).find());
+    // console.log(JSON.parse(roles.access));
+    let roles = await getRepository(Roles).find();
+
+    roles.forEach(element => {
+      element.access = JSON.parse(element.access);
+    });
+    res.send(roles);
+  };
+
+  static accessValue = async (req: Request, res: Response) => {
+    res.send(await new Access());
   };
 
   static one = async (req: Request, res: Response) => {
@@ -36,7 +46,6 @@ export default class RolesController {
     roles.id = id;
     roles.role = role;
     roles.access = JSON.stringify(pdc);
-    // console.log(JSON.parse(roles.access));
     HandleResponse.save(res, roles, Roles);
   };
 
@@ -91,109 +100,109 @@ export class Access {
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  region: boolean;
+  region: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  branch: boolean;
+  branch: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  client_bank_name: boolean;
+  client_bank_name: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  check_date: boolean;
+  check_date: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  check_number: boolean;
+  check_number: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  check_amount: boolean;
+  check_amount: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  account_number: boolean;
+  account_number: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  client_name: boolean;
+  client_name: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  client_account_status: boolean;
+  client_account_status: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  client_check_status: boolean;
+  client_check_status: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  check_payee_name: boolean;
+  check_payee_name: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  check_deposit_status: boolean;
+  check_deposit_status: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  reason_for_bounce_status: boolean;
+  reason_for_bounce_status: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  deposit_today: boolean;
+  deposit_today: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  aging_undeposited: boolean;
+  aging_undeposited: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  check_type_as_of_current_day: boolean;
+  check_type_as_of_current_day: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  date_deposited: boolean;
+  date_deposited: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  date_bounced: boolean;
+  date_bounced: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  date_re_deposited: boolean;
+  date_re_deposited: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  aging_redep: boolean;
+  aging_redep: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  check_re_deposit_status: boolean;
+  check_re_deposit_status: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  date_hold: boolean;
+  date_hold: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  reason_for_hold_status: boolean;
+  reason_for_hold_status: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  hold_check_aging: boolean;
+  hold_check_aging: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  OR_number: boolean;
+  OR_number: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  OR_date: boolean;
+  OR_date: boolean = false;
   @IsBoolean()
   @Column()
   @IsNotEmpty()
-  remarks: boolean;
+  remarks: boolean = false;
 }

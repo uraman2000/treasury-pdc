@@ -14,7 +14,7 @@ import PageNotFound from "./Components/PageNotFound";
 import SummaryPerBranch from "./Components/SummaryPerBranch";
 import Report from "./Components/Report";
 import AdminRoles from "./Components/AdminRoles";
-import AdminRoleEdit from "./Components/AdminRoleEdit";
+import AdminRoleAddEdit from "./Components/AdminRoleAddEdit";
 
 const status = [
   "CLIENT ACCOUNT STATUS",
@@ -54,7 +54,7 @@ function App() {
             <ProtectedRoute path="/summary-per-branch" component={SummaryPerBranch} />
             <ProtectedRoute path="/admin/user" component={AdminUser} />
             <ProtectedRoute path="/admin/roles" component={AdminRoles} />
-            <ProtectedRoute path="/admin/roles/edit" component={AdminRoleEdit} />
+            <ProtectedRoute path="/admin/roles/edit" component={AdminRoleAddEdit} />
             <ProtectedRoute
               path="/admin/status"
               component={() => <TabNavigation statusTabs={adminStatus} tabContentComponent={AdminStatus} />}

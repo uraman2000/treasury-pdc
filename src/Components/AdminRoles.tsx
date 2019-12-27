@@ -1,22 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import { Container, Icon, Button, IconButton } from "@material-ui/core";
+import { Container, Icon, Button, IconButton, Grid } from "@material-ui/core";
 import RolesApiRepository from "../Library/RolesApiRepository";
 import EditRoundedIcon from "@material-ui/icons/EditRounded";
 import DeleteRoundedIcon from "@material-ui/icons/DeleteRounded";
 import { Link } from "react-router-dom";
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650
-  }
-});
+import AddCircleRoundedIcon from "@material-ui/icons/AddCircleRounded";
+import { ResponseCodes } from "../Constatnt";
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      flexGrow: 1
+    },
+    paper: {
+      padding: theme.spacing(2)
+    }
+  })
+);
 export default function AdminRoles() {
   const classes = useStyles();
   const [state, setstate] = useState();
@@ -28,11 +35,33 @@ export default function AdminRoles() {
     fetchData();
   }, []);
 
+  const handleRemove = async (id: any) => {
+    if ((await RolesApiRepository.deleteRoles(id)) === ResponseCodes.Successful) {
+      let newstate = state.filter((e: any) => e.id !== id);
+
+      setstate(newstate);
+    }
+  };
   if (!state) return null;
-  console.log(state);
+
   return (
     <Container>
-      <Paper>
+      <Paper className={classes.paper}>
+        <Grid container alignItems="flex-start" justify="flex-end" direction="row">
+          <Button
+            component={Link}
+            to={{
+              pathname: "/admin/roles/edit",
+              state: null
+            }}
+            variant="contained"
+            color="primary"
+            size="large"
+            startIcon={<AddCircleRoundedIcon />}
+          >
+            Add
+          </Button>
+        </Grid>
         <Table>
           <TableHead>
             <TableRow>
@@ -51,20 +80,12 @@ export default function AdminRoles() {
                     component={Link}
                     to={{
                       pathname: "/admin/roles/edit",
-                      data: item.access // your data array of objects
+                      state: item
                     }}
                   >
                     <EditRoundedIcon />
-                    {console.log(item.access)}
-
-                    {/* <Link
-                      to={{
-                        pathname: "/admin/roles/edit"
-                        // data: item.access // your data array of objects
-                      }}
-                    /> */}
                   </IconButton>
-                  <IconButton>
+                  <IconButton onClick={(e: any) => handleRemove(item.id)}>
                     <DeleteRoundedIcon />
                   </IconButton>
                 </TableCell>

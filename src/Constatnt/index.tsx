@@ -2,7 +2,7 @@ export const baseUrl = "http://localhost:3011";
 
 export const ResponseCodes = {
   Unauthorized: 401,
-  Successful: 0,
+  Successful: 200,
   "Either Source or Target wallet is not existing": 8,
   "Insufficient funds": 20,
   "System Error": 22,
