@@ -7,4 +7,5 @@ export default class ResponseCodes {
   static FORBIDDEN = 403;
   static BAD_REQUEST = 400;
   static NOT_FOUND = 404;
+  static CONFLICT = 409;
 }

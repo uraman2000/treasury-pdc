@@ -49,7 +49,6 @@ export default class StatusController {
     const reason_for_hold_status = await statusRepository("reason_for_hold_status").find();
     const check_payee_name = await statusRepository("check_payee_name").find();
 
-    console.log(check_payee_name);
     const obj: any = {};
     obj["client_account_status"] = cleanStatus(client_account_status);
     obj["check_deposit_status"] = cleanStatus(check_deposit_status);

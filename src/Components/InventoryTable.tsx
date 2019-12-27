@@ -5,8 +5,9 @@ import InventoryApiRespository from "../Library/InventoryApiRespository";
 import StatusApiRespository from "../Library/StatusApiRespository";
 import { async } from "q";
 import { TextField } from "@material-ui/core";
-import { localDate, today, agingDate } from "../utils";
+import { localDate, today, agingDate, getAccess } from "../utils";
 import TableTextField from "./TableTextField";
+import RolesApiRepository from "../Library/RolesApiRepository";
 
 interface TableState {
   columns: Array<Column<IData>>;
@@ -111,7 +112,7 @@ function holdChecksAging(props: any) {
   return value;
 }
 
-function column(headData: any, statuses: any) {
+function column(headData: any, statuses: any, roles: any) {
   const column: any = headData.map((item: any) => {
     const itemTittle = item.toUpperCase().replace(/_/g, " ");
     let obj: any = {};
@@ -120,6 +121,10 @@ function column(headData: any, statuses: any) {
     if (item === "id") {
       obj["editable"] = "never";
       obj["defaultSort"] = "asc";
+    }
+
+    if (roles.access[item] === false) {
+      obj["editable"] = "never";
     }
 
     if (item === "deposit_today") {
@@ -165,9 +170,9 @@ export default function InventoryTable() {
       const statuses = await StatusApiRespository.allStatus();
 
       const data = await InventoryApiRespository.getInventory();
+      const role = await RolesApiRepository.getOne(getAccess().role);
       const header = await Object.keys(data[0]);
-      const columns = column(header, statuses);
-      console.log(columns);
+      const columns = column(header, statuses, role);
 
       setState({ columns: columns, data: data });
     };

@@ -9,31 +9,50 @@ import IResponse from "../../app/IResponse";
 import ResponseCodes from "../../Constants/ResponseCodes";
 
 export default class RolesController {
+  static one = async (req: Request, res: Response) => {
+    let roles = await getRepository(Roles).findOne({ role: req.params.role });
+    roles.access = JSON.parse(roles.access);
+
+    // roles.access.forEach((element: any) => {
+    //   if (element === false) {
+    //     element = "never";
+    //     return;
+    //   }
+    //   element = "";
+    // });
+    res.status(ResponseCodes.OK).send(roles);
+  };
+
   static all = async (req: Request, res: Response) => {
-    // console.log(JSON.parse(roles.access));
     let roles = await getRepository(Roles).find();
 
     roles.forEach(element => {
       element.access = JSON.parse(element.access);
     });
-    res.send(roles);
+    res.status(ResponseCodes.OK).send(roles);
   };
 
   static accessValue = async (req: Request, res: Response) => {
     res.send(await new Access());
   };
 
-  static one = async (req: Request, res: Response) => {
-    res.send(await getRepository(Roles).findOne(req.params.id));
-  };
+  // static one = async (req: Request, res: Response) => {
+  //   res.send(await getRepository(Roles).findOne(req.params.id));
+  // };
 
   static save = async (req: Request, res: Response) => {
     let { id, role }: Roles = req.body;
     let access: Access = req.body.access;
-
+    const customRes: IResponse = {};
+    const getone = await getRepository(Roles).findOne({ role: role });
+ 
+    if (getone && id === undefined) {
+      customRes.message = "Role Already Exist";
+      res.status(ResponseCodes.CONFLICT).send(customRes);
+      return;
+    }
     let pdc = instantiateAccess(access);
 
-    const customRes: IResponse = {};
     customRes.errors = await getErrors(pdc);
 
     if (customRes.errors.length > 0) {
@@ -50,6 +69,9 @@ export default class RolesController {
   };
 
   static remove = async (req: Request, res: Response) => {
+    if (req.params.id == "1") {
+      return;
+    }
     HandleResponse.remove(res, req, Roles);
   };
 }

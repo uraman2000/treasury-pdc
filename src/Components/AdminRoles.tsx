@@ -85,6 +85,7 @@ export default function AdminRoles() {
                   >
                     <EditRoundedIcon />
                   </IconButton>
+
                   <IconButton onClick={(e: any) => handleRemove(item.id)}>
                     <DeleteRoundedIcon />
                   </IconButton>

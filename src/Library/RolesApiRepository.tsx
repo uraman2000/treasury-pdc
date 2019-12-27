@@ -13,6 +13,15 @@ export default class RolesApiRepository {
       return error.response.data;
     }
   }
+  public static async getOne(id: any) {
+    try {
+      const response = await (await HandleToken.getInstance()).get(`roles/${id}`);
+      return response.data;
+    } catch (error) {
+      HandleToken.delete(error);
+      return error.response.data;
+    }
+  }
   public static async getAccessValues() {
     try {
       const response = await (await HandleToken.getInstance()).get(`roles/access-values`);
