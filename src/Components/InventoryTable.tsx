@@ -8,6 +8,7 @@ import { TextField } from "@material-ui/core";
 import { localDate, today, agingDate, getAccess } from "../utils";
 import TableTextField from "./TableTextField";
 import RolesApiRepository from "../Library/RolesApiRepository";
+import RegionRepository from "../Library/RegionRepository";
 
 interface TableState {
   columns: Array<Column<IData>>;
@@ -72,7 +73,7 @@ function agingReDepositLogic(props: any) {
   return value;
 }
 
-function statusLogic(item: any, statuses: any) {
+function lookUpLogic(item: any, statuses: any) {
   if (
     item === "client_account_status" ||
     item === "client_check_status" ||
@@ -112,11 +113,17 @@ function holdChecksAging(props: any) {
   return value;
 }
 
-function column(headData: any, statuses: any, roles: any) {
+function column(headData: any, statuses: any, roles: any, regionLookup: any) {
   const column: any = headData.map((item: any) => {
     const itemTittle = item.toUpperCase().replace(/_/g, " ");
     let obj: any = {};
-    obj["lookup"] = statusLogic(item, statuses);
+    obj["lookup"] = lookUpLogic(item, statuses);
+
+    if (item === "region") {
+      obj["lookup"] = regionLookup;
+    }
+
+
     obj["type"] = typeLogic(item);
     if (item === "id") {
       obj["editable"] = "never";
@@ -168,11 +175,12 @@ export default function InventoryTable() {
   useEffect(() => {
     const fetchData = async () => {
       const statuses = await StatusApiRespository.allStatus();
-
+      const regionLookup = await RegionRepository.lookUp();
       const data = await InventoryApiRespository.getInventory();
       const role = await RolesApiRepository.getOne(getAccess().role);
       const header = await Object.keys(data[0]);
-      const columns = column(header, statuses, role);
+      
+      const columns = column(header, statuses, role, regionLookup);
 
       setState({ columns: columns, data: data });
     };

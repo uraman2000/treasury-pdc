@@ -7,6 +7,8 @@ const router = Router();
 
 router.get("/", RegionController.all);
 
+router.get("/lookUp", RegionController.lookUp);
+
 router.get("/:id([0-9]+)", RegionController.one);
 
 router.post("/", RegionController.save);
