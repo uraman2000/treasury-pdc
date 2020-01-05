@@ -65,16 +65,14 @@ export default function AdminRoles() {
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell>Actions</TableCell>
               <TableCell>ID</TableCell>
               <TableCell>Role</TableCell>
-              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {state.map((item: any, key: any) => (
               <TableRow key={key}>
-                <TableCell>{item.id}</TableCell>
-                <TableCell>{item.role}</TableCell>
                 <TableCell>
                   <IconButton
                     component={Link}
@@ -90,6 +88,8 @@ export default function AdminRoles() {
                     <DeleteRoundedIcon />
                   </IconButton>
                 </TableCell>
+                <TableCell>{item.id}</TableCell>
+                <TableCell>{item.role}</TableCell>
               </TableRow>
             ))}
           </TableBody>

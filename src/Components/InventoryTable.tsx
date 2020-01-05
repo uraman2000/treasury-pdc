@@ -123,7 +123,6 @@ function column(headData: any, statuses: any, roles: any, regionLookup: any) {
       obj["lookup"] = regionLookup;
     }
 
-
     obj["type"] = typeLogic(item);
     if (item === "id") {
       obj["editable"] = "never";
@@ -179,7 +178,7 @@ export default function InventoryTable() {
       const data = await InventoryApiRespository.getInventory();
       const role = await RolesApiRepository.getOne(getAccess().role);
       const header = await Object.keys(data[0]);
-      
+
       const columns = column(header, statuses, role, regionLookup);
 
       setState({ columns: columns, data: data });
@@ -193,7 +192,7 @@ export default function InventoryTable() {
       columns={state.columns}
       data={state.data}
       options={{
-        pageSize: 100,
+        pageSize: 10,
         pageSizeOptions: [100, 200, 500],
         loadingType: "linear"
       }}

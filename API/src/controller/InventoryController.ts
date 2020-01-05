@@ -1,4 +1,4 @@
-import { getRepository, getConnection } from "typeorm";
+import { getRepository, getConnection, Connection } from "typeorm";
 import { NextFunction, Request, Response } from "express";
 import { PDCInventory } from "../entity/PDCInventory";
 import { validate } from "class-validator";
@@ -8,15 +8,63 @@ import { Branch } from "../entity/Branch";
 import { ClientAccountStatus } from "../entity/statuses/ClientAccountStatus";
 import { ReasonForHoldStatus } from "../entity/statuses/ReasonForHoldStatus";
 import ResponseCodes from "../../Constants/ResponseCodes";
+import { CheckPayeeName } from "../entity/statuses/CheckPayeeName";
+import { ClientCheckStatus } from "../entity/statuses/ClientCheckStatus";
+import { DepositTodayStatus } from "../entity/statuses/DepositTodayStatus";
+import { ReasonForBounceStatus } from "../entity/statuses/ReasonForBounceStatus";
 
 function nullIdentifier(value: any) {
   return value ? value : "";
 }
+
+const status = async (status: string) => {
+  return await getConnection()
+    .createQueryBuilder()
+    .select("*")
+    .from(status, status)
+    .getRawMany();
+};
 export default class InventoryController {
   private userRepository = getRepository(PDCInventory);
 
+  static testData = async (req: Request, res: Response) => {
+    //  const accountStatus = await getRepository("ClientAccountStatus").find();
+    //  const checkDepositStatus = await getRepository(CheckDepositStatus).find();
+    //  const checkPayeeName = await getRepository(CheckPayeeName).find();
+    //  const clientCheckStatus = await getRepository(ClientCheckStatus).find();
+    //  const depositTodayStatus = await getRepository(DepositTodayStatus).find();
+    //  const reasonForBounceStatus = await getRepository(ReasonForBounceStatus).find();
+    //  const reasonForHoldStatus = await getRepository(ReasonForHoldStatus).find();
+    const allStatusData = [
+      "client_account_status",
+      "check_deposit_status",
+      "check_payee_name",
+      "client_check_status",
+      "deposit_today_status",
+      "reason_for_bounce_status",
+      "reason_for_hold_status"
+    ];
+
+    const pdcRepository = getRepository(PDCInventory);
+
+    allStatusData.forEach(async (element: any) => {
+      const data = await status(element);
+
+      for (let i = 0; i < 10; i++) {
+        await data.forEach(async (item: any) => {
+          let pdc = new PDCInventory();
+          pdc[element] = item.id;
+          pdc.check_amount = 1000;
+          await pdcRepository.save(pdc);
+        });
+      }
+    });
+
+    // console.log(accountStatus);
+  };
+
   async all(request: Request, response: Response, next: NextFunction) {
-    return this.userRepository.find();
+    return this.userRepository.find({ take: 10 });
   }
 
   static summaryHeldChecks = async (req: Request, res: Response, next: NextFunction) => {
@@ -81,7 +129,7 @@ export default class InventoryController {
     const date = new Date();
     const formattedDate = date.toLocaleDateString();
 
-    const pdc = await getRepository(PDCInventory).find();
+    const pdc = await getRepository(PDCInventory).find({ take: 20 });
 
     pdc.forEach((element: any) => {
       element.check_date = cleanDates(element.check_date);
