@@ -11,6 +11,7 @@ export default function TableTextField(props: IProps) {
         className="MuiInputBase-input MuiInput-input"
         placeholder={props.props.columnDef.title}
         type="text"
+        required
         value={props.value}
         onChange={e => props.props.onChange(e.target.value)}
       />

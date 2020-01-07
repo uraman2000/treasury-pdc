@@ -1,12 +1,22 @@
-import IData from "../Components/Interfaces/IData";
+import axios from "axios";
 import { baseUrl, ResponseCodes } from "../Constatnt";
-import HandleToken from "./HandleToken";
 import { deleteAccess } from "../utils";
+import HandleToken from "./HandleToken";
 
-class UserApiRespository {
-  public static async get() {
+export default class BankApiRespository {
+  public static async All() {
     try {
-      const response = await (await HandleToken.getInstance()).get(`user`);
+      const response = await (await HandleToken.getInstance()).get(`bank/`);
+      return response.data;
+    } catch (error) {
+      HandleToken.delete(error);
+      return error.response.data;
+    }
+  }
+
+  public static async lookUp() {
+    try {
+      const response = await (await HandleToken.getInstance()).get(`bank/lookUp`);
       return response.data;
     } catch (error) {
       HandleToken.delete(error);
@@ -16,7 +26,7 @@ class UserApiRespository {
 
   public static async save(data: any) {
     try {
-      const response = await (await HandleToken.getInstance()).post(`user`, data);
+      const response = await (await HandleToken.getInstance()).post(`bank/`, data);
       return response.data;
     } catch (error) {
       HandleToken.delete(error);
@@ -26,17 +36,7 @@ class UserApiRespository {
 
   public static async delete(id: number) {
     try {
-      const response = await (await HandleToken.getInstance()).delete(`${baseUrl}/user/${id}`);
-      return response.data;
-    } catch (error) {
-      HandleToken.delete(error);
-      return error.response.data;
-    }
-  }
-
-  public static async getAllPending() {
-    try {
-      const response = await (await HandleToken.getInstance()).get(`user/pending`);
+      const response = await (await HandleToken.getInstance()).delete(`${baseUrl}/bank/${id}`);
       return response.data;
     } catch (error) {
       HandleToken.delete(error);
@@ -44,5 +44,3 @@ class UserApiRespository {
     }
   }
 }
-
-export default UserApiRespository;

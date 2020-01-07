@@ -30,7 +30,7 @@ export default class StatusApiRespository {
       return error.response.data;
     }
   }
-  public static async Delete(tableName: string, id: any) {
+  public static async delete(tableName: string, id: any) {
     try {
       const response = await (await HandleToken.getInstance()).delete(`status/${tableName}/${id}`);
       return response.data;

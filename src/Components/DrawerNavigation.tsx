@@ -44,6 +44,7 @@ import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded";
 import ShowChartRoundedIcon from "@material-ui/icons/ShowChartRounded";
 import TimeAgo from "react-timeago";
 import ListAltRoundedIcon from "@material-ui/icons/ListAltRounded";
+import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 
 const drawerWidth = 240;
 
@@ -178,6 +179,12 @@ const sideDrawerList = {
       icon: <GroupRoundedIcon />,
       text: "Role",
       link: "/admin/roles"
+    },
+    {
+      key: "bank",
+      icon: <AccountBalanceIcon />,
+      text: "Bank",
+      link: "/admin/bank"
     }
   ]
 };

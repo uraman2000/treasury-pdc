@@ -66,7 +66,7 @@ export default function AdminRoles() {
           <TableHead>
             <TableRow>
               <TableCell>Actions</TableCell>
-              <TableCell>ID</TableCell>
+              {/* <TableCell>ID</TableCell> */}
               <TableCell>Role</TableCell>
             </TableRow>
           </TableHead>
@@ -88,7 +88,7 @@ export default function AdminRoles() {
                     <DeleteRoundedIcon />
                   </IconButton>
                 </TableCell>
-                <TableCell>{item.id}</TableCell>
+                {/* <TableCell>{item.id}</TableCell> */}
                 <TableCell>{item.role}</TableCell>
               </TableRow>
             ))}

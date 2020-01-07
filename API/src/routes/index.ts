@@ -7,6 +7,8 @@ import status from "./status";
 import summaryBranch from "./summaryBranch";
 import region from "./region";
 import roles from "./roles";
+import branch from "./branch";
+import bank from "./bank";
 
 const routes = Router();
 
@@ -25,5 +27,10 @@ routes.use("/summary-per-branch", summaryBranch);
 routes.use("/region", region);
 
 routes.use("/roles", roles);
+
+routes.use("/branch", branch);
+
+routes.use("/bank", bank);
+
 
 export default routes;

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import MaterialTable, { Column } from "material-table";
-import UserApiRespository from "../Library/UserApiRespository";
-import StatusApiRespository from "../Library/StatusApiRespository";
-import { array } from "prop-types";
+import BankApiRespository from "../Library/BankApiRespository";
+import RegionRepository from "../Library/RegionRepository";
 
 interface Row {
   id: number;
@@ -14,16 +13,18 @@ interface TableState {
   data: Row[];
 }
 
-interface Iprops {
-  tableName?: any;
+function typeLogic(item: any) {
+  if (
+    item === "account_number" ||
+    item === "maintaining_balance" ||
+    item === "chq_cost_perpc" ||
+    item === "buffer"
+  ) {
+    return "numeric";
+  }
 }
 
-const capitalize = (s: string) => {
-  if (typeof s !== "string") return "";
-  return s.charAt(0).toUpperCase() + s.slice(1);
-};
-
-export default function AdminStatus(props: Iprops) {
+export default function AdminBank() {
   const initState = {
     columns: [],
     data: []
@@ -32,22 +33,36 @@ export default function AdminStatus(props: Iprops) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await StatusApiRespository.All(props.tableName);
+      const data = await BankApiRespository.All();
+      const regionLookUp = await RegionRepository.lookUp();
+
       const header = await Object.keys(data[0]);
 
       const column: any = header.map((item: any) => {
+        const itemTittle = item.toUpperCase().replace(/_/g, " ");
+        let obj: any = {};
+
+        obj["type"] = typeLogic(item);
         if (item === "id") {
-          return {
-            title: item.toUpperCase(),
-            field: item,
-            editable: "never",
-            hidden: true
-          };
+          obj["hidden"] = true;
+          obj["editable"] = "never";
         }
-        return {
-          title: item.toUpperCase(),
-          field: item
-        };
+
+        if (item === "region") {
+          obj["lookup"] = regionLookUp;
+        }
+
+        if (item === "createdAt") {
+          obj["hidden"] = true;
+        }
+        if (item === "created_by") {
+          obj["hidden"] = true;
+        }
+
+        obj["title"] = itemTittle;
+        obj["field"] = item;
+
+        return obj;
       });
 
       setState({ columns: column, data: data });
@@ -72,7 +87,7 @@ export default function AdminStatus(props: Iprops) {
                 setState((prevState: any) => {
                   const data = [...prevState.data];
                   data.push(newData);
-                  StatusApiRespository.Save(props.tableName, newData);
+                  BankApiRespository.save(newData);
                   return { ...prevState, data };
                 });
               }, 600);
@@ -85,7 +100,7 @@ export default function AdminStatus(props: Iprops) {
                   setState(prevState => {
                     const data = [...prevState.data];
                     data[data.indexOf(oldData)] = newData;
-                    StatusApiRespository.Save(props.tableName, newData);
+                    BankApiRespository.save(newData);
                     return { ...prevState, data };
                   });
                 }
@@ -98,7 +113,7 @@ export default function AdminStatus(props: Iprops) {
                 setState(prevState => {
                   const data = [...prevState.data];
                   data.splice(data.indexOf(oldData), 1);
-                  StatusApiRespository.delete(props.tableName, oldData.id);
+                  BankApiRespository.delete(oldData.id);
                   return { ...prevState, data };
                 });
               }, 600);

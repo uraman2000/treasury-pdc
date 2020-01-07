@@ -25,7 +25,7 @@ const status = async (status: string) => {
     .getRawMany();
 };
 export default class InventoryController {
-  private userRepository = getRepository(PDCInventory);
+  private pdcRepository = getRepository(PDCInventory);
 
   static testData = async (req: Request, res: Response) => {
     //  const accountStatus = await getRepository("ClientAccountStatus").find();
@@ -49,12 +49,15 @@ export default class InventoryController {
 
     allStatusData.forEach(async (element: any) => {
       const data = await status(element);
-
-      for (let i = 0; i < 10; i++) {
+      // console.log(element);
+      // console.log(data);
+      for (let i = 1; i < 10; i++) {
         await data.forEach(async (item: any) => {
           let pdc = new PDCInventory();
+          pdc.region = 1;
           pdc[element] = item.id;
           pdc.check_amount = 1000;
+          console.log(pdc);
           await pdcRepository.save(pdc);
         });
       }
@@ -64,7 +67,12 @@ export default class InventoryController {
   };
 
   async all(request: Request, response: Response, next: NextFunction) {
-    return this.userRepository.find({ take: 10 });
+    return this.pdcRepository.find({
+      take: 10,
+      order: {
+        check_number: "DESC"
+      }
+    });
   }
 
   static summaryHeldChecks = async (req: Request, res: Response, next: NextFunction) => {
@@ -102,7 +110,6 @@ export default class InventoryController {
       .where("check_deposit_status.status = :status", { status: "HOLD" })
       .andWhere("PDCInventory.region = :region", { region: region })
       .getRawMany();
-    nullIdentifier("ass");
 
     const cleanPDC = pdc.map((item: any, key: any) => {
       return {
@@ -123,7 +130,7 @@ export default class InventoryController {
   };
 
   async one(request: Request, response: Response, next: NextFunction) {
-    return this.userRepository.findOne(request.params.id);
+    return this.pdcRepository.findOne(request.params.id);
   }
   static all = async (req: Request, res: Response) => {
     const date = new Date();

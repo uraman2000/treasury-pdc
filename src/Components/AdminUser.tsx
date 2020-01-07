@@ -65,7 +65,8 @@ export default function AdminUser() {
           return {
             title: item.toUpperCase(),
             field: item,
-            editable: "never"
+            editable: "never",
+            hidden: true
           };
         }
 

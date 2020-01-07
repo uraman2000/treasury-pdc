@@ -15,6 +15,7 @@ import SummaryPerBranch from "./Components/SummaryPerBranch";
 import Report from "./Components/Report";
 import AdminRoles from "./Components/AdminRoles";
 import AdminRoleAddEdit from "./Components/AdminRoleAddEdit";
+import AdminBank from "./Components/AdminBank";
 
 const status = [
   "CLIENT ACCOUNT STATUS",
@@ -53,6 +54,7 @@ function App() {
             />
             <ProtectedRoute path="/summary-per-branch" component={SummaryPerBranch} />
             <ProtectedRoute path="/admin/user" component={AdminUser} />
+            <ProtectedRoute path="/admin/bank" component={AdminBank} />
             <ProtectedRoute path="/admin/roles" component={AdminRoles} />
             <ProtectedRoute path="/admin/roles/edit" component={AdminRoleAddEdit} />
             <ProtectedRoute

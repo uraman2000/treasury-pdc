@@ -36,6 +36,9 @@ const useStyles = makeStyles({
   borderLeftRight: {
     borderRight: "1px solid rgba(224, 224, 224, 1)",
     borderLeft: "1px solid rgba(224, 224, 224, 1)"
+  },
+  paper: {
+    // width: "fit-content"
   }
 });
 
@@ -112,7 +115,7 @@ export default function SummaryPerBranch() {
 
   return (
     <Container>
-      <Paper>
+      <Paper className={classes.paper}>
         <RegionSelector callback={populateTable} />
         {!state ? null : (
           <Table className={classes.table} aria-label="simple table">

@@ -9,6 +9,8 @@ import { localDate, today, agingDate, getAccess } from "../utils";
 import TableTextField from "./TableTextField";
 import RolesApiRepository from "../Library/RolesApiRepository";
 import RegionRepository from "../Library/RegionRepository";
+import BranchApiRespository from "../Library/BranchApiRespository";
+import BankApiRespository from "../Library/BankApiRespository";
 
 interface TableState {
   columns: Array<Column<IData>>;
@@ -98,6 +100,10 @@ function typeLogic(item: any) {
   ) {
     return "date";
   }
+
+  if (item === "check_amount" || item === "check_number" || item === "account_number") {
+    return "numeric";
+  }
 }
 
 function holdChecksAging(props: any) {
@@ -113,7 +119,7 @@ function holdChecksAging(props: any) {
   return value;
 }
 
-function column(headData: any, statuses: any, roles: any, regionLookup: any) {
+function column(headData: any, statuses: any, roles: any, regionLookup: any, branchLookup: any, bankLookup: any) {
   const column: any = headData.map((item: any) => {
     const itemTittle = item.toUpperCase().replace(/_/g, " ");
     let obj: any = {};
@@ -122,11 +128,18 @@ function column(headData: any, statuses: any, roles: any, regionLookup: any) {
     if (item === "region") {
       obj["lookup"] = regionLookup;
     }
+    if (item === "branch") {
+      obj["lookup"] = branchLookup;
+    }
+    if (item === "client_bank_name") {
+      obj["lookup"] = bankLookup;
+    }
 
     obj["type"] = typeLogic(item);
     if (item === "id") {
       obj["editable"] = "never";
       obj["defaultSort"] = "asc";
+      obj["hidden"] = true;
     }
 
     if (roles.access[item] === false) {
@@ -177,9 +190,11 @@ export default function InventoryTable() {
       const regionLookup = await RegionRepository.lookUp();
       const data = await InventoryApiRespository.getInventory();
       const role = await RolesApiRepository.getOne(getAccess().role);
+      const branchLookup = await BranchApiRespository.lookUp();
+      const bankLookup = await BankApiRespository.lookUp();
       const header = await Object.keys(data[0]);
 
-      const columns = column(header, statuses, role, regionLookup);
+      const columns = column(header, statuses, role, regionLookup, branchLookup, bankLookup);
 
       setState({ columns: columns, data: data });
     };
