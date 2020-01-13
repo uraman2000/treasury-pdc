@@ -16,7 +16,7 @@ class UserApiRespository {
 
   public static async save(data: any) {
     try {
-      const response = await (await HandleToken.getInstance()).post(`user`, data);
+      const response = await(await HandleToken.getInstance()).patch(`${baseUrl}/user/${data.id}`, data);
       return response.data;
     } catch (error) {
       HandleToken.delete(error);

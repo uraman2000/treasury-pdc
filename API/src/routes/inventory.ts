@@ -4,7 +4,7 @@ import InventoryController from "../controller/InventoryController";
 
 const router = Router();
 
-router.get("/", InventoryController.all);
+router.post("/paginate", InventoryController.paginate);
 
 router.get("/testData", InventoryController.testData);
 

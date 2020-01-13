@@ -47,7 +47,7 @@ class AuthController {
       customRes.message = "Your Account May Haven't Been Approved Or Disabled";
       res.status(401).send(customRes);
     }
-    console.log(user);
+
     if (!bcrypt.compareSync(password, user.password)) {
       //Check if encrypted password match
       customRes.message = "invalid Username or Password";
@@ -76,8 +76,7 @@ class AuthController {
 
     //Get parameters from the body
     const { oldPassword, newPassword } = req.body;
-    console.log(oldPassword);
-    console.log(newPassword);
+
     if (!(oldPassword && newPassword)) {
       res.status(400).send();
     }

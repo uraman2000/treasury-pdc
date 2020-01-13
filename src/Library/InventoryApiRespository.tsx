@@ -16,8 +16,8 @@ class InventoryApiRespository {
 
   public static async getInventory() {
     try {
-      const response = await (await HandleToken.getInstance()).get(`inventory/`);
-      return response.data;
+      const response = await (await HandleToken.getInstance()).post(`inventory/paginate?page=1&limit=1`);
+      return response.data.data;
     } catch (error) {
       HandleToken.delete(error);
       return error.response.data;

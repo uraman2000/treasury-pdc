@@ -21,7 +21,7 @@ createConnection()
     app.use("/", routes);
 
     app.listen(3011, () => {
-      console.log("Server started on port 3011!");
+
     });
   })
   .catch(error => console.log(error));

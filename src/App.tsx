@@ -62,7 +62,7 @@ function App() {
               component={() => <TabNavigation statusTabs={adminStatus} tabContentComponent={AdminStatus} />}
             />
           </DrawerNavigation>
-          <Route path="*" exact component={PageNotFound} />
+          <Route path="*" component={PageNotFound} />
         </Switch>
       </Router>
     </>

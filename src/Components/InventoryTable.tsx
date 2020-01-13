@@ -11,6 +11,9 @@ import RolesApiRepository from "../Library/RolesApiRepository";
 import RegionRepository from "../Library/RegionRepository";
 import BranchApiRespository from "../Library/BranchApiRespository";
 import BankApiRespository from "../Library/BankApiRespository";
+import HandleToken from "../Library/HandleToken";
+import Axios from "axios";
+import { baseUrl } from "../Constatnt";
 
 interface TableState {
   columns: Array<Column<IData>>;
@@ -169,6 +172,9 @@ function column(headData: any, statuses: any, roles: any, regionLookup: any, bra
     }
     obj["title"] = itemTittle;
     obj["field"] = item;
+    if (item === "client_name") {
+      obj["customFilterAndSearch"] = () => {};
+    }
 
     return obj;
   });
@@ -200,60 +206,79 @@ export default function InventoryTable() {
     };
     fetchData();
   }, []);
-
+  const tableRef: any = React.createRef();
   return (
     <MaterialTable
       title=""
       columns={state.columns}
-      data={state.data}
+      tableRef={tableRef}
+      // onSearchChange={e => console.log(e)}
+      data={(query: any) =>
+        new Promise(async (resolve, reject) => {
+          let url = `${baseUrl}/inventory/paginate`;
+          url += "?page=" + (query.page + 1);
+          url += "&limit=" + query.pageSize;
+          const filters = query.filters;
+
+          fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(filters)
+          })
+            .then(response => response.json())
+            .then(result => {
+              resolve({
+                data: result.data,
+                page: result.page - 1,
+                totalCount: result.total
+              });
+            });
+        })
+      }
+      actions={[
+        {
+          icon: "refresh",
+          tooltip: "Refresh Data",
+          isFreeAction: true,
+          onClick: () => tableRef.current && tableRef.current.onQueryChange()
+        }
+      ]}
       options={{
         pageSize: 10,
-        pageSizeOptions: [100, 200, 500],
-        loadingType: "linear"
+        pageSizeOptions: [10, 20, 30, 40, 50],
+        loadingType: "overlay",
+
+        filtering: true,
+        search: true,
+        addRowPosition: "first"
+        // debounceInterval: 10000
       }}
       editable={{
         onRowAdd: newData =>
-          new Promise(resolve => {
-            setTimeout(() => {
-              resolve();
-              setState((prevState: any) => {
-                const data = [...prevState.data];
-                data.push(newData);
-                InventoryApiRespository.saveInventory(newData);
-                return { ...prevState, data };
-              });
-            }, 600);
+          new Promise(async resolve => {
+            await InventoryApiRespository.saveInventory(newData);
+            tableRef.current.onQueryChange();
+            resolve();
           }),
         onRowUpdate: (newData, oldData) =>
-          new Promise(resolve => {
-            setTimeout(() => {
-              resolve();
-              if (oldData) {
-                setState(prevState => {
-                  const data = [...prevState.data];
-                  newData["deposit_today"] = deposit_today_logic(newData);
-                  newData["aging_undeposited"] = agingUnDepositLogic(newData);
-                  newData["aging_redep"] = agingReDepositLogic(newData);
-                  newData["hold_check_aging"] = Number(holdChecksAging(newData));
-                  data[data.indexOf(oldData)] = newData;
-                  console.log(newData);
-                  InventoryApiRespository.saveInventory(newData);
-                  return { ...prevState, data };
-                });
-              }
-            }, 600);
+          new Promise(async resolve => {
+            if (oldData) {
+              newData["deposit_today"] = deposit_today_logic(newData);
+              newData["aging_undeposited"] = agingUnDepositLogic(newData);
+              newData["aging_redep"] = agingReDepositLogic(newData);
+              newData["hold_check_aging"] = Number(holdChecksAging(newData));
+              await InventoryApiRespository.saveInventory(newData);
+              tableRef.current.onQueryChange();
+            }
+            resolve();
           }),
         onRowDelete: oldData =>
-          new Promise(resolve => {
-            setTimeout(() => {
-              resolve();
-              setState(prevState => {
-                const data = [...prevState.data];
-                data.splice(data.indexOf(oldData), 1);
-                InventoryApiRespository.deleteInventory(oldData.id);
-                return { ...prevState, data };
-              });
-            }, 600);
+          new Promise(async resolve => {
+            await InventoryApiRespository.deleteInventory(oldData.id);
+            resolve();
+            tableRef.current.onQueryChange();
           })
       }}
     />

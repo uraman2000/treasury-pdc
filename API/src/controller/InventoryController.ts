@@ -49,31 +49,19 @@ export default class InventoryController {
 
     allStatusData.forEach(async (element: any) => {
       const data = await status(element);
-      // console.log(element);
-      // console.log(data);
+
       for (let i = 1; i < 10; i++) {
         await data.forEach(async (item: any) => {
           let pdc = new PDCInventory();
           pdc.region = 1;
           pdc[element] = item.id;
           pdc.check_amount = 1000;
-          console.log(pdc);
+
           await pdcRepository.save(pdc);
         });
       }
     });
-
-    // console.log(accountStatus);
   };
-
-  async all(request: Request, response: Response, next: NextFunction) {
-    return this.pdcRepository.find({
-      take: 10,
-      order: {
-        check_number: "DESC"
-      }
-    });
-  }
 
   static summaryHeldChecks = async (req: Request, res: Response, next: NextFunction) => {
     let region = req.params.regionId;
@@ -150,6 +138,71 @@ export default class InventoryController {
     res.status(200).send(pdc);
   };
 
+  static paginate = async (req: Request, res: Response) => {
+    const page = req.query.page * 1;
+    const limit = req.query.limit * 1;
+    const search = req.query.search;
+    const filter = req.body;
+    // res.status(ResponseCodes.OK).send(filter);
+    let pdc: any = {};
+    const result = {};
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    let filterValue;
+    if (filter.length >= 0) filterValue = await filterTable(filter);
+
+    // console.log(filter);
+    pdc = await getRepository(PDCInventory).find({
+      order: {
+        id: "DESC"
+      },
+      take: limit,
+      skip: startIndex,
+      where: filterValue,
+      cache: true
+    });
+    // if (search) {
+    //   pdc = await getRepository(PDCInventory).find({
+    //     take: limit,
+    //     skip: startIndex,
+    //     where: filterValue
+    //   });
+    // } else {
+    //   pdc = await getRepository(PDCInventory).find({
+    //     take: limit,
+    //     skip: startIndex
+    //   });
+    // }
+
+    const count = await getRepository(PDCInventory).count({
+      take: limit,
+      skip: startIndex,
+      where: filterValue
+    });
+
+    // SELECT * FROM pdc_inventory WHERE CONCAT(`client_name`,`deposit_today`) LIKE '%change%'
+
+    // if (endIndex < pdc.length) {
+    //   result["next"] = {
+    //     page: page + 1,
+    //     limit: limit
+    //   };
+    // }
+
+    // if (startIndex > 0) {
+    //   result["previous"] = {
+    //     page: page - 1,
+    //     limit: limit
+    //   };
+    // }
+
+    result["data"] = pdc;
+    result["page"] = page;
+    result["total"] = count;
+    res.status(ResponseCodes.OK).send(result);
+  };
+
   static save = async (req: Request, res: Response) => {
     await getRepository(PDCInventory).save(req.body);
     res.status(201).send("User created");
@@ -165,7 +218,6 @@ export default class InventoryController {
       };
     });
 
-    console.log(await getStatus("account_status"));
     res.status(200).send(formated);
   };
 
@@ -188,14 +240,6 @@ function toTitleCase(phrase: any) {
     .split(" ")
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
-}
-
-async function validateErrors(res: any, object: any) {
-  const errors = await validate(object);
-  if (errors.length > 0) {
-    res.status(400).send(errors);
-    return;
-  }
 }
 
 async function getAll() {
@@ -238,4 +282,36 @@ async function getStatus(statusTable: string) {
 
 function cleanDates(params: string) {
   return params === "0000-00-00" ? "" : params;
+}
+
+async function filterTable(filter: any) {
+  // [
+  //   {
+  //     column: { lookup: [Object], title: "BRANCH", field: "branch", tableData: [Object] },
+  //     operator: "=",
+  //     value: ["2", "1"]
+  //   }
+  // ];
+
+  let whereValues: string = "";
+
+  await filter.map(item => {
+    const field = item.column.field;
+    const value = item.value;
+    console.log(item.column.tableData);
+    if (value.length === 0) return;
+    if (typeof value === "object") {
+      whereValues += `${field} in (${value}) and `;
+      return;
+    }
+    if (item.column.type === "numeric") {
+      whereValues += `${field} = ${value} and `;
+      return;
+    }
+    whereValues += `${field} like '%${value}%' and `;
+  });
+
+  whereValues = whereValues.replace(/\s(and\s)$/g, "");
+  console.log(whereValues);
+  return whereValues;
 }

@@ -45,7 +45,6 @@ export default class RolesApiRepository {
   public static async saveRoles(data: any) {
     try {
       const response = await (await HandleToken.getInstance()).post(`roles/`, data);
-      console.log(response);
       return response.data;
     } catch (error) {
       HandleToken.delete(error);

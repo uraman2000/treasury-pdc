@@ -114,7 +114,6 @@ export default function AdminUser() {
                     const data = [...prevState.data];
                     data[data.indexOf(oldData)] = newData;
                     UserApiRespository.save(newData);
-                    console.log(newData);
                     return { ...prevState, data };
                   });
                 }
