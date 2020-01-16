@@ -39,7 +39,7 @@ class UserApiRespository {
       const response = await (await HandleToken.getInstance()).get(`user/pending`);
       return response.data;
     } catch (error) {
-      HandleToken.delete(error);
+      // HandleToken.delete(error);
       return error.response.data;
     }
   }

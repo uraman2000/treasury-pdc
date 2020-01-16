@@ -106,18 +106,17 @@ export default function AdminUser() {
         data={state.data}
         editable={{
           onRowUpdate: (newData, oldData) =>
-            new Promise(resolve => {
-              setTimeout(() => {
-                resolve();
-                if (oldData) {
-                  setState(prevState => {
-                    const data = [...prevState.data];
-                    data[data.indexOf(oldData)] = newData;
-                    UserApiRespository.save(newData);
-                    return { ...prevState, data };
-                  });
-                }
-              }, 600);
+            new Promise(async resolve => {
+              await UserApiRespository.save(newData);
+              if (oldData) {
+                setState(prevState => {
+                  const data = [...prevState.data];
+                  newData.password = "";
+                  data[data.indexOf(oldData)] = newData;
+                  return { ...prevState, data };
+                });
+              }
+              resolve();
             }),
           onRowDelete: oldData =>
             new Promise(resolve => {

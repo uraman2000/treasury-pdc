@@ -251,7 +251,7 @@ export default function InventoryTable() {
         loadingType: "overlay",
         sorting: false,
         filtering: true,
-        search: true,
+        // search: true,
         addRowPosition: "first"
         // debounceInterval: 10000
       }}
