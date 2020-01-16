@@ -142,7 +142,7 @@ function column(headData: any, statuses: any, roles: any, regionLookup: any, bra
     if (item === "id") {
       obj["editable"] = "never";
       obj["defaultSort"] = "asc";
-      obj["hidden"] = true;
+      // obj["hidden"] = true;
     }
 
     if (roles.access[item] === false) {
@@ -249,7 +249,7 @@ export default function InventoryTable() {
         pageSize: 10,
         pageSizeOptions: [10, 20, 30, 40, 50],
         loadingType: "overlay",
-
+        sorting: false,
         filtering: true,
         search: true,
         addRowPosition: "first"

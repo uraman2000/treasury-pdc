@@ -35,10 +35,10 @@ function Copyright() {
 }
 
 const useStyles = makeStyles(theme => ({
-  "@global": {
-    body: {
-      backgroundColor: theme.palette.common.white
-    }
+  container: {
+    backgroundColor: "#f5f5f5",
+    width: "100%",
+    height: "100%"
   },
   paper: {
     marginTop: theme.spacing(8),
@@ -96,71 +96,73 @@ export default function Login() {
   });
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
+    <div className={classes.container}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
 
-        <form className={classes.form} action={""} onSubmit={formik.handleSubmit}>
-          <Grid container>
-            <Grid item>
-              <Typography className={classes.invalidEror} variant="caption" display="block">
-                {state.isErrorShow ? `* ${state.isErrorMessage}` : null}
-              </Typography>
+          <form className={classes.form} action={""} onSubmit={formik.handleSubmit}>
+            <Grid container>
+              <Grid item>
+                <Typography className={classes.invalidEror} variant="caption" display="block">
+                  {state.isErrorShow ? `* ${state.isErrorMessage}` : null}
+                </Typography>
+              </Grid>
             </Grid>
-          </Grid>
-          <TextField
-            className={classes.username}
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="Username"
-            label="Username"
-            autoFocus
-            name="username"
-            onChange={formik.handleChange}
-            value={formik.values.username}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            onChange={formik.handleChange}
-            value={formik.values.password}
-          />
-          <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
-          <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
-            Sign In
-          </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
+            <TextField
+              className={classes.username}
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="Username"
+              label="Username"
+              autoFocus
+              name="username"
+              onChange={formik.handleChange}
+              value={formik.values.username}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              onChange={formik.handleChange}
+              value={formik.values.password}
+            />
+            <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
+            <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+              Sign In
+            </Button>
+            <Grid container>
+              <Grid item xs>
+                <Link href="#" variant="body2">
+                  Forgot password?
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link href="/signup" variant="body2">
+                  {"Don't have an account? Sign Up"}
+                </Link>
+              </Grid>
             </Grid>
-            <Grid item>
-              <Link href="/signup" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
-        </form>
-      </div>
-      <Box mt={8}>
-        <Copyright />
-      </Box>
-    </Container>
+          </form>
+        </div>
+        <Box mt={8}>
+          <Copyright />
+        </Box>
+      </Container>
+    </div>
   );
 }

@@ -9,8 +9,8 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
+      <Link color="inherit" href="https://www.rfc.com.ph/">
+        Radio Wealth Finance
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -19,10 +19,10 @@ function Copyright() {
 }
 
 const useStyles = makeStyles(theme => ({
-  "@global": {
-    body: {
-      backgroundColor: theme.palette.common.white
-    }
+  container: {
+    backgroundColor: "#f5f5f5",
+    width: "100%",
+    height: "100%"
   },
   paper: {
     marginTop: theme.spacing(8),
@@ -60,46 +60,47 @@ export default function SignUp() {
   });
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign up
-        </Typography>
+    <div className={classes.container}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign up
+          </Typography>
 
-        <form className={classes.form} action={""} onSubmit={formik.handleSubmit}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="username"
-                label="Username"
-                name="username"
-                onChange={formik.handleChange}
-                value={formik.values.username}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                onChange={formik.handleChange}
-                value={formik.values.password}
-              />
-            </Grid>
+          <form className={classes.form} action={""} onSubmit={formik.handleSubmit}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  id="username"
+                  label="Username"
+                  name="username"
+                  onChange={formik.handleChange}
+                  value={formik.values.username}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  onChange={formik.handleChange}
+                  value={formik.values.password}
+                />
+              </Grid>
 
-            <Grid item xs={12}>
-              {/* <TextField
+              <Grid item xs={12}>
+                {/* <TextField
                 variant="outlined"
                 required
                 fullWidth
@@ -110,23 +111,24 @@ export default function SignUp() {
                 onChange={formik.handleChange}
                 value={formik.values.role}
               /> */}
+              </Grid>
             </Grid>
-          </Grid>
-          <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
-            Sign Up
-          </Button>
-          <Grid container justify="flex-end">
-            <Grid item>
-              <Link href="/login" variant="body2">
-                Already have an account? Sign in
-              </Link>
+            <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+              Sign Up
+            </Button>
+            <Grid container justify="flex-end">
+              <Grid item>
+                <Link href="/login" variant="body2">
+                  Already have an account? Sign in
+                </Link>
+              </Grid>
             </Grid>
-          </Grid>
-        </form>
-      </div>
-      <Box mt={5}>
-        <Copyright />
-      </Box>
-    </Container>
+          </form>
+        </div>
+        <Box mt={5}>
+          <Copyright />
+        </Box>
+      </Container>
+    </div>
   );
 }
