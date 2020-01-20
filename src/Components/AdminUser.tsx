@@ -105,6 +105,18 @@ export default function AdminUser() {
         columns={state.columns}
         data={state.data}
         editable={{
+          onRowAdd: newData =>
+            new Promise(resolve => {
+              setTimeout(() => {
+                resolve();
+                setState((prevState: any) => {
+                  const data = [...prevState.data];
+                  data.push(newData);
+                  UserApiRespository.save(newData);
+                  return { ...prevState, data };
+                });
+              }, 600);
+            }),
           onRowUpdate: (newData, oldData) =>
             new Promise(async resolve => {
               await UserApiRespository.save(newData);

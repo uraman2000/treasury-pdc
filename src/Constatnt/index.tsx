@@ -1,4 +1,4 @@
-export const baseUrl = "http://localhost:3011";
+export const baseUrl = "http://172.16.200.206:3011";
 
 export const ResponseCodes = {
   Unauthorized: 401,
