@@ -5,7 +5,7 @@ export class Utils {
     if (Number.isInteger(value)) {
       return (value * 1).toString();
     }
-    return (value * 1).toFixed(4);
+    return Utils.roundNumber(value * 1);
   };
 
   static total = (obj: any, value: string) => {
@@ -21,8 +21,13 @@ export class Utils {
   };
 
   static calculatePercentage = (value, total) => {
-    return `${Utils.amount((value / total) * 100)}%`;
+    return `${Utils.roundNumber((value / total) * 100)}%`;
   };
+
+  static roundNumber(number: number) {
+    // return number;
+    return number.toFixed(3);
+  }
 }
 
 export default Utils;

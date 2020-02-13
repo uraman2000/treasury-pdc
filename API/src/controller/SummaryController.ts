@@ -83,22 +83,29 @@ function calculatePercentage(statusList: StatusList): StatusList {
     status: item.status,
     count: item.count,
     amount: item.amount,
-    countPercentage: item.count == 0 ? "0%" : (item.count / listTemp.totalCount) * 100 + "%",
-    amountPercentage: item.count == 0 ? "0%" : ((item.amount / listTemp.totalAmount) * 100).toFixed(3) + "%"
+    // countPercentage: item.count == 0 ? "0%" : (item.count / listTemp.totalCount) * 100 + "%",
+    countPercentage: item.count == 0 ? "0%" : Utils.calculatePercentage(item.count, listTemp.totalCount),
+    amountPercentage: item.count == 0 ? "0%" : Utils.calculatePercentage(item.amount, listTemp.totalAmount)
+    // amountPercentage: item.amount == 0 ? "0%" : `${((item.amount / listTemp.totalAmount) * 100).toFixed(3)} %`
   }));
 
   listTemp.statusItem = statusItemTemp;
   statusList.totalCountPercent = 0;
   statusList.totalAmountPercent = 0;
-  listTemp.statusItem.map(item => {
+  listTemp.statusItem.map((item, key) => {
     const countpercentage: number = parseFloat(item.countPercentage.replace("%", ""));
     const amountpercentage: number = parseFloat(item.amountPercentage.replace("%", ""));
     statusList.totalCountPercent += countpercentage;
     statusList.totalAmountPercent += amountpercentage;
+
+    // if (key + 1 === listTemp.statusItem.length) {
+    // }
   });
 
-  statusList.totalCountPercent = `${statusList.totalCountPercent}%`;
-  statusList.totalAmountPercent = `${statusList.totalAmountPercent}%`;
+  console.log(listTemp.statusItem.length);
+
+  statusList.totalCountPercent = `${Utils.roundNumber(statusList.totalCountPercent)}%`;
+  statusList.totalAmountPercent = `${Utils.roundNumber(statusList.totalAmountPercent)}%`;
   return listTemp;
 }
 

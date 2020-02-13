@@ -1,4 +1,4 @@
-export const baseUrl = "http://172.16.200.206:3011";
+export const baseUrl = "http://localhost:3011";
 
 export const ResponseCodes = {
   Unauthorized: 401,
@@ -16,3 +16,11 @@ export const ResponseCodes = {
   "Amount to adjust must be greater than P0.00": 1207,
   "API Error": "U0001"
 };
+
+
+///-banks
+// bank branch
+
+// --import data
+// -range check numb
+// --bulk editting 
