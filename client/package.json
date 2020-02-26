@@ -1,0 +1,56 @@
+{
+  "name": "treasury-pdc",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@material-ui/core": "^4.5.2",
+    "@material-ui/icons": "^4.5.1",
+    "@material-ui/lab": "^4.0.0-alpha.33",
+    "@types/axios": "^0.14.0",
+    "@types/jest": "24.0.20",
+    "@types/node": "12.11.7",
+    "@types/react": "16.9.11",
+    "@types/react-dom": "16.9.3",
+    "@types/react-router-dom": "^5.1.2",
+    "@types/react-swipeable-views": "^0.13.0",
+    "@types/react-timeago": "^4.1.1",
+    "cors": "^2.8.5",
+    "formik": "^2.0.4",
+    "init": "^0.1.2",
+    "material-table": "^1.54.1",
+    "material-ui-popup-state": "^1.4.1",
+    "moment": "^2.24.0",
+    "nodemon": "^1.19.4",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
+    "react-moment": "^0.9.6",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "3.2.0",
+    "react-swipeable-views": "^0.13.3",
+    "react-time-ago": "^5.0.7",
+    "react-timeago": "^4.4.0",
+    "typeorm": "^0.2.20",
+    "typescript": "3.6.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
