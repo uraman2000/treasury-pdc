@@ -16,6 +16,7 @@ import Report from "./Components/Report";
 import AdminRoles from "./Components/AdminRoles";
 import AdminRoleAddEdit from "./Components/AdminRoleAddEdit";
 import AdminBank from "./Components/AdminBank";
+import InventoryBulk from "./Components/InventoryBulk";
 
 const status = [
   "CLIENT ACCOUNT STATUS",
@@ -47,6 +48,7 @@ function App() {
 
           <DrawerNavigation>
             <ProtectedRoute path="/" component={InventoryTable} />
+            <ProtectedRoute path="/inventory/bulk" component={InventoryBulk} />
             <ProtectedRoute path="/report" component={Report} />
             <ProtectedRoute
               path="/summary"
