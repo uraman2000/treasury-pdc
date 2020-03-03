@@ -67,6 +67,7 @@ export default function InventoryBulk() {
   }, []);
 
   if (!state) return null;
+  console.log(state);
 
   return (
     <Container maxWidth="md">
@@ -78,9 +79,8 @@ export default function InventoryBulk() {
         </Grid>
         <Grid container spacing={3}>
           <CustomSelect label={"region"} data={state.region} />
-          {/* <CustomSelect label={"branch"} />
-
-          <CustomSelect label={"client_bank_name"} /> */}
+          <CustomSelect label={"branch"} data={state.branch} />
+          <CustomSelect label={"client_bank_name"} data={state.bank} />
         </Grid>
         <Grid container spacing={3}>
           <CustomTextField label="account_number" type="number" />
@@ -88,10 +88,10 @@ export default function InventoryBulk() {
           <CustomDateInput label={"check date "} />
         </Grid>
         <Grid container spacing={3}>
-          {/* <CustomSelect label={"check_payee_name"} />
-          <CustomSelect label={"client_check_status"} />
-          <CustomSelect label={"client_account_status"} />
-          <CustomSelect label={"check_deposit_status"} /> */}
+          <CustomSelect label={"check_payee_name"} data={state.statuses.check_payee_name} />
+          <CustomSelect label={"client_check_status"} data={state.statuses.client_check_status} />
+          <CustomSelect label={"client_account_status"} data={state.statuses.client_account_status} />
+          <CustomSelect label={"check_deposit_status"} data={state.statuses.check_deposit_status} />
         </Grid>
       </form>
     </Container>
@@ -182,6 +182,13 @@ export function CustomTextField({ label, type, placeholder }: props) {
   );
 }
 export function CustomSelect({ label, data }: props) {
+  // for (let [key, value] of Object.entries(data)) {
+  //   console.log(`${key}: ${value}`);
+  // }
+  // array.forEach(element => {
+
+  // });
+
   return (
     <Grid item xs>
       <FormControl fullWidth style={{ margin: 8 }} variant="filled" margin="dense">
@@ -199,20 +206,13 @@ export function CustomSelect({ label, data }: props) {
           }}
         >
           <option value="" />
-          {console.log(data)}
-
-          {data.map((item: any, key: any) => {
+          {Object.entries(data).map(([key, item]: any) => {
             return (
               <option key={key} value={10}>
                 {item}
               </option>
             );
           })}
-          {/* {data.map((item: any, key: any) => (
-            <option key={key} value={10}>
-              {item}
-            </option>
-          ))} */}
 
           {/* <option value={10}>Ten</option>
           <option value={20}>Twenty</option>
