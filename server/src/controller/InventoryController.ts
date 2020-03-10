@@ -214,11 +214,12 @@ export default class InventoryController {
     //   from: "",
     //   to: "",
     // }
-    const data = req.body.data;
-    const from = data.from;
-    const to = data.to;
-    const pdc = new PDCInventory();
+    const data = req.body;
 
+    const from = data.check_number_from;
+    const to = data.check_number_to;
+    const pdc = new PDCInventory();
+    let tempBulkPDC = [];
     pdc.region = data.region;
     pdc.branch = data.branch;
     pdc.client_bank_name = data.client_bank_name;
@@ -230,14 +231,14 @@ export default class InventoryController {
     pdc.client_check_status = data.client_check_status;
     pdc.check_payee_name = data.check_payee_name;
     pdc.check_deposit_status = data.check_deposit_status;
-
-    for (let i = from; i < to.length; i++) {
+    // console.log(to);
+    for (let i = from; i <= to; i++) {
       pdc.check_number = i;
-      console.log(pdc.  );
-      // await getRepository(PDCInventory).save(pdc);
+      console.log(pdc.check_number);
+      tempBulkPDC.push(pdc);
     }
-
-    res.status(201).send("User created");
+    await getRepository(PDCInventory).save(tempBulkPDC);
+    res.status(201).send(tempBulkPDC);
   };
 
   static getColumnNames = async (req: Request, res: Response) => {

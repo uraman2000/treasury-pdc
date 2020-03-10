@@ -6,6 +6,8 @@ const router = Router();
 
 router.post("/paginate", InventoryController.paginate);
 
+router.post("/bulk", InventoryController.bulkSave);
+
 router.get("/testData", InventoryController.testData);
 
 router.post("/", [checkJwt], InventoryController.save);
