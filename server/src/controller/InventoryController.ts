@@ -208,6 +208,38 @@ export default class InventoryController {
     res.status(201).send("User created");
   };
 
+  static bulkSave = async (req: Request, res: Response) => {
+    // {
+    //   data:{},
+    //   from: "",
+    //   to: "",
+    // }
+    const data = req.body.data;
+    const from = data.from;
+    const to = data.to;
+    const pdc = new PDCInventory();
+
+    pdc.region = data.region;
+    pdc.branch = data.branch;
+    pdc.client_bank_name = data.client_bank_name;
+    pdc.check_date = data.check_date;
+    pdc.check_amount = data.check_amount;
+    pdc.account_number = data.account_number;
+    pdc.client_name = data.client_name;
+    pdc.client_account_status = data.client_account_status;
+    pdc.client_check_status = data.client_check_status;
+    pdc.check_payee_name = data.check_payee_name;
+    pdc.check_deposit_status = data.check_deposit_status;
+
+    for (let i = from; i < to.length; i++) {
+      pdc.check_number = i;
+      console.log(pdc.  );
+      // await getRepository(PDCInventory).save(pdc);
+    }
+
+    res.status(201).send("User created");
+  };
+
   static getColumnNames = async (req: Request, res: Response) => {
     const columns = Object.keys(await (await getAll()).getRawOne());
 

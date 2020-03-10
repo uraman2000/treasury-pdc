@@ -16,7 +16,7 @@
     "@types/react-swipeable-views": "^0.13.0",
     "@types/react-timeago": "^4.1.1",
     "cors": "^2.8.5",
-    "formik": "^2.0.4",
+    "formik": "^2.1.4",
     "init": "^0.1.2",
     "material-table": "^1.54.1",
     "material-ui-popup-state": "^1.4.1",

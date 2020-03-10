@@ -1,11 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { TextField, makeStyles, Container, Grid, Box, FormControl, InputLabel, Select } from "@material-ui/core";
+import {
+  TextField,
+  makeStyles,
+  Container,
+  Grid,
+  Box,
+  FormControl,
+  InputLabel,
+  Select,
+  Button
+} from "@material-ui/core";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from "@material-ui/pickers";
 import RegionRepository from "../Library/RegionRepository";
 import BranchApiRespository from "../Library/BranchApiRespository";
 import BankApiRespository from "../Library/BankApiRespository";
 import StatusApiRespository from "../Library/StatusApiRespository";
+import SaveIcon from "@material-ui/icons/Save";
+import { useFormik, Field } from "formik";
 
 const fields = [
   "region",
@@ -56,6 +68,7 @@ export default function InventoryBulk() {
       const branchLookup = await BranchApiRespository.lookUp();
       const bankLookup = await BankApiRespository.lookUp();
       const statuses = await StatusApiRespository.allStatus();
+
       setstate({
         region: regionLookup,
         branch: branchLookup,
@@ -65,33 +78,65 @@ export default function InventoryBulk() {
     };
     fetchData();
   }, []);
+  const formik = useFormik({
+    initialValues: {
+      check_date: "",
+      password: ""
+    },
+    onSubmit: values => {}
+  });
 
   if (!state) return null;
-  console.log(state);
+  console.log(formik.values);
 
   return (
     <Container maxWidth="md">
-      <form noValidate autoComplete="off">
+      <form noValidate autoComplete="off" action={""} onSubmit={formik.handleSubmit}>
         <Grid container spacing={3}>
-          <CustomTextField label="client_name" />
-          <CustomTextField placeholder="From" label={"check number"} type="number" />
-          <CustomTextField placeholder="To" label={"check number"} type="number" />
+          <CustomTextField formik={formik} label="client_name" />
         </Grid>
         <Grid container spacing={3}>
-          <CustomSelect label={"region"} data={state.region} />
-          <CustomSelect label={"branch"} data={state.branch} />
-          <CustomSelect label={"client_bank_name"} data={state.bank} />
+          <CustomTextField formik={formik} label={"check_number_from"} type="number" />
+          <CustomTextField formik={formik} label={"check_number_to"} type="number" />
         </Grid>
         <Grid container spacing={3}>
-          <CustomTextField label="account_number" type="number" />
-          <CustomTextField label="check_amount" type="number" />
-          <CustomDateInput label={"check date "} />
+          <CustomSelect formik={formik} label={"region"} data={state.region} />
+          <CustomSelect formik={formik} label={"branch"} data={state.branch} />
         </Grid>
         <Grid container spacing={3}>
-          <CustomSelect label={"check_payee_name"} data={state.statuses.check_payee_name} />
-          <CustomSelect label={"client_check_status"} data={state.statuses.client_check_status} />
-          <CustomSelect label={"client_account_status"} data={state.statuses.client_account_status} />
-          <CustomSelect label={"check_deposit_status"} data={state.statuses.check_deposit_status} />
+          <CustomSelect formik={formik} label={"client_bank_name"} data={state.bank} />
+          <CustomTextField formik={formik} label="account_number" type="number" />
+          <CustomTextField formik={formik} label="check_amount" type="number" />
+          <CustomDateInput formik={formik} label={"check_date"} />
+          {/* <Field name="date" component={DatePickerField} /> */}
+        </Grid>
+        <Grid container spacing={3}>
+          <CustomSelect formik={formik} label={"check_payee_name"} data={state.statuses.check_payee_name} />
+          <CustomSelect formik={formik} label={"client_check_status"} data={state.statuses.client_check_status} />
+          <CustomSelect
+            formik={formik}
+            label={"client_account_status"}
+            data={state.statuses.client_account_status}
+          />
+          <CustomSelect
+            formik={formik}
+            label={"check_deposit_status"}
+            data={state.statuses.check_deposit_status}
+          />
+        </Grid>
+        <Grid container spacing={3}>
+          <Grid item xs>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              size="large"
+              startIcon={<SaveIcon />}
+            >
+              Save
+            </Button>
+          </Grid>
         </Grid>
       </form>
     </Container>
@@ -159,13 +204,14 @@ export default function InventoryBulk() {
   // }
 }
 interface props {
+  formik: any;
   label: string;
   type?: string;
   placeholder?: string;
   data?: any;
 }
 
-export function CustomTextField({ label, type, placeholder }: props) {
+export function CustomTextField({ formik, label, type, placeholder }: props) {
   return (
     <Grid item xs>
       <TextField
@@ -177,11 +223,13 @@ export function CustomTextField({ label, type, placeholder }: props) {
         variant="filled"
         type={type}
         style={{ margin: 8 }}
+        onChange={formik.handleChange}
+        value={formik.values.label}
       />
     </Grid>
   );
 }
-export function CustomSelect({ label, data }: props) {
+export function CustomSelect({ formik, label, data }: props) {
   // for (let [key, value] of Object.entries(data)) {
   //   console.log(`${key}: ${value}`);
   // }
@@ -197,44 +245,45 @@ export function CustomSelect({ label, data }: props) {
         </InputLabel>
         <Select
           native
-          // value={state.age}
-          // onChange={handleChange("age")}
-          // labelWidth={labelWidth}
+          onChange={formik.handleChange}
+          value={formik.values.label}
           inputProps={{
-            name: "age",
-            id: "outlined-age-native-simple"
+            id: label
           }}
         >
           <option value="" />
           {Object.entries(data).map(([key, item]: any) => {
             return (
-              <option key={key} value={10}>
+              <option key={key} value={key}>
                 {item}
               </option>
             );
           })}
-
-          {/* <option value={10}>Ten</option>
-          <option value={20}>Twenty</option>
-          <option value={30}>Thirty</option> */}
         </Select>
       </FormControl>
     </Grid>
   );
 }
+interface dateprops {
+  field: any;
+  form: any;
+}
 
-export function CustomDateInput({ label }: props) {
+export function CustomDateInput({ formik, label }: props) {
   const [selectedDate, setSelectedDate] = React.useState(null);
 
   const handleDateChange = (date: any) => {
     setSelectedDate(date);
+    formik.setFieldValue(label, date);
   };
 
   return (
     <Grid item xs>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        {/* <Field name={label} component={DatePicker} /> */}
         <KeyboardDatePicker
           disableToolbar
+          autoOk
           fullWidth
           margin="dense"
           variant="inline"
@@ -243,8 +292,8 @@ export function CustomDateInput({ label }: props) {
           style={{ margin: 8 }}
           id={label}
           label={label}
-          value={selectedDate}
           onChange={handleDateChange}
+          value={selectedDate}
           KeyboardButtonProps={{
             "aria-label": "change date"
           }}
