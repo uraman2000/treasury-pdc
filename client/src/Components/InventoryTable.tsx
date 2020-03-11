@@ -172,6 +172,12 @@ function column(headData: any, statuses: any, roles: any, regionLookup: any, bra
     }
     obj["title"] = itemTittle;
     obj["field"] = item;
+    obj["headerStyle"] = {
+      whiteSpace: "nowrap"
+    };
+    obj["cellStyle"] = {
+      whiteSpace: "nowrap"
+    };
     if (item === "client_name") {
       obj["customFilterAndSearch"] = () => {};
     }
