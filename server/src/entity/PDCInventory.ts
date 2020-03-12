@@ -59,6 +59,12 @@ export class PDCInventory {
   @Column({ type: "varchar" })
   check_type_as_of_current_day: string;
 
+  @Column({ type: "int" })
+  bank_deposited: number;
+
+  @Column({ type: "int" })
+  account_deposited: number;
+
   @Column({ type: "date" })
   date_deposited: Date;
 

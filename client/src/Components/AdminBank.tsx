@@ -75,9 +75,6 @@ export default function AdminBank() {
       <MaterialTable
         title=""
         columns={state.columns}
-        options={{
-          paging: false
-        }}
         data={state.data}
         editable={{
           onRowAdd: newData =>

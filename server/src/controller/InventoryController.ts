@@ -1,4 +1,4 @@
-import { getRepository, getConnection, Connection } from "typeorm";
+import { getRepository, getConnection, Connection, Like } from "typeorm";
 import { NextFunction, Request, Response } from "express";
 import { PDCInventory } from "../entity/PDCInventory";
 import { validate } from "class-validator";
@@ -141,27 +141,57 @@ export default class InventoryController {
   static paginate = async (req: Request, res: Response) => {
     const page = req.query.page * 1;
     const limit = req.query.limit * 1;
-    const search = req.query.search;
+    const search = req.query.search || "";
     const filter = req.body;
     // res.status(ResponseCodes.OK).send(filter);
     let pdc: any = {};
     const result = {};
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
-
+    console.log(search);
     let filterValue;
     if (filter.length >= 0) filterValue = await filterTable(filter);
 
-    // console.log(filter);
     pdc = await getRepository(PDCInventory).find({
       order: {
         id: "DESC"
       },
       take: limit,
       skip: startIndex,
-      where: filterValue,
-      cache: true
+      where: [
+        { id: Like(`%${search}%`) },
+        { region: Like(`%${search}%`) },
+        { branch: Like(`%${search}%`) },
+        { client_bank_name: Like(`%${search}%`) },
+        { check_date: Like(`%${search}%`) },
+        { check_number: Like(`%${search}%`) },
+        { check_amount: Like(`%${search}%`) },
+        { account_number: Like(`%${search}%`) },
+        { client_name: Like(`%${search}%`) },
+        { client_account_status: Like(`%${search}%`) },
+        { client_check_status: Like(`%${search}%`) },
+        { check_payee_name: Like(`%${search}%`) },
+        { check_deposit_status: Like(`%${search}%`) },
+        { reason_for_bounce_status: Like(`%${search}%`) },
+        { deposit_today: Like(`%${search}%`) },
+        { aging_undeposited: Like(`%${search}%`) },
+        { check_type_as_of_current_day: Like(`%${search}%`) },
+        { bank_deposited: Like(`%${search}%`) },
+        { account_deposited: Like(`%${search}%`) },
+        { date_deposited: Like(`%${search}%`) },
+        { date_bounced: Like(`%${search}%`) },
+        { date_re_deposited: Like(`%${search}%`) },
+        { aging_redep: Like(`%${search}%`) },
+        { check_re_deposit_status: Like(`%${search}%`) },
+        { date_hold: Like(`%${search}%`) },
+        { reason_for_hold_status: Like(`%${search}%`) },
+        { hold_check_aging: Like(`%${search}%`) },
+        { OR_number: Like(`%${search}%`) },
+        { OR_date: Like(`%${search}%`) },
+        { remarks: Like(`%${search}%`) }
+      ]
     });
+
     // if (search) {
     //   pdc = await getRepository(PDCInventory).find({
     //     take: limit,
@@ -218,25 +248,28 @@ export default class InventoryController {
 
     const from = data.check_number_from;
     const to = data.check_number_to;
-    const pdc = new PDCInventory();
+
     let tempBulkPDC = [];
-    pdc.region = data.region;
-    pdc.branch = data.branch;
-    pdc.client_bank_name = data.client_bank_name;
-    pdc.check_date = data.check_date;
-    pdc.check_amount = data.check_amount;
-    pdc.account_number = data.account_number;
-    pdc.client_name = data.client_name;
-    pdc.client_account_status = data.client_account_status;
-    pdc.client_check_status = data.client_check_status;
-    pdc.check_payee_name = data.check_payee_name;
-    pdc.check_deposit_status = data.check_deposit_status;
+
     // console.log(to);
     for (let i = from; i <= to; i++) {
+      const pdc = new PDCInventory();
+      pdc.region = data.region;
+      pdc.branch = data.branch;
+      pdc.client_bank_name = data.client_bank_name;
+      pdc.check_date = data.check_date;
+      pdc.check_amount = data.check_amount;
+      pdc.account_number = data.account_number;
+      pdc.client_name = data.client_name;
+      pdc.client_account_status = data.client_account_status;
+      pdc.client_check_status = data.client_check_status;
+      pdc.check_payee_name = data.check_payee_name;
+      pdc.check_deposit_status = data.check_deposit_status;
+
       pdc.check_number = i;
-      console.log(pdc.check_number);
       tempBulkPDC.push(pdc);
     }
+
     await getRepository(PDCInventory).save(tempBulkPDC);
     res.status(201).send(tempBulkPDC);
   };
@@ -331,7 +364,7 @@ async function filterTable(filter: any) {
   await filter.map(item => {
     const field = item.column.field;
     const value = item.value;
-    console.log(item.column.tableData);
+    // console.log(item.column.tableData);
     if (value.length === 0) return;
     if (typeof value === "object") {
       whereValues += `${field} in (${value}) and `;

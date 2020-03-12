@@ -2,17 +2,18 @@ import { Router } from "express";
 import AuthController from "../controller/AuthController";
 import { checkJwt } from "../middlewares/checkJwt";
 import BanksController from "../controller/BanksController";
+import { checkRole } from "../middlewares/checkRole";
 
 const router = Router();
 
-router.get("/", BanksController.all);
+router.get("/", [checkJwt, checkRole(["ADMIN"])], BanksController.all);
 
-router.get("/lookUp", BanksController.lookUp);
+router.get("/lookUp", [checkJwt], BanksController.lookUp);
 
-router.get("/:id([0-9]+)", BanksController.one);
+router.get("/:id([0-9]+)", [checkJwt, checkRole(["ADMIN"])], BanksController.one);
 
-router.post("/", BanksController.save);
+router.post("/", [checkJwt, checkRole(["ADMIN"])], BanksController.save);
 
-router.delete("/:id([0-9]+)", BanksController.remove);
+router.delete("/:id([0-9]+)", [checkJwt, checkRole(["ADMIN"])], BanksController.remove);
 
 export default router;

@@ -34,6 +34,15 @@ class InventoryApiRespository {
     }
   }
 
+  public static async saveInventoryBulk(data: any) {
+    try {
+      const response = await (await HandleToken.getInstance()).post(`inventory/bulk`, data);
+      return response.data;
+    } catch (error) {
+      HandleToken.delete(error);
+      return error.response.data;
+    }
+  }
   public static async deleteInventory(id: number) {
     try {
       const response = await (await HandleToken.getInstance()).delete(`${baseUrl}/inventory/${id}`);

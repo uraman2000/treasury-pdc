@@ -104,6 +104,9 @@ export default function AdminUser() {
         title="Users"
         columns={state.columns}
         data={state.data}
+        options={{
+          paging: false
+        }}
         editable={{
           onRowAdd: newData =>
             new Promise(resolve => {
@@ -119,7 +122,7 @@ export default function AdminUser() {
             }),
           onRowUpdate: (newData, oldData) =>
             new Promise(async resolve => {
-              await UserApiRespository.save(newData);
+              await UserApiRespository.patch(newData);
               if (oldData) {
                 setState(prevState => {
                   const data = [...prevState.data];

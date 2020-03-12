@@ -4,6 +4,6 @@ import SumarryPerBranchController from "../controller/SummaryPerBranchController
 
 const router = Router();
 
-router.get("/:regionId", SumarryPerBranchController.all);
+router.get("/:regionId", [checkJwt], SumarryPerBranchController.all);
 
 export default router;

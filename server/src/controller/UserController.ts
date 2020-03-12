@@ -1,10 +1,8 @@
 import { Request, Response } from "express";
 import { getRepository, getConnection } from "typeorm";
 import { validate } from "class-validator";
-
 import { User } from "../entity/User";
 import { UserStatus } from "../entity/statuses/UserStatus";
-import { async } from "q";
 import HandleResponse from "../../Constants/HandleResponse";
 
 class UserController {
@@ -44,12 +42,12 @@ class UserController {
 
   static newUser = async (req: Request, res: Response) => {
     //Get parameters from the body
-    let { username, password } = req.body;
+    let { username, password, status, role } = req.body;
     let user = new User();
     user.username = username;
     user.password = password;
-    // user.role = role;
-    user.status = 1;
+    user.role = role === null ? 0 : role;
+    user.status = status === null ? 1 : status;
 
     //Validade if the parameters are ok
     // const errors = await validate(user);

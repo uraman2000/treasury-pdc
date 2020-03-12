@@ -8,25 +8,25 @@ export class Bank {
   @Column()
   bank_name: string;
 
-  @Column()
-  account_number: string;
+  // @Column()
+  // created_by: string;
 
-  @Column()
-  maintaining_balance: string;
+  // @Column()
+  // @CreateDateColumn()
+  // createdAt: Date;
 
-  @Column()
-  chq_cost_perpc: string;
+  // @Column()
+  // account_number: string;
 
-  @Column()
-  created_by: string;
+  // @Column()
+  // maintaining_balance: string;
 
-  @Column()
-  @CreateDateColumn()
-  createdAt: Date;
+  // @Column()
+  // chq_cost_perpc: string;
 
-  @Column()
-  region: string;
+  // @Column()
+  // region: string;
 
-  @Column()
-  buffer: string;
+  // @Column()
+  // buffer: string;
 }

@@ -18,6 +18,7 @@ import BankApiRespository from "../Library/BankApiRespository";
 import StatusApiRespository from "../Library/StatusApiRespository";
 import SaveIcon from "@material-ui/icons/Save";
 import { useFormik, Field } from "formik";
+import InventoryApiRespository from "../Library/InventoryApiRespository";
 
 const fields = [
   "region",
@@ -83,7 +84,10 @@ export default function InventoryBulk() {
       check_date: "",
       password: ""
     },
-    onSubmit: values => {}
+    onSubmit: values => {
+      InventoryApiRespository.saveInventoryBulk(values);
+      console.log(values);
+    }
   });
 
   if (!state) return null;

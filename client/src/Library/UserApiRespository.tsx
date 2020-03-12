@@ -16,7 +16,7 @@ class UserApiRespository {
 
   public static async save(data: any) {
     try {
-      const response = await(await HandleToken.getInstance()).patch(`${baseUrl}/user/${data.id}`, data);
+      const response = await (await HandleToken.getInstance()).post(`${baseUrl}/user`, data);
       return response.data;
     } catch (error) {
       HandleToken.delete(error);
@@ -24,6 +24,15 @@ class UserApiRespository {
     }
   }
 
+  public static async patch(data: any) {
+    try {
+      const response = await (await HandleToken.getInstance()).patch(`${baseUrl}/user/${data.id}`, data);
+      return response.data;
+    } catch (error) {
+      HandleToken.delete(error);
+      return error.response.data;
+    }
+  }
   public static async delete(id: number) {
     try {
       const response = await (await HandleToken.getInstance()).delete(`${baseUrl}/user/${id}`);

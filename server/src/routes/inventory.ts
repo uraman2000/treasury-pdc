@@ -4,9 +4,9 @@ import InventoryController from "../controller/InventoryController";
 
 const router = Router();
 
-router.post("/paginate", InventoryController.paginate);
+router.post("/paginate", [checkJwt], InventoryController.paginate);
 
-router.post("/bulk", InventoryController.bulkSave);
+router.post("/bulk", [checkJwt], InventoryController.bulkSave);
 
 router.get("/testData", InventoryController.testData);
 
@@ -16,6 +16,6 @@ router.delete("/:id([0-9]+)", [checkJwt], InventoryController.remove);
 
 router.get("/column-names", InventoryController.getColumnNames);
 
-router.get("/summary-held-checks/:regionId([0-9]+)", InventoryController.summaryHeldChecks);
+router.get("/summary-held-checks/:regionId([0-9]+)", [checkJwt], InventoryController.summaryHeldChecks);
 
 export default router;
