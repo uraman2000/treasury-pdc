@@ -37,10 +37,11 @@ class InventoryApiRespository {
   public static async saveInventoryBulk(data: any) {
     try {
       const response = await (await HandleToken.getInstance()).post(`inventory/bulk`, data);
-      return response.data;
+
+      return response;
     } catch (error) {
       HandleToken.delete(error);
-      return error.response.data;
+      return error.response;
     }
   }
   public static async deleteInventory(id: number) {

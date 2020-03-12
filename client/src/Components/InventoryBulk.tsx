@@ -8,7 +8,10 @@ import {
   FormControl,
   InputLabel,
   Select,
-  Button
+  Button,
+  CircularProgress,
+  Theme,
+  createStyles
 } from "@material-ui/core";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from "@material-ui/pickers";
@@ -19,6 +22,7 @@ import StatusApiRespository from "../Library/StatusApiRespository";
 import SaveIcon from "@material-ui/icons/Save";
 import { useFormik, Field } from "formik";
 import InventoryApiRespository from "../Library/InventoryApiRespository";
+import CustomizedSnackbars from "./CustomizedSnackbars";
 
 const fields = [
   "region",
@@ -50,18 +54,32 @@ const fields = [
   // "remarks"
 ];
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    "& > *": {
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    button: {
       margin: theme.spacing(1),
-      width: 200
+      position: "relative"
+    },
+    buttonProgress: {
+      position: "absolute",
+      top: "50%",
+      left: "50%",
+      marginTop: -12,
+      marginLeft: -12
     }
-  }
-}));
+  })
+);
 
 export default function InventoryBulk() {
   const classes = useStyles();
   const [state, setstate] = useState();
+  const [resState, setResState] = useState({
+    isLoading: false,
+    message: "",
+    status: "",
+    isShow: false
+  });
+
   // { region: [], branch: [], bank: [], statuses: [] }
   useEffect(() => {
     const fetchData = async () => {
@@ -77,31 +95,39 @@ export default function InventoryBulk() {
         statuses: statuses
       });
     };
+
     fetchData();
   }, []);
   const formik = useFormik({
-    initialValues: {
-      check_date: "",
-      password: ""
-    },
-    onSubmit: values => {
-      InventoryApiRespository.saveInventoryBulk(values);
-      console.log(values);
+    initialValues: {},
+    onSubmit: async values => {
+      setResState({
+        ...resState,
+        isLoading: true
+      });
+      const response = await InventoryApiRespository.saveInventoryBulk(values);
+
+      setResState({
+        isLoading: false,
+        message: response.data.message,
+        status: response.status,
+        isShow: true
+      });
     }
   });
 
   if (!state) return null;
-  console.log(formik.values);
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="lg">
+      <CustomizedSnackbars message={resState.message} status={resState.status} isShow={resState.isShow} />
       <form noValidate autoComplete="off" action={""} onSubmit={formik.handleSubmit}>
-        <Grid container spacing={3}>
-          <CustomTextField formik={formik} label="client_name" />
-        </Grid>
         <Grid container spacing={3}>
           <CustomTextField formik={formik} label={"check_number_from"} type="number" />
           <CustomTextField formik={formik} label={"check_number_to"} type="number" />
+        </Grid>
+        <Grid container spacing={3}>
+          <CustomTextField formik={formik} label="client_name" />
         </Grid>
         <Grid container spacing={3}>
           <CustomSelect formik={formik} label={"region"} data={state.region} />
@@ -122,90 +148,34 @@ export default function InventoryBulk() {
             label={"client_account_status"}
             data={state.statuses.client_account_status}
           />
-          <CustomSelect
+          {/* <CustomSelect
             formik={formik}
             label={"check_deposit_status"}
             data={state.statuses.check_deposit_status}
-          />
+          /> */}
         </Grid>
+
         <Grid container spacing={3}>
           <Grid item xs>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              size="large"
-              startIcon={<SaveIcon />}
-            >
-              Save
-            </Button>
+            <div className={classes.button}>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                disabled={resState.isLoading}
+                size="large"
+                startIcon={<SaveIcon />}
+              >
+                Save
+              </Button>
+              {resState.isLoading ? <CircularProgress size={24} className={classes.buttonProgress} /> : null}
+            </div>
           </Grid>
         </Grid>
       </form>
     </Container>
   );
-
-  //   return (
-  //     <Container maxWidth="lg">
-  //       <form noValidate autoComplete="off">
-  //         <Box display="flex" ml="54%">
-  //           <InputLabel ref={null} htmlFor="outlined-age-native-simple">
-  //             check number
-  //           </InputLabel>
-  //         </Box>
-  //         <Box display="flex">
-  //           <Grid container spacing={3}>
-  //             <Grid item md={6}>
-  //               <CustomTextField label="client_name" />
-  //             </Grid>
-  //             <Grid item md={3}>
-  //               <CustomTextField label={"From"} type="number" />
-  //             </Grid>
-  //             <Grid item md={3}>
-  //               <CustomTextField label={"To"} type="number" />
-  //             </Grid>
-  //           </Grid>
-  //         </Box>
-  //         <Box display="flex">
-  //           <CustomSelect label={"region"} />
-  //           <CustomSelect label={"branch"} />
-  //           <CustomSelect label={"client_bank_name"} />
-  //         </Box>
-  //         <Box display="flex">
-  //           <CustomTextField label="account_number" type="number" />
-  //           <CustomTextField label="check_amount" type="number" />
-  //           <CustomDateInput label={"check date "} />
-  //         </Box>
-  //         <Box display="flex">
-  //           <Grid container spacing={3}>
-  //             <Grid item md={3}>
-  //               <CustomSelect label={"check_payee_name"} />
-  //             </Grid>
-  //             <Grid item md={3}>
-  //               <CustomTextField label="client_check_status" />
-  //             </Grid>
-
-  //             <Grid item md={3}>
-  //               <CustomTextField label="client_account_status " />
-  //             </Grid>
-  //             <Grid item md={3}>
-  //               <CustomTextField label="check_deposit_status" />
-  //             </Grid>
-  //           </Grid>
-  //         </Box>
-  //         {/* <Box display="flex">
-  //             <CustomTextField label="reason_for_bounce_status" />
-  //             <CustomTextField label="deposit_today" />
-  //             <CustomTextField label="aging_undeposited" />
-  //           </Box>
-  //           <Box display="flex">
-  //             <CustomTextField label="check_type_as_of_current_day" />
-  //           </Box> */}
-  //       </form>
-  //     </Container>
-  //   );
-  // }
 }
 interface props {
   formik: any;
@@ -216,12 +186,14 @@ interface props {
 }
 
 export function CustomTextField({ formik, label, type, placeholder }: props) {
+  const textLabel = label.replace(/_/g, " ").toUpperCase();
+
   return (
     <Grid item xs>
       <TextField
         fullWidth
         id={label}
-        label={label}
+        label={textLabel}
         placeholder={placeholder}
         margin="dense"
         variant="filled"
@@ -240,12 +212,12 @@ export function CustomSelect({ formik, label, data }: props) {
   // array.forEach(element => {
 
   // });
-
+  const textLabel = label.replace(/_/g, " ").toUpperCase();
   return (
     <Grid item xs>
       <FormControl fullWidth style={{ margin: 8 }} variant="filled" margin="dense">
         <InputLabel ref={null} htmlFor="outlined-age-native-simple">
-          {label}
+          {textLabel}
         </InputLabel>
         <Select
           native
@@ -275,7 +247,7 @@ interface dateprops {
 
 export function CustomDateInput({ formik, label }: props) {
   const [selectedDate, setSelectedDate] = React.useState(null);
-
+  const textLabel = label.replace(/_/g, " ").toUpperCase();
   const handleDateChange = (date: any) => {
     setSelectedDate(date);
     formik.setFieldValue(label, date);
@@ -295,7 +267,7 @@ export function CustomDateInput({ formik, label }: props) {
           placeholder="mm/dd/yyyy"
           style={{ margin: 8 }}
           id={label}
-          label={label}
+          label={textLabel}
           onChange={handleDateChange}
           value={selectedDate}
           KeyboardButtonProps={{

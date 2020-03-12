@@ -8,4 +8,5 @@ export default class ResponseCodes {
   static BAD_REQUEST = 400;
   static NOT_FOUND = 404;
   static CONFLICT = 409;
+  static INTERNAL_SERVER_ERORR = 500;
 }

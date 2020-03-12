@@ -12,6 +12,7 @@ import { CheckPayeeName } from "../entity/statuses/CheckPayeeName";
 import { ClientCheckStatus } from "../entity/statuses/ClientCheckStatus";
 import { DepositTodayStatus } from "../entity/statuses/DepositTodayStatus";
 import { ReasonForBounceStatus } from "../entity/statuses/ReasonForBounceStatus";
+import HandleResponse from "../../Constants/HandleResponse";
 
 function nullIdentifier(value: any) {
   return value ? value : "";
@@ -158,38 +159,39 @@ export default class InventoryController {
       },
       take: limit,
       skip: startIndex,
-      where: [
-        { id: Like(`%${search}%`) },
-        { region: Like(`%${search}%`) },
-        { branch: Like(`%${search}%`) },
-        { client_bank_name: Like(`%${search}%`) },
-        { check_date: Like(`%${search}%`) },
-        { check_number: Like(`%${search}%`) },
-        { check_amount: Like(`%${search}%`) },
-        { account_number: Like(`%${search}%`) },
-        { client_name: Like(`%${search}%`) },
-        { client_account_status: Like(`%${search}%`) },
-        { client_check_status: Like(`%${search}%`) },
-        { check_payee_name: Like(`%${search}%`) },
-        { check_deposit_status: Like(`%${search}%`) },
-        { reason_for_bounce_status: Like(`%${search}%`) },
-        { deposit_today: Like(`%${search}%`) },
-        { aging_undeposited: Like(`%${search}%`) },
-        { check_type_as_of_current_day: Like(`%${search}%`) },
-        { bank_deposited: Like(`%${search}%`) },
-        { account_deposited: Like(`%${search}%`) },
-        { date_deposited: Like(`%${search}%`) },
-        { date_bounced: Like(`%${search}%`) },
-        { date_re_deposited: Like(`%${search}%`) },
-        { aging_redep: Like(`%${search}%`) },
-        { check_re_deposit_status: Like(`%${search}%`) },
-        { date_hold: Like(`%${search}%`) },
-        { reason_for_hold_status: Like(`%${search}%`) },
-        { hold_check_aging: Like(`%${search}%`) },
-        { OR_number: Like(`%${search}%`) },
-        { OR_date: Like(`%${search}%`) },
-        { remarks: Like(`%${search}%`) }
-      ]
+      where: filterValue
+      // where: [
+      //   { id: Like(`%${search}%`) },
+      //   { region: Like(`%${search}%`) },
+      //   { branch: Like(`%${search}%`) },
+      //   { client_bank_name: Like(`%${search}%`) },
+      //   { check_date: Like(`%${search}%`) },
+      //   { check_number: Like(`%${search}%`) },
+      //   { check_amount: Like(`%${search}%`) },
+      //   { account_number: Like(`%${search}%`) },
+      //   { client_name: Like(`%${search}%`) },
+      //   { client_account_status: Like(`%${search}%`) },
+      //   { client_check_status: Like(`%${search}%`) },
+      //   { check_payee_name: Like(`%${search}%`) },
+      //   { check_deposit_status: Like(`%${search}%`) },
+      //   { reason_for_bounce_status: Like(`%${search}%`) },
+      //   { deposit_today: Like(`%${search}%`) },
+      //   { aging_undeposited: Like(`%${search}%`) },
+      //   { check_type_as_of_current_day: Like(`%${search}%`) },
+      //   { bank_deposited: Like(`%${search}%`) },
+      //   { account_deposited: Like(`%${search}%`) },
+      //   { date_deposited: Like(`%${search}%`) },
+      //   { date_bounced: Like(`%${search}%`) },
+      //   { date_re_deposited: Like(`%${search}%`) },
+      //   { aging_redep: Like(`%${search}%`) },
+      //   { check_re_deposit_status: Like(`%${search}%`) },
+      //   { date_hold: Like(`%${search}%`) },
+      //   { reason_for_hold_status: Like(`%${search}%`) },
+      //   { hold_check_aging: Like(`%${search}%`) },
+      //   { OR_number: Like(`%${search}%`) },
+      //   { OR_date: Like(`%${search}%`) },
+      //   { remarks: Like(`%${search}%`) }
+      // ]
     });
 
     // if (search) {
@@ -264,14 +266,15 @@ export default class InventoryController {
       pdc.client_account_status = data.client_account_status;
       pdc.client_check_status = data.client_check_status;
       pdc.check_payee_name = data.check_payee_name;
-      pdc.check_deposit_status = data.check_deposit_status;
+      pdc.check_deposit_status = 5;
 
       pdc.check_number = i;
       tempBulkPDC.push(pdc);
     }
 
-    await getRepository(PDCInventory).save(tempBulkPDC);
-    res.status(201).send(tempBulkPDC);
+    // await getRepository(PDCInventory).save(tempBulkPDC);
+    HandleResponse.save(res, tempBulkPDC, PDCInventory);
+    // res.status(201).send(tempBulkPDC);
   };
 
   static getColumnNames = async (req: Request, res: Response) => {

@@ -17,15 +17,22 @@ export default class HandleResponse {
     const customRes: IResponse = {};
     customRes.errors = await getErrors(entitiesValues);
 
-    if (customRes.errors.length > 0) {
-      customRes.message = "Please Populate every details";
-      res.status(ResponseCodes.BAD_REQUEST).send(customRes);
-      return;
-    }
+    try {
+      if (customRes.errors.length > 0) {
+        customRes.message = "Please Populate every details";
+        res.status(ResponseCodes.BAD_REQUEST).send(customRes);
+        return;
+      }
 
-    customRes.message = "Saved Successfully";
-    customRes.data = await getRepository(entity).save(entitiesValues);
-    res.status(ResponseCodes.OK).send(customRes);
+      customRes.message = "Saved Successfully";
+      await getRepository(entity).save(entitiesValues);
+      // customRes.data = await getRepository(entity).save(entitiesValues);
+      res.status(ResponseCodes.OK).send(customRes);
+    } catch (error) {
+      customRes.errors = error;
+      customRes.message = "Opps! something went wrong";
+      res.status(ResponseCodes.INTERNAL_SERVER_ERORR).send(customRes);
+    }
   };
 
   static remove = async (res, req, enity) => {
