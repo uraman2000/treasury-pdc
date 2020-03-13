@@ -34,8 +34,6 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import { Link, LinkProps } from "react-router-dom";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
-import StarBorder from "@material-ui/icons/StarBorder";
-import SupervisorAccountRoundedIcon from "@material-ui/icons/SupervisorAccountRounded";
 import GroupRoundedIcon from "@material-ui/icons/GroupRounded";
 import PersonRoundedIcon from "@material-ui/icons/PersonRounded";
 import NotificationsIcon from "@material-ui/icons/Notifications";
@@ -45,6 +43,8 @@ import ShowChartRoundedIcon from "@material-ui/icons/ShowChartRounded";
 import TimeAgo from "react-timeago";
 import ListAltRoundedIcon from "@material-ui/icons/ListAltRounded";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
+import BusinessIcon from "@material-ui/icons/Business";
+import LocationCityIcon from "@material-ui/icons/LocationCity";
 
 const drawerWidth = 240;
 
@@ -162,6 +162,18 @@ const sideDrawerList = {
     }
   ],
   private: [
+    {
+      key: "region",
+      icon: <LocationCityIcon />,
+      text: "Region",
+      link: "/admin/region"
+    },
+    {
+      key: "branch",
+      icon: <BusinessIcon />,
+      text: "Branch",
+      link: "/admin/branch"
+    },
     {
       key: "users",
       icon: <GroupRoundedIcon />,

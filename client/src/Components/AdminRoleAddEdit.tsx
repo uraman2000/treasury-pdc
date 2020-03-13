@@ -68,7 +68,6 @@ export default function AdminRoleAddEdit() {
     });
 
     setState({ ...state, access: newState });
-    
   };
   const handleSave = async () => {
     if (await RolesApiRepository.saveRoles(state)) {

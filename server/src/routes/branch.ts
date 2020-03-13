@@ -6,14 +6,14 @@ import { checkRole } from "../middlewares/checkRole";
 
 const router = Router();
 
-router.get("/", [checkJwt, checkRole(["ADMIN"])], BranchController.all);
+router.get("/", [checkJwt], BranchController.all);
 
 router.get("/lookUp", [checkJwt], BranchController.lookUp);
 
-router.get("/:id([0-9]+)", [checkJwt, checkRole(["ADMIN"])], BranchController.one);
+router.get("/:id([0-9]+)", [checkJwt], BranchController.one);
 
-router.post("/", [checkJwt, checkRole(["ADMIN"])], BranchController.save);
+router.post("/", [checkJwt], BranchController.save);
 
-router.delete("/:id([0-9]+)", [checkJwt, checkRole(["ADMIN"])], BranchController.remove);
+router.delete("/:id([0-9]+)", [checkJwt], BranchController.remove);
 
 export default router;

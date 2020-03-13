@@ -7,6 +7,7 @@ import { User } from "../entity/User";
 import config from "../config/config";
 import IResponse from "../../app/IResponse";
 import { Roles } from "../entity/statuses/Roles";
+import { Region } from "../entity/Region";
 
 class AuthController {
   static login = async (req: Request, res: Response) => {
@@ -30,15 +31,16 @@ class AuthController {
         .addSelect("username")
         .addSelect("password")
         .addSelect("roles.role", "role")
+        .addSelect("region.region_code", "region")
         .addSelect("status")
-        .addSelect("createdAt")
-        .addSelect("updatedAt")
         .from(User, "user")
         .leftJoin(Roles, "roles", "user.role = roles.id")
+        .leftJoin(Region, "region", "user.region = region.id")
         .where("user.username = :username", { username: username })
         .getRawOne();
     } catch (error) {
       customRes.message = "invalid Username or Password";
+      customRes.errors = error;
       res.status(401).send(customRes);
       return;
     }
@@ -65,7 +67,8 @@ class AuthController {
       access_token: token,
       expires_in: token_expiration,
       refresh_token: Rtoken,
-      role: user.role
+      role: user.role,
+      region: user.region
     });
   };
 
@@ -146,7 +149,8 @@ class AuthController {
       access_token: access_token,
       expires_in: token_expiration,
       refresh_token: new_refresh_token,
-      role: user.role
+      role: user.role,
+      region: user.region
     });
   };
 

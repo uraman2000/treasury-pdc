@@ -3,6 +3,7 @@ import MaterialTable, { Column } from "material-table";
 import UserApiRespository from "../Library/UserApiRespository";
 import RolesApiRepository from "../Library/RolesApiRepository";
 import { TextField } from "@material-ui/core";
+import RegionRepository from "../Library/RegionRepository";
 
 interface Row {
   id: number;
@@ -32,64 +33,104 @@ export default function AdminUser() {
   useEffect(() => {
     const fetchData = async () => {
       const data = await UserApiRespository.get();
+      console.log(data);
       const header = await Object.keys(data[0]);
       const role = await RolesApiRepository.getLookUp();
+      const region = await RegionRepository.lookUp();
 
-      const column: any = header.map(item => {
+      const column: any = header.map((item: any) => {
+        const itemTittle = item.toUpperCase().replace(/_/g, " ");
+        let obj: any = {};
+
         if (item === "password") {
-          return {
-            title: item.toUpperCase(),
-            field: item,
-            editComponent: (props: any) => (
-              // <div className="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl">
-              //   <input
-              //     className="MuiInputBase-input MuiInput-input"
-              //     type="password"
-              //     value={props.value}
-              //     onChange={e => props.onChange(e.target.value)}
-              //   />
-              // </div>
-              <TextField
-                id="standard-password-input"
-                type="password"
-                autoComplete="current-password"
-                margin="normal"
-                value={props.value}
-                onChange={e => props.onChange(e.target.value)}
-              />
-            )
-          };
+          obj["editComponent"] = (props: any) => (
+            <TextField
+              id="standard-password-input"
+              type="password"
+              autoComplete="current-password"
+              margin="normal"
+              value={props.value}
+              onChange={e => props.onChange(e.target.value)}
+            />
+          );
         }
 
-        if (item === "id") {
-          return {
-            title: item.toUpperCase(),
-            field: item,
-            editable: "never",
-            hidden: true
-          };
+        if (item === "createdAt" || item === "updatedAt" || item === "id") {
+          obj["hidden"] = true;
+          obj["editable"] = "never";
         }
 
         if (item === "role") {
-          return {
-            title: item.toUpperCase(),
-            field: item,
-            lookup: role
-          };
+          obj["lookup"] = role;
+        }
+        if (item === "region") {
+          obj["lookup"] = region;
         }
         if (item === "status") {
-          return {
-            title: capitalize(item),
-            field: item,
-            lookup: { 1: "Pending", 2: "Active", 3: "Deactivate" }
-          };
+          obj["lookup"] = { 1: "Pending", 2: "Active", 3: "Deactivate" };
         }
 
-        return {
-          title: item.toUpperCase(),
-          field: item
-        };
+        obj["title"] = itemTittle;
+        obj["field"] = item;
+
+        return obj;
       });
+
+      // const column: any = header.map(item => {
+      //   if (item === "password") {
+      //     return {
+      //       title: item.toUpperCase(),
+      //       field: item,
+      //       editComponent: (props: any) => (
+      //         // <div className="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl">
+      //         //   <input
+      //         //     className="MuiInputBase-input MuiInput-input"
+      //         //     type="password"
+      //         //     value={props.value}
+      //         //     onChange={e => props.onChange(e.target.value)}
+      //         //   />
+      //         // </div>
+      //         <TextField
+      //           id="standard-password-input"
+      //           type="password"
+      //           autoComplete="current-password"
+      //           margin="normal"
+      //           value={props.value}
+      //           onChange={e => props.onChange(e.target.value)}
+      //         />
+      //       )
+      //     };
+      //   }
+
+      //   if (item === "id") {
+      //     return {
+      //       title: item.toUpperCase(),
+      //       field: item,
+      //       editable: "never",
+      //       hidden: true
+      //     };
+      //   }
+
+      //   if (item === "role") {
+      //     return {
+      //       title: item.toUpperCase(),
+      //       field: item,
+      //       lookup: role
+      //     };
+      //   }
+      //   if (item === "status") {
+      //     return {
+      //       title: capitalize(item),
+      //       field: item,
+      //       lookup: { 1: "Pending", 2: "Active", 3: "Deactivate" }
+      //     };
+      //   }
+
+      //   return {
+      //     title: item.toUpperCase(),
+      //     field: item
+      //   };
+      // });
 
       setState({ columns: column, data: data });
 

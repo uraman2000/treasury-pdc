@@ -17,6 +17,8 @@ import AdminRoles from "./Components/AdminRoles";
 import AdminRoleAddEdit from "./Components/AdminRoleAddEdit";
 import AdminBank from "./Components/AdminBank";
 import InventoryBulk from "./Components/InventoryBulk";
+import AdminRegion from "./Components/AdminRegion";
+import AdminBranch from "./Components/AdminBranch";
 
 const status = [
   "CLIENT ACCOUNT STATUS",
@@ -58,6 +60,8 @@ function App() {
             <ProtectedRoute path="/admin/user" component={AdminUser} />
             <ProtectedRoute path="/admin/bank" component={AdminBank} />
             <ProtectedRoute path="/admin/roles" component={AdminRoles} />
+            <ProtectedRoute path="/admin/region" component={AdminRegion} />
+            <ProtectedRoute path="/admin/branch" component={AdminBranch} />
             <ProtectedRoute path="/admin/roles/edit" component={AdminRoleAddEdit} />
             <ProtectedRoute
               path="/admin/status"

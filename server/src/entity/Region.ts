@@ -19,14 +19,6 @@ export class Region {
   createdAt: Date;
 
   @Column()
-  @IsNotEmpty()
-  createdBy: string;
-
-  @Column()
   @UpdateDateColumn()
   updatedAt: Date;
-
-  @Column()
-  @IsNotEmpty()
-  updatedBy: string;
 }

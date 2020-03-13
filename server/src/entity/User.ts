@@ -17,6 +17,9 @@ export class User {
   @Column({ type: "int" })
   role: number;
 
+  @Column({ type: "int" })
+  region: number;
+
   @Column()
   @CreateDateColumn()
   createdAt: Date;

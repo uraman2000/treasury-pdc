@@ -13,7 +13,7 @@ export default class BranchController {
     let branches = await getRepository(Branch).find();
     let obj = {};
     branches.forEach((element: any) => {
-      obj[element.id] = element.name;
+      obj[element.id] = element.name.replace(/.+-/g,"");
     });
     res.status(ResponseCodes.OK).send(obj);
   };

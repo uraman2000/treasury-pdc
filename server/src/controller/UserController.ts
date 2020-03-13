@@ -10,13 +10,14 @@ class UserController {
     //Get users from database
     const userRepository = getRepository(User);
     const users = await userRepository.find({
-      select: ["id", "username", "password", "role", "status"] //We dont want to send the passwords on response
+      select: ["id", "username", "password", "role", "status", "region"] //We dont want to send the passwords on response
     });
 
     const userData = users.map(item => ({
       id: item.id,
       username: item.username,
       password: "",
+      region: item.region,
       role: item.role,
       status: item.status
     }));
@@ -77,7 +78,7 @@ class UserController {
     const id = req.params.id;
 
     //Get values from the body
-    const { username, role, status, password } = req.body;
+    const { username, role, status, password, region } = req.body;
 
     //Try to find user on database
     const userRepository = getRepository(User);
@@ -90,13 +91,17 @@ class UserController {
       return;
     }
 
+    if (password) {
+      user.password = password;
+      user.hashPassword();
+    }
     //Validate the new values on model
     user.username = username;
     user.role = role;
     user.status = status;
-    user.password = password;
 
-    user.hashPassword();
+    user.region = region;
+
     const errors = await validate(user);
     if (errors.length > 0) {
       res.status(400).send(errors);

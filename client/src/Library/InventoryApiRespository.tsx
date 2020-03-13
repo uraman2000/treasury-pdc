@@ -46,7 +46,7 @@ class InventoryApiRespository {
   }
   public static async deleteInventory(id: number) {
     try {
-      const response = await (await HandleToken.getInstance()).delete(`${baseUrl}/inventory/${id}`);
+      const response = await (await HandleToken.getInstance()).delete(`inventory/${id}`);
       return response.data;
     } catch (error) {
       HandleToken.delete(error);
