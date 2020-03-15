@@ -4,7 +4,11 @@ import InventoryController from "../controller/InventoryController";
 
 const router = Router();
 
-router.post("/paginate", [checkJwt], InventoryController.paginate);
+router.post(
+  "/paginate",
+  // [checkJwt],
+  InventoryController.paginate
+);
 
 router.post("/bulk", [checkJwt], InventoryController.bulkSave);
 

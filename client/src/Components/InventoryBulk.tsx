@@ -20,7 +20,7 @@ import BranchApiRespository from "../Library/BranchApiRespository";
 import BankApiRespository from "../Library/BankApiRespository";
 import StatusApiRespository from "../Library/StatusApiRespository";
 import SaveIcon from "@material-ui/icons/Save";
-import { useFormik, Field } from "formik";
+import { useFormik, Field, Formik, Form } from "formik";
 import InventoryApiRespository from "../Library/InventoryApiRespository";
 import CustomizedSnackbars from "./CustomizedSnackbars";
 
@@ -119,61 +119,79 @@ export default function InventoryBulk() {
   if (!state) return null;
 
   return (
-    <Container maxWidth="lg">
-      <CustomizedSnackbars message={resState.message} status={resState.status} isShow={resState.isShow} />
-      <form noValidate autoComplete="off" action={""} onSubmit={formik.handleSubmit}>
-        <Grid container spacing={3}>
-          <CustomTextField formik={formik} label={"check_number_from"} type="number" />
-          <CustomTextField formik={formik} label={"check_number_to"} type="number" />
-        </Grid>
-        <Grid container spacing={3}>
-          <CustomTextField formik={formik} label="client_name" />
-        </Grid>
-        <Grid container spacing={3}>
-          <CustomSelect formik={formik} label={"region"} data={state.region} />
-          <CustomSelect formik={formik} label={"branch"} data={state.branch} />
-        </Grid>
-        <Grid container spacing={3}>
-          <CustomSelect formik={formik} label={"client_bank_name"} data={state.bank} />
-          <CustomTextField formik={formik} label="account_number" type="number" />
-          <CustomTextField formik={formik} label="check_amount" type="number" />
-          <CustomDateInput formik={formik} label={"check_date"} />
-          {/* <Field name="date" component={DatePickerField} /> */}
-        </Grid>
-        <Grid container spacing={3}>
-          <CustomSelect formik={formik} label={"check_payee_name"} data={state.statuses.check_payee_name} />
-          <CustomSelect formik={formik} label={"client_check_status"} data={state.statuses.client_check_status} />
-          <CustomSelect
-            formik={formik}
-            label={"client_account_status"}
-            data={state.statuses.client_account_status}
-          />
-          {/* <CustomSelect
-            formik={formik}
-            label={"check_deposit_status"}
-            data={state.statuses.check_deposit_status}
-          /> */}
-        </Grid>
+    // <Container maxWidth="lg">
+    //   <CustomizedSnackbars message={resState.message} status={resState.status} isShow={resState.isShow} />
+    //   <form noValidate autoComplete="off" action={""} onSubmit={formik.handleSubmit}>
+    //     <Grid container spacing={3}>
+    //       <CustomTextField formik={formik} label={"check_number_from"} type="number" />
+    //       <CustomTextField formik={formik} label={"check_number_to"} type="number" />
+    //     </Grid>
+    //     <Grid container spacing={3}>
+    //       <CustomTextField formik={formik} label="client_name" />
+    //     </Grid>
+    //     <Grid container spacing={3}>
+    //       <CustomSelect formik={formik} label={"region"} data={state.region} />
+    //       <CustomSelect formik={formik} label={"branch"} data={state.branch} />
+    //     </Grid>
+    //     <Grid container spacing={3}>
+    //       <CustomSelect formik={formik} label={"client_bank_name"} data={state.bank} />
+    //       <CustomTextField formik={formik} label="account_number" type="number" />
+    //       <CustomTextField formik={formik} label="check_amount" type="number" />
+    //       <CustomDateInput formik={formik} label={"check_date"} />
+    //       {/* <Field name="date" component={DatePickerField} /> */}
+    //     </Grid>
+    //     <Grid container spacing={3}>
+    //       <CustomSelect formik={formik} label={"check_payee_name"} data={state.statuses.check_payee_name} />
+    //       <CustomSelect formik={formik} label={"client_check_status"} data={state.statuses.client_check_status} />
+    //       <CustomSelect
+    //         formik={formik}
+    //         label={"client_account_status"}
+    //         data={state.statuses.client_account_status}
+    //       />
+    //       {/* <CustomSelect
+    //         formik={formik}
+    //         label={"check_deposit_status"}
+    //         data={state.statuses.check_deposit_status}
+    //       /> */}
+    //     </Grid>
 
-        <Grid container spacing={3}>
-          <Grid item xs>
-            <div className={classes.button}>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                disabled={resState.isLoading}
-                size="large"
-                startIcon={<SaveIcon />}
-              >
-                Save
-              </Button>
-              {resState.isLoading ? <CircularProgress size={24} className={classes.buttonProgress} /> : null}
-            </div>
-          </Grid>
-        </Grid>
-      </form>
+    //     <Grid container spacing={3}>
+    //       <Grid item xs>
+    //         <div className={classes.button}>
+    //           <Button
+    //             type="submit"
+    //             fullWidth
+    //             variant="contained"
+    //             color="primary"
+    //             disabled={resState.isLoading}
+    //             size="large"
+    //             startIcon={<SaveIcon />}
+    //           >
+    //             Save
+    //           </Button>
+    //           {resState.isLoading ? <CircularProgress size={24} className={classes.buttonProgress} /> : null}
+    //         </div>
+    //       </Grid>
+    //     </Grid>
+    //   </form>
+    // </Container>
+
+    <Container>
+      <Formik
+        initialValues={{ token: "" }}
+        onSubmit={(values, actions) => {
+          setTimeout(() => {
+            alert(JSON.stringify(values, null, 2));
+            actions.setSubmitting(false);
+          }, 1000);
+        }}
+      >
+        {() => (
+          <Form>
+            <TextField margin="dense" variant="filled" />
+          </Form>
+        )}
+      </Formik>
     </Container>
   );
 }

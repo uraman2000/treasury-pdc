@@ -216,11 +216,12 @@ export default function InventoryTable() {
     const fetchData = async () => {
       const statuses = await StatusApiRespository.allStatus();
       const regionLookup = await RegionRepository.lookUp();
-      const data = await InventoryApiRespository.getInventory();
+      const data = await InventoryApiRespository.getColumnNames();
       const role = await RolesApiRepository.getOne(getAccess().role);
       const branchLookup = await BranchApiRespository.lookUp();
       const bankLookup = await BankApiRespository.lookUp();
-      const header = await Object.keys(data[0]);
+
+      const header = await Object.keys(data);
 
       const columns = column(header, statuses, role, regionLookup, branchLookup, bankLookup);
 
@@ -242,8 +243,11 @@ export default function InventoryTable() {
               let url = `${baseUrl}/inventory/paginate`;
               url += "?page=" + (query.page + 1);
               url += "&limit=" + query.pageSize;
-              url += "&search=" + query.search;
+              // url += "&search=" + query.search;
+              url += "&region=" + getAccess().region;
+
               const filters = query.filters;
+              console.log(url);
 
               fetch(url, {
                 method: "POST",

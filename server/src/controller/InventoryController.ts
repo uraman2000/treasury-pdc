@@ -13,6 +13,7 @@ import { ClientCheckStatus } from "../entity/statuses/ClientCheckStatus";
 import { DepositTodayStatus } from "../entity/statuses/DepositTodayStatus";
 import { ReasonForBounceStatus } from "../entity/statuses/ReasonForBounceStatus";
 import HandleResponse from "../../Constants/HandleResponse";
+import { Region } from "../entity/Region";
 
 function nullIdentifier(value: any) {
   return value ? value : "";
@@ -142,16 +143,28 @@ export default class InventoryController {
   static paginate = async (req: Request, res: Response) => {
     const page = req.query.page * 1;
     const limit = req.query.limit * 1;
-    const search = req.query.search || "";
+    // const search = req.query.search || "";
+    const region = req.query.region || "";
     const filter = req.body;
+
     // res.status(ResponseCodes.OK).send(filter);
     let pdc: any = {};
     const result = {};
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
-    console.log(search);
+
     let filterValue;
     if (filter.length >= 0) filterValue = await filterTable(filter);
+
+    const whereValue = { filterValue };
+    if (region !== "null") {
+      const getRegion = await getRepository(Region).findOne({
+        select: ["id"],
+        where: { region_code: region }
+      });
+
+      whereValue["region"] = getRegion.id;
+    }
 
     pdc = await getRepository(PDCInventory).find({
       order: {
@@ -159,7 +172,8 @@ export default class InventoryController {
       },
       take: limit,
       skip: startIndex,
-      where: filterValue
+      where: whereValue
+
       // where: [
       //   { id: Like(`%${search}%`) },
       //   { region: Like(`%${search}%`) },
@@ -194,40 +208,11 @@ export default class InventoryController {
       // ]
     });
 
-    // if (search) {
-    //   pdc = await getRepository(PDCInventory).find({
-    //     take: limit,
-    //     skip: startIndex,
-    //     where: filterValue
-    //   });
-    // } else {
-    //   pdc = await getRepository(PDCInventory).find({
-    //     take: limit,
-    //     skip: startIndex
-    //   });
-    // }
-
     const count = await getRepository(PDCInventory).count({
       take: limit,
       skip: startIndex,
-      where: filterValue
+      where: whereValue
     });
-
-    // SELECT * FROM pdc_inventory WHERE CONCAT(`client_name`,`deposit_today`) LIKE '%change%'
-
-    // if (endIndex < pdc.length) {
-    //   result["next"] = {
-    //     page: page + 1,
-    //     limit: limit
-    //   };
-    // }
-
-    // if (startIndex > 0) {
-    //   result["previous"] = {
-    //     page: page - 1,
-    //     limit: limit
-    //   };
-    // }
 
     result["data"] = pdc;
     result["page"] = page;
@@ -279,15 +264,20 @@ export default class InventoryController {
 
   static getColumnNames = async (req: Request, res: Response) => {
     const columns = Object.keys(await (await getAll()).getRawOne());
+    const obj = {};
 
-    const formated = columns.map(item => {
-      return {
-        title: toTitleCase(item.replace("_ID", "").replace(/_/g, " ")),
-        field: item.replace("_ID", "")
-      };
+    columns.forEach(element => {
+      obj[element] = "";
     });
+    res.status(200).send(obj);
+    // const formated = columns.map(item => {
+    //   return {
+    //     title: toTitleCase(item.replace("_ID", "").replace(/_/g, " ")),
+    //     field: item.replace("_ID", "")
+    //   };
+    // });
 
-    res.status(200).send(formated);
+    // res.status(200).send(formated);
   };
 
   static remove = async (req: Request, res: Response) => {
