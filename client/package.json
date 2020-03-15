@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@date-io/date-fns": "^2.4.0",
     "@material-ui/core": "^4.9.5",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.45",
@@ -10,7 +11,7 @@
     "@types/axios": "^0.14.0",
     "@types/jest": "24.0.20",
     "@types/node": "12.11.7",
-    "@types/react": "16.9.11",
+    "@types/react": "^16.9.23",
     "@types/react-dom": "16.9.3",
     "@types/react-router-dom": "^5.1.2",
     "@types/react-swipeable-views": "^0.13.0",

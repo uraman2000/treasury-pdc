@@ -13,7 +13,7 @@ export default class BanksController {
     let branches = await getRepository(Bank).find();
     let obj = {};
     branches.forEach((element: any) => {
-      obj[element.id] = `${element.bank_name}-${element.account_number}`;
+      obj[element.id] = `${element.bank_name}`;
     });
     res.status(ResponseCodes.OK).send(obj);
   };

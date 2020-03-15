@@ -8,7 +8,7 @@ const router = Router();
 
 router.get("/", [checkJwt], BranchController.all);
 
-router.get("/lookUp", [checkJwt], BranchController.lookUp);
+router.get("/lookUp/", [checkJwt], BranchController.lookUp);
 
 router.get("/:id([0-9]+)", [checkJwt], BranchController.one);
 

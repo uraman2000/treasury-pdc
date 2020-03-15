@@ -36,7 +36,8 @@ interface defaultState {
 export default function AdminRoleAddEdit() {
   const classes = useStyles();
   const history = useHistory();
-  const data = history.location.state;
+  const data: any = history.location.state;
+
   const keys: any = [];
   const [state, setState] = useState<defaultState>({ role: "", access: {} });
 

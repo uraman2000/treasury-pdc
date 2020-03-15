@@ -10,10 +10,15 @@ export default class BranchController {
   };
 
   static lookUp = async (req: Request, res: Response) => {
-    let branches = await getRepository(Branch).find();
+    let whereValues = {};
+    if (req.query.region !== "null") {
+      whereValues = { where: { region_code: req.query.region } };
+    }
+    console.log(whereValues);
+    let branches = await getRepository(Branch).find(whereValues);
     let obj = {};
     branches.forEach((element: any) => {
-      obj[element.id] = element.name.replace(/.+-/g,"");
+      obj[element.id] = element.name.replace(/.+-/g, "");
     });
     res.status(ResponseCodes.OK).send(obj);
   };
