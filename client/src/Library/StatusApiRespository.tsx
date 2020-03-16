@@ -1,5 +1,3 @@
-import axios from "axios";
-import { baseUrl } from "../Constatnt";
 import HandleToken from "./HandleToken";
 
 export default class StatusApiRespository {

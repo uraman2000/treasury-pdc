@@ -1,5 +1,4 @@
 import React from "react";
-import { Container } from "@material-ui/core";
 import InventoryTable from "./Components/InventoryTable";
 import Login from "./Components/Login";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";

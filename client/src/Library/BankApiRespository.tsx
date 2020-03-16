@@ -1,6 +1,4 @@
-import axios from "axios";
-import { baseUrl, ResponseCodes } from "../Constatnt";
-import { deleteAccess } from "../utils";
+import { baseUrl } from "../Constatnt";
 import HandleToken from "./HandleToken";
 
 export default class BankApiRespository {

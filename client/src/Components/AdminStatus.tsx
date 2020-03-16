@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import MaterialTable, { Column } from "material-table";
-import UserApiRespository from "../Library/UserApiRespository";
 import StatusApiRespository from "../Library/StatusApiRespository";
-import { array } from "prop-types";
 
 interface Row {
   id: number;
@@ -17,11 +15,6 @@ interface TableState {
 interface Iprops {
   tableName?: any;
 }
-
-const capitalize = (s: string) => {
-  if (typeof s !== "string") return "";
-  return s.charAt(0).toUpperCase() + s.slice(1);
-};
 
 export default function AdminStatus(props: Iprops) {
   const initState = {

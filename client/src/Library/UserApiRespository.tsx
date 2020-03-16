@@ -1,7 +1,5 @@
-import IData from "../Components/Interfaces/IData";
-import { baseUrl, ResponseCodes } from "../Constatnt";
+import { baseUrl } from "../Constatnt";
 import HandleToken from "./HandleToken";
-import { deleteAccess } from "../utils";
 
 class UserApiRespository {
   public static async get() {

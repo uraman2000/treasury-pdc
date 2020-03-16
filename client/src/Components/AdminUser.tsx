@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import MaterialTable, { Column } from "material-table";
 import UserApiRespository from "../Library/UserApiRespository";
 import RolesApiRepository from "../Library/RolesApiRepository";
@@ -17,11 +17,6 @@ interface TableState {
   columns: Array<Column<Row>>;
   data: Row[];
 }
-
-const capitalize = (s: string) => {
-  if (typeof s !== "string") return "";
-  return s.charAt(0).toUpperCase() + s.slice(1);
-};
 
 export default function AdminUser() {
   const initState = {

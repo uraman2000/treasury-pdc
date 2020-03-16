@@ -1,7 +1,5 @@
 import IData from "../Components/Interfaces/IData";
-import { baseUrl, ResponseCodes } from "../Constatnt";
 import HandleToken from "./HandleToken";
-import { deleteAccess } from "../utils";
 
 class InventoryApiRespository {
   public static async getColumnNames() {

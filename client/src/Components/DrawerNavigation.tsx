@@ -18,8 +18,6 @@ import {
   Badge,
   Popover,
   Paper,
-  Box,
-  Container,
   ListItemAvatar,
   Avatar,
   ListSubheader

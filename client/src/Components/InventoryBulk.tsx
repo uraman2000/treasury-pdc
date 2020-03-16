@@ -74,7 +74,7 @@ interface Values {
   region: string;
   branch: string;
   client_bank_name: string;
-  check_date: string;
+  check_date: Date;
   check_number_from: string;
   check_number_to: string;
   check_amount: string;
@@ -135,7 +135,9 @@ export default function InventoryBulk() {
         initialValues={initialValues}
         onSubmit={async (values, actions) => {
           // alert(JSON.stringify(values, null, 2));
+          // helpers.setValue(date!.toLocaleDateString());
 
+          // alert(JSON.stringify(values, null, 2));
           const response = await InventoryApiRespository.saveInventoryBulk(values);
           // console.log(values);
           actions.resetForm();
@@ -230,6 +232,7 @@ export function CustomTextField({ ...props }: any) {
   return (
     <Grid item xs>
       <TextField
+        required
         label={textLabel}
         fullWidth
         {...field}
@@ -247,7 +250,7 @@ export function CustomSelect({ data, ...props }: any) {
 
   return (
     <Grid item xs>
-      <FormControl fullWidth style={{ margin: 8 }} variant="filled" margin="dense">
+      <FormControl required fullWidth style={{ margin: 8 }} variant="filled" margin="dense">
         <InputLabel ref={null} htmlFor="outlined-age-native-simple">
           {textLabel}
         </InputLabel>
@@ -280,6 +283,7 @@ export function CustomDateInput({ ...props }: any) {
         {/* <Field name={label} component={DatePicker} /> */}
         <KeyboardDatePicker
           disableToolbar
+          required
           autoOk
           fullWidth
           margin="dense"
@@ -288,7 +292,7 @@ export function CustomDateInput({ ...props }: any) {
           placeholder="mm/dd/yyyy"
           style={{ margin: 8 }}
           onChange={date => {
-            helpers.setValue(date!.toLocaleDateString());
+            helpers.setValue(date);
           }}
           value={field.value}
           label={textLabel}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -7,8 +7,8 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import SummaryApiRepository from "../Library/SummaryApiRepository";
-import { FormControl, InputLabel, Select, MenuItem, FormHelperText, Container, Box } from "@material-ui/core";
-import RegionRepository from "../Library/RegionRepository";
+import { Container } from "@material-ui/core";
+
 import RegionSelector from "./RegionSelector";
 // borderLeft : border-right: 1px solid rgba(224, 224, 224, 1);
 // border-left: 1px solid rgba(224, 224, 224, 1);

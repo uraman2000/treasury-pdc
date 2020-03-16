@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { FormControl, InputLabel, Select, MenuItem } from "@material-ui/core";
 import RegionRepository from "../Library/RegionRepository";
 import { makeStyles } from "@material-ui/styles";
-import SummaryApiRepository from "../Library/SummaryApiRepository";
 
 const useStyles = makeStyles({
   root: {

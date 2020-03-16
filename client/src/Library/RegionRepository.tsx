@@ -1,6 +1,4 @@
-import axios from "axios";
-import { baseUrl, ResponseCodes } from "../Constatnt";
-import { deleteAccess, getAccess, isAdmin } from "../utils";
+import { getAccess, isAdmin } from "../utils";
 import HandleToken from "./HandleToken";
 
 export default class RegionRepository {

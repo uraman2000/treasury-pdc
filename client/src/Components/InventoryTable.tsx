@@ -248,7 +248,6 @@ export default function InventoryTable() {
               url += "&region=" + region;
 
               const filters = query.filters;
-              console.log(url);
 
               fetch(url, {
                 method: "POST",

@@ -1,7 +1,7 @@
-import IData from "../Components/Interfaces/IData";
-import { baseUrl, ResponseCodes } from "../Constatnt";
+
+import { baseUrl } from "../Constatnt";
 import HandleToken from "./HandleToken";
-import { deleteAccess } from "../utils";
+
 
 export default class RolesApiRepository {
   public static async getRoles() {
