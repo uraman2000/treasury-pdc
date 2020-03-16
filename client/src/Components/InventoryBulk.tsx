@@ -4,7 +4,6 @@ import {
   makeStyles,
   Container,
   Grid,
-  Box,
   FormControl,
   InputLabel,
   Select,
@@ -14,13 +13,13 @@ import {
   createStyles
 } from "@material-ui/core";
 import DateFnsUtils from "@date-io/date-fns";
-import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from "@material-ui/pickers";
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
 import RegionRepository from "../Library/RegionRepository";
 import BranchApiRespository from "../Library/BranchApiRespository";
 import BankApiRespository from "../Library/BankApiRespository";
 import StatusApiRespository from "../Library/StatusApiRespository";
 import SaveIcon from "@material-ui/icons/Save";
-import { useFormik, Field, Formik, Form, useField, FormikProps } from "formik";
+import { Formik, Form, useField, FormikProps } from "formik";
 import InventoryApiRespository from "../Library/InventoryApiRespository";
 import CustomizedSnackbars from "./CustomizedSnackbars";
 
@@ -139,7 +138,7 @@ export default function InventoryBulk() {
 
           // alert(JSON.stringify(values, null, 2));
           const response = await InventoryApiRespository.saveInventoryBulk(values);
-          // console.log(values);
+
           actions.resetForm();
           setResState({
             message: response.data.message,
@@ -157,8 +156,6 @@ export default function InventoryBulk() {
         {(props: FormikProps<Values>) => (
           <Form>
             <CustomizedSnackbars message={resState.message} status={resState.status} isShow={resState.isShow} />
-
-            {console.log(props)}
 
             <Grid container spacing={3}>
               <CustomTextField name={"check_number_from"} type="number" />

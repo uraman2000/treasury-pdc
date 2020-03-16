@@ -3,16 +3,14 @@ import MaterialTable, { Column } from "material-table";
 import IData from "./Interfaces/IData";
 import InventoryApiRespository from "../Library/InventoryApiRespository";
 import StatusApiRespository from "../Library/StatusApiRespository";
-import { async } from "q";
-import { TextField, Container, Button, Box, Fab, makeStyles, Theme, createStyles } from "@material-ui/core";
+import { Fab, makeStyles, Theme, createStyles } from "@material-ui/core";
 import { localDate, today, agingDate, getAccess, isAdmin } from "../utils";
 import TableTextField from "./TableTextField";
 import RolesApiRepository from "../Library/RolesApiRepository";
 import RegionRepository from "../Library/RegionRepository";
 import BranchApiRespository from "../Library/BranchApiRespository";
 import BankApiRespository from "../Library/BankApiRespository";
-import HandleToken from "../Library/HandleToken";
-import Axios from "axios";
+
 import { baseUrl } from "../Constatnt";
 import AddIcon from "@material-ui/icons/Add";
 
@@ -29,7 +27,7 @@ function deposit_today_logic(props: any) {
 
   if (check_amount <= 0) {
     value = "";
-  } else if (date_deposited == "") {
+  } else if (date_deposited === "") {
     value = "REFER: CHECK DEPOSIT STATUS";
   } else if (check_type_as_of_current_day === "HOLD") {
     value = "REFER: CHECK DEPOSIT STATUS";
