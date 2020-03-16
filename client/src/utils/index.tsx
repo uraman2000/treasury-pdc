@@ -34,6 +34,9 @@ export const getAccess = () => {
   };
 };
 
+export const isAdmin = () => {
+  return getAccess().role === "ADMIN";
+};
 export const localDate = (date: any) => new Date(date).toLocaleDateString();
 
 export const today = () => new Date().toLocaleDateString();

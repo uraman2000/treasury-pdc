@@ -1,6 +1,6 @@
 import axios from "axios";
 import { baseUrl, ResponseCodes } from "../Constatnt";
-import { deleteAccess } from "../utils";
+import { deleteAccess, getAccess, isAdmin } from "../utils";
 import HandleToken from "./HandleToken";
 
 export default class RegionRepository {
@@ -34,7 +34,9 @@ export default class RegionRepository {
   }
   public static async lookUp() {
     try {
-      const response = await (await HandleToken.getInstance()).get(`region/lookUp`);
+      const region = isAdmin() ? null : getAccess().region;
+
+      const response = await (await HandleToken.getInstance()).get(`region/lookUp?region=${region}`);
       return response.data;
     } catch (error) {
       HandleToken.delete(error);

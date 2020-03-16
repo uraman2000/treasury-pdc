@@ -14,7 +14,7 @@ export default class BranchController {
     if (req.query.region !== "null") {
       whereValues = { where: { region_code: req.query.region } };
     }
-    console.log(whereValues);
+
     let branches = await getRepository(Branch).find(whereValues);
     let obj = {};
     branches.forEach((element: any) => {

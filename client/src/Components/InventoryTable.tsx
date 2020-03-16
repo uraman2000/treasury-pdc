@@ -5,7 +5,7 @@ import InventoryApiRespository from "../Library/InventoryApiRespository";
 import StatusApiRespository from "../Library/StatusApiRespository";
 import { async } from "q";
 import { TextField, Container, Button, Box, Fab, makeStyles, Theme, createStyles } from "@material-ui/core";
-import { localDate, today, agingDate, getAccess } from "../utils";
+import { localDate, today, agingDate, getAccess, isAdmin } from "../utils";
 import TableTextField from "./TableTextField";
 import RolesApiRepository from "../Library/RolesApiRepository";
 import RegionRepository from "../Library/RegionRepository";
@@ -244,7 +244,8 @@ export default function InventoryTable() {
               url += "?page=" + (query.page + 1);
               url += "&limit=" + query.pageSize;
               // url += "&search=" + query.search;
-              url += "&region=" + getAccess().region;
+              const region = isAdmin() ? null : getAccess().region;
+              url += "&region=" + region;
 
               const filters = query.filters;
               console.log(url);
@@ -281,7 +282,7 @@ export default function InventoryTable() {
             loadingType: "overlay",
             sorting: false,
             filtering: true,
-            // search: true,
+            search: false,
             addRowPosition: "first",
             doubleHorizontalScroll: false,
             // maxBodyHeight: 600,

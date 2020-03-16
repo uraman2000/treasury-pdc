@@ -10,7 +10,12 @@ class RegionController {
   };
 
   static lookUp = async (req: Request, res: Response) => {
-    let regions = await getRepository(Region).find();
+    let whereValues = {};
+    if (req.query.region !== "null") {
+      whereValues = { where: { region_code: req.query.region } };
+    }
+
+    let regions = await getRepository(Region).find(whereValues);
     let obj = {};
     regions.forEach((element: any) => {
       obj[element.id] = element.region_code;

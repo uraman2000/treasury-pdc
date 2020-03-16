@@ -164,7 +164,8 @@ export default class InventoryController {
     }
 
     if (filter.length >= 0) filterValue = await filterTable(filter);
-    if (filterValue) whereValue += ` AND ${filterValue}`;
+    if (filterValue && region !== "null") whereValue += ` AND `;
+    if (filterValue) whereValue += `${filterValue}`;
 
     console.log(whereValue + " WTF");
     pdc = await getRepository(PDCInventory).find({
