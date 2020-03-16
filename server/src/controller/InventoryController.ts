@@ -232,7 +232,7 @@ export default class InventoryController {
   };
 
   static getColumnNames = async (req: Request, res: Response) => {
-    const columns = Object.keys(await (await getAll()).getRawOne());
+    const columns = Object.keys(await getRepository(PDCInventory).findOne());
     const obj = {};
 
     columns.forEach(element => {
@@ -268,39 +268,6 @@ function toTitleCase(phrase: any) {
     .split(" ")
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
-}
-
-async function getAll() {
-  return await getConnection()
-    .createQueryBuilder()
-    .select("id")
-    .addSelect("region")
-    .addSelect("branch")
-    .addSelect("client_bank_name")
-    .addSelect("check_date")
-    .addSelect("check_number")
-    .addSelect("check_amount")
-    .addSelect("client_name")
-    .addSelect("client_account_status", "client_account_status")
-    .addSelect("client_check_status", "client_check_status")
-    .addSelect("check_payee_name", "check_payee_name")
-    .addSelect("check_deposit_status", "check_deposit_status")
-    .addSelect("reason_for_bounce_status", "reason_for_bounce_status")
-    .addSelect("deposit_today")
-    .addSelect("aging_undeposited")
-    .addSelect("check_type_as_of_current_day")
-    .addSelect("date_deposited")
-    .addSelect("date_bounced")
-    .addSelect("date_re_deposited")
-    .addSelect("aging_redep")
-    .addSelect("check_re_deposit_status", "check_re_deposit_status")
-    .addSelect("date_hold")
-    .addSelect("reason_for_hold_status", "reason_for_hold_status")
-    .addSelect("hold_check_aging")
-    .addSelect("OR_number")
-    .addSelect("OR_date")
-    .addSelect("remarks")
-    .from(PDCInventory, "PDCInventory");
 }
 
 async function getStatus(statusTable: string) {
