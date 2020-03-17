@@ -14,6 +14,7 @@ import { DepositTodayStatus } from "../entity/statuses/DepositTodayStatus";
 import { ReasonForBounceStatus } from "../entity/statuses/ReasonForBounceStatus";
 import HandleResponse from "../../Constants/HandleResponse";
 import { Region } from "../entity/Region";
+import Utils from "../utils/Utils";
 
 function nullIdentifier(value: any) {
   return value ? value : "";
@@ -297,6 +298,11 @@ async function filterTable(filter: any) {
     if (value.length === 0) return;
     if (typeof value === "object") {
       whereValues += `${field} in (${value}) and `;
+      return;
+    }
+
+    if (item.column.type === "date") {
+      whereValues += `${field} = '${Utils.formatDate(value)}' and `;
       return;
     }
     if (item.column.type === "numeric") {

@@ -86,6 +86,9 @@ export class PDCInventory {
   @Column({ type: "int" })
   reason_for_hold_status: number;
 
+  @Column({ type: "date" })
+  date_for_deposit_specific_day: Date;
+
   @Column({ type: "int" })
   hold_check_aging: number;
 
@@ -94,6 +97,9 @@ export class PDCInventory {
 
   @Column({ type: "date" })
   OR_date: Date;
+
+  @Column({ type: "int" })
+  reason_for_hold_status_after_held_check: number;
 
   @Column({ type: "varchar" })
   remarks: string;
