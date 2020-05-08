@@ -3,7 +3,7 @@
     "resolveJsonModule": true,
     "lib": ["es5", "es6"],
     "target": "es5",
-    "module": "commonjs",
+    "module": "es2015",
     "moduleResolution": "node",
     "outDir": "./build",
     "emitDecoratorMetadata": true,
