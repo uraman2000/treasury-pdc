@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { getRepository, getConnection } from "typeorm";
-
+import { getConnection } from "typeorm";
 import { User } from "../entity/User";
-import { async } from "q";
 import { Roles } from "../entity/statuses/Roles";
 
 export const checkRole = (roles: Array<string>) => {

@@ -1,7 +1,6 @@
 import { getRepository } from "typeorm";
 import { NextFunction, Request, Response } from "express";
 import IResponse from "../../app/IResponse";
-import { number } from "prop-types";
 import { CheckPayeeName } from "../entity/statuses/CheckPayeeName";
 
 const customRes: IResponse = {};

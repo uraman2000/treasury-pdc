@@ -13,11 +13,11 @@ export class Utils {
       return a + b[value] * 1;
     }, 0);
 
-    return totalValue;
+    return totalValue * 1;
   };
 
   static isPresent = (obj, key: string, value) => {
-    return obj.some(e => e[key] === value);
+    return obj.some((e) => e[key] === value);
   };
 
   static calculatePercentage = (value, total) => {

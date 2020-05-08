@@ -23,10 +23,10 @@ export default class BanksController {
   };
 
   static save = async (req: Request, res: Response) => {
-    let { id, account_number, bank_name }: Bank = req.body;
+    let { id, bank_name }: Bank = req.body;
     let bank = new Bank();
     bank.id = id;
-    bank.account_number = account_number;
+    // bank.account_number = account_number;
     bank.bank_name = bank_name;
 
     HandleResponse.save(res, bank, Bank);

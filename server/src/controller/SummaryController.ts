@@ -43,7 +43,7 @@ async function statusWithPercentage(tableName: string) {
   statusList.totalCount = 0;
   statusList.totalAmount = 0;
 
-  statusItem.map(item => {
+  statusItem.map((item) => {
     statusList.totalCount += item.count;
     statusList.totalAmount += item.amount;
   });
@@ -67,11 +67,11 @@ async function queryWithPercentage(statusTable: string) {
     .groupBy(`${statusTable}.id`)
     .getRawMany();
 
-  const cleanup = temp.map(item => ({
+  const cleanup = temp.map((item) => ({
     ID: item.ID,
     status: item.status,
     count: item.amount == null ? 0 : parseFloat(item.count),
-    amount: item.amount == null ? 0 : parseFloat(item.amount)
+    amount: item.amount == null ? 0 : parseFloat(item.amount),
   }));
   return cleanup;
 }
@@ -85,7 +85,7 @@ function calculatePercentage(statusList: StatusList): StatusList {
     amount: item.amount,
     // countPercentage: item.count == 0 ? "0%" : (item.count / listTemp.totalCount) * 100 + "%",
     countPercentage: item.count == 0 ? "0%" : Utils.calculatePercentage(item.count, listTemp.totalCount),
-    amountPercentage: item.count == 0 ? "0%" : Utils.calculatePercentage(item.amount, listTemp.totalAmount)
+    amountPercentage: item.count == 0 ? "0%" : Utils.calculatePercentage(item.amount, listTemp.totalAmount),
     // amountPercentage: item.amount == 0 ? "0%" : `${((item.amount / listTemp.totalAmount) * 100).toFixed(3)} %`
   }));
 
@@ -124,6 +124,6 @@ interface StatusList {
   statusItem?: StatusItem[];
   totalCount?: number;
   totalCountPercent?: any;
-  totalAmount?: number;
+  totalAmount?: any;
   totalAmountPercent?: any;
 }

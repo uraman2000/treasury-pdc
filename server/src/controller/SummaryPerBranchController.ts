@@ -4,7 +4,6 @@ import IResponse from "../../app/IResponse";
 import { PDCInventory } from "../entity/PDCInventory";
 import { CheckDepositStatus } from "../entity/statuses/CheckDepositStatus";
 import { Branch } from "../entity/Branch";
-import { number, array } from "prop-types";
 import Utils from "../utils/Utils";
 
 function statusRepository(statusTable: string) {
