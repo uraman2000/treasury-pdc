@@ -1,5 +1,5 @@
 // export const baseUrl = "http://localhost:3011";
-export const baseUrl = "http://3.0.195.247:80";
+export const baseUrl = "http://3.0.195.247:3011";
 
 export const ResponseCodes = {
   Unauthorized: 401,
