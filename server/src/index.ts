@@ -20,7 +20,7 @@ createConnection()
     //Set all routes from routes folder
     app.use("/", routes);
 
-    app.listen(3011, () => {
+    app.listen(80, () => {
 
     });
   })
