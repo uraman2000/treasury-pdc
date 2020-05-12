@@ -1,4 +1,5 @@
-export const baseUrl = "http://localhost:3011";
+// export const baseUrl = "http://localhost:3011";
+export const baseUrl = "http://3.0.195.247:3011";
 
 export const ResponseCodes = {
   Unauthorized: 401,
@@ -14,13 +15,12 @@ export const ResponseCodes = {
   "Failed to save record": 100,
   "Amount is invalid": 1202,
   "Amount to adjust must be greater than P0.00": 1207,
-  "API Error": "U0001"
+  "API Error": "U0001",
 };
-
 
 ///-banks
 // bank branch
 
 // --import data
 // -range check numb
-// --bulk editting 
+// --bulk editting
