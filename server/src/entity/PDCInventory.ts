@@ -20,7 +20,7 @@ export class PDCInventory {
   @Column({ type: "varchar" })
   client_bank_name: string;
 
-  @Column({ type: "date" })
+  @Column()
   check_date: Date;
 
   @Column({ type: "int" })
@@ -65,13 +65,13 @@ export class PDCInventory {
   @Column({ type: "int" })
   account_deposited: number;
 
-  @Column({ type: "date" })
+  @Column()
   date_deposited: Date;
 
-  @Column({ type: "date" })
+  @Column()
   date_bounced: Date;
 
-  @Column({ type: "date" })
+  @Column()
   date_re_deposited: Date;
 
   @Column({ type: "varchar" })
@@ -80,13 +80,13 @@ export class PDCInventory {
   @Column({ type: "int" })
   check_re_deposit_status: number;
 
-  @Column({ type: "date" })
+  @Column()
   date_hold: Date;
 
   @Column({ type: "int" })
   reason_for_hold_status: number;
 
-  @Column({ type: "date" })
+  @Column()
   date_for_deposit_specific_day: Date;
 
   @Column({ type: "int" })
@@ -95,7 +95,7 @@ export class PDCInventory {
   @Column({ type: "int" })
   OR_number: number;
 
-  @Column({ type: "date" })
+  @Column()
   OR_date: Date;
 
   @Column({ type: "int" })
