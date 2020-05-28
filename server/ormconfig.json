@@ -5,7 +5,7 @@
   "username": "root",
   "password": "{SzFM7=_yvTZ{n7#",
   "database": "PDC_data",
-  "synchronize": false,
+  "synchronize": true,
   "logging": true,
   "entities": ["src/entity/**/*.js"],
   "migrations": ["src/migration/**/*.js"],
