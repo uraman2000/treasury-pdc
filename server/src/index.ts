@@ -8,7 +8,7 @@ import routes from "./routes/index";
 
 //Connects to the Database -> then starts the express
 createConnection()
-  .then(async connection => {
+  .then(async (connection) => {
     // Create a new express application instance
     const app = express();
 
@@ -20,8 +20,6 @@ createConnection()
     //Set all routes from routes folder
     app.use("/", routes);
 
-    app.listen(80, () => {
-
-    });
+    app.listen(80, () => {});
   })
-  .catch(error => console.log(error));
+  .catch((error) => console.log(error));
