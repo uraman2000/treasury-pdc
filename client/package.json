@@ -31,7 +31,7 @@
     "react-swipeable-views": "^0.13.3",
     "react-time-ago": "^5.0.7",
     "react-timeago": "^4.4.0",
-    "typeorm": "^0.2.20",
+    "typeorm": "^0.2.25",
     "typescript": "3.6.4"
   },
   "scripts": {
